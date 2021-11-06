@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "538499252909",
+    "project_id": "the-pantry-a6b26",
+    "storage_bucket": "the-pantry-a6b26.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:538499252909:android:8cdf41de42fa9d6495fc24",
+        "android_client_info": {
+          "package_name": "com.tomsitter.the_pantry"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "538499252909-2god1lr8ddt5h465j1oosu3tbi07ivsc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEBfhcTDwLO0ryhqecvPn05jzOEpE5pEk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "538499252909-2god1lr8ddt5h465j1oosu3tbi07ivsc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

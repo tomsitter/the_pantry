@@ -23,7 +23,7 @@ class AddItemModal extends StatelessWidget {
               padding: EdgeInsets.all(16.0),
               child: Text(
                 'Add item',
-                style: TextStyle(color: AppTheme.paleTeal, fontSize: 24.0),
+                style: TextStyle(color: AppTheme.blue, fontSize: 24.0),
               ),
             ),
             TextField(
@@ -36,7 +36,7 @@ class AddItemModal extends StatelessWidget {
                 padding: MaterialStateProperty.all<EdgeInsets>(
                     const EdgeInsets.symmetric(horizontal: 64.0)),
                 backgroundColor:
-                    MaterialStateProperty.all<Color>(AppTheme.paleTeal),
+                    MaterialStateProperty.all<Color>(AppTheme.blue),
               ),
               onPressed: () {
                 Provider.of<GroceryCart>(context, listen: false)

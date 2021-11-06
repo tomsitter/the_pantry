@@ -1,12 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:the_pantry/models/grocery_cart.dart';
+import 'package:the_pantry/screens/welcome_screen.dart';
 import 'package:the_pantry/widgets/grocery_list.dart';
 
 import '../constants.dart';
 import '../widgets/add_item_modal.dart';
 
+User? user;
+
 class GroceryScreen extends StatefulWidget {
+  static String id = 'grocery_screen';
+
   const GroceryScreen({Key? key}) : super(key: key);
 
   @override
@@ -14,11 +20,31 @@ class GroceryScreen extends StatefulWidget {
 }
 
 class _GroceryScreenState extends State<GroceryScreen> {
+  final _auth = FirebaseAuth.instance;
+  // CollectionReference messages =
+  //     FirebaseFirestore.instance.collection('messages');
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+  void getCurrentUser() async {
+    try {
+      _auth.authStateChanges().listen(
+            (event) => setState(() => user = event),
+          );
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        backgroundColor: AppTheme.paleTeal,
+        backgroundColor: AppTheme.blue,
         onPressed: () => showModalBottomSheet(
           isScrollControlled: true,
           context: context,
@@ -26,44 +52,69 @@ class _GroceryScreenState extends State<GroceryScreen> {
         ),
         child: const Icon(Icons.add),
       ),
-      // ),
-      //     ),
+      drawer: Drawer(
+        child: ListView(padding: EdgeInsets.zero, children: [
+          // const DrawerHeader(
+          //   decoration: BoxDecoration(
+          //     color: AppTheme.redBrown,
+          //   ),
+          //   child: Text('Drawer Header'),
+          // ),
+          ListTile(
+            title: const Text('Logout'),
+            onTap: () async {
+              await _auth.signOut();
+              Navigator.pushNamed(context, WelcomeScreen.id);
+            },
+          ),
+          ListTile(
+            title: const Text('Save List'),
+            onTap: () async {
+              // await FirebaseAuth.instance.signOut();
+              // Navigator.pushNamed(context, WelcomeScreen.id);
+            },
+          ),
+        ]),
+      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 32.0, top: 64.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  FloatingActionButton(
-                    onPressed: () {},
-                    elevation: 5.0,
-                    shape: const CircleBorder(),
-                    backgroundColor: Colors.white,
-                    child: const Icon(Icons.shopping_basket,
-                        color: AppTheme.paleTeal, size: 40.0),
+            SizedBox(height: 32.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'My grocery list',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 32.0,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        '${Provider.of<GroceryCart>(context).count} Items',
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 32.0),
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 8.0),
-                    child: Text(
-                      'My grocery list',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 32.0,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Text(
-                    '${Provider.of<GroceryCart>(context).count} Items',
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ],
-              ),
+                ),
+                MaterialButton(
+                  onPressed: () {},
+                  elevation: 5.0,
+                  shape: const CircleBorder(),
+                  padding: EdgeInsets.all(10.0),
+                  color: Colors.white,
+                  child: const Icon(Icons.shopping_basket,
+                      color: AppTheme.blue, size: 40.0),
+                ),
+              ],
             ),
-            const SizedBox(height: 32.0),
+            const SizedBox(height: 16.0),
             Expanded(
               child: Container(
                 decoration: const BoxDecoration(
@@ -83,7 +134,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
           ],
         ),
       ),
-      backgroundColor: AppTheme.paleTeal,
+      backgroundColor: AppTheme.blue,
     );
   }
 }
