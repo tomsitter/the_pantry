@@ -40,4 +40,8 @@ class GroceryCart extends ChangeNotifier {
   }
 
   int get count => _items.length;
+
+  Map<String, bool> toJson() {
+    return {for (var item in _items) item.name: item.isSelected};
+  }
 }

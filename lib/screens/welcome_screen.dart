@@ -19,7 +19,6 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController controller;
   late Animation animation;
-  bool _checkingAuth = true;
 
   @override
   void initState() {

@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_overlay/loading_overlay.dart';
+import 'package:provider/src/provider.dart';
 import 'package:the_pantry/screens/grocery_screen.dart';
+import 'package:the_pantry/services/authentication_service.dart';
 import '../constants.dart';
-import '../utils/scaffold_snackbar.dart';
+import '../widgets/scaffold_snackbar.dart';
 import '../widgets/wide_button.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -17,8 +19,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  String email = '';
-  String password = '';
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
   User? user;
   bool _isLoading = false;
 
@@ -56,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: AppTheme.textFieldDecoration.copyWith(
                   hintText: 'Enter your email',
                 ),
-                onChanged: (value) => {email = value},
+                controller: emailController,
               ),
               SizedBox(height: 8.0),
               TextField(
@@ -65,30 +67,38 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: AppTheme.textFieldDecoration.copyWith(
                     hintText: 'Enter your password',
                   ),
-                  onChanged: (value) => {password = value}),
+                  controller: passwordController),
               SizedBox(height: 24.0),
               WideButton(
-                  color: AppTheme.blue,
-                  text: 'Login',
-                  onPressed: () async {
-                    try {
-                      setState(() {
-                        _isLoading = true;
-                      });
-                      user = (await _auth.signInWithEmailAndPassword(
-                              email: email, password: password))
-                          .user!;
-                      Navigator.pushNamed(context, GroceryScreen.id);
-                    } on FirebaseAuthException catch (e) {
-                      ScaffoldSnackbar.of(context).show('${e.message}');
-                    } catch (e) {
-                      ScaffoldSnackbar.of(context).show('Error: $e');
-                    } finally {
-                      setState(() {
-                        _isLoading = false;
-                      });
-                    }
-                  }),
+                color: AppTheme.blue,
+                text: 'Login',
+                onPressed: () async {
+                  setState(() {
+                    _isLoading = true;
+                  });
+                  final result =
+                      await context.read<AuthenticationService>().signIn(
+                            email: emailController.text.trim(),
+                            password: passwordController.text.trim(),
+                          );
+                  if (result == 'Signed in') {
+                    Navigator.pushNamed(context, GroceryScreen.id);
+                  } else if (result == 'user-not-found') {
+                    ScaffoldSnackbar.of(context)
+                        .show('No user found for that email.');
+                  } else if (result == 'wrong-password') {
+                    ScaffoldSnackbar.of(context)
+                        .show('Wrong password provided for that user.');
+                  } else {
+                    ScaffoldSnackbar.of(context)
+                        .show('Unexpected error... please try again.');
+                    print(result);
+                  }
+                  setState(() {
+                    _isLoading = false;
+                  });
+                },
+              ),
             ],
           ),
         ),

@@ -1,13 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:the_pantry/models/grocery_cart.dart';
 import 'package:the_pantry/screens/welcome_screen.dart';
+import 'package:the_pantry/services/authentication_service.dart';
 import 'package:the_pantry/widgets/grocery_list.dart';
 
 import '../constants.dart';
 import '../widgets/add_item_modal.dart';
 
+final Stream<QuerySnapshot> _dataStream =
+    FirebaseFirestore.instance.collection('user_data').snapshots();
 User? user;
 
 class GroceryScreen extends StatefulWidget {
@@ -20,24 +24,12 @@ class GroceryScreen extends StatefulWidget {
 }
 
 class _GroceryScreenState extends State<GroceryScreen> {
-  final _auth = FirebaseAuth.instance;
-  // CollectionReference messages =
-  //     FirebaseFirestore.instance.collection('messages');
+  CollectionReference userData =
+      FirebaseFirestore.instance.collection('user_data');
 
   @override
   void initState() {
     super.initState();
-    getCurrentUser();
-  }
-
-  void getCurrentUser() async {
-    try {
-      _auth.authStateChanges().listen(
-            (event) => setState(() => user = event),
-          );
-    } catch (e) {
-      print(e);
-    }
   }
 
   @override
@@ -63,15 +55,28 @@ class _GroceryScreenState extends State<GroceryScreen> {
           ListTile(
             title: const Text('Logout'),
             onTap: () async {
-              await _auth.signOut();
+              context.read<AuthenticationService>().signOut();
               Navigator.pushNamed(context, WelcomeScreen.id);
             },
           ),
           ListTile(
             title: const Text('Save List'),
             onTap: () async {
-              // await FirebaseAuth.instance.signOut();
-              // Navigator.pushNamed(context, WelcomeScreen.id);
+              final firebaseUser = await context.read<User?>();
+              if (firebaseUser != null) {
+                return userData
+                    .doc(firebaseUser.uid)
+                    .set({
+                      'grocery_cart': context.read<GroceryCart>().toJson(),
+                      'uid': firebaseUser.uid,
+                    })
+                    .then((value) => print('Document added'))
+                    .catchError(
+                        (error) => print('Failed to update list: $error'));
+                var json = Provider.of<GroceryCart>(context).toJson();
+              } else {
+                print('No logged in user!');
+              }
             },
           ),
         ]),

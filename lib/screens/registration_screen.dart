@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:loading_overlay/loading_overlay.dart';
+import 'package:provider/src/provider.dart';
+import 'package:the_pantry/services/authentication_service.dart';
 
 import '../constants.dart';
-import '../utils/scaffold_snackbar.dart';
+import '../widgets/scaffold_snackbar.dart';
 import '../widgets/wide_button.dart';
 import 'grocery_screen.dart';
 
@@ -18,8 +20,8 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-  String email = '';
-  String password = '';
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
   bool _isLoading = false;
 
   @override
@@ -49,7 +51,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 textAlign: TextAlign.center,
                 decoration: AppTheme.textFieldDecoration
                     .copyWith(hintText: 'Enter your email'),
-                onChanged: (value) => email = value,
+                controller: emailController,
               ),
               SizedBox(
                 height: 8.0,
@@ -60,7 +62,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 decoration: AppTheme.textFieldDecoration.copyWith(
                   hintText: 'Enter your password',
                 ),
-                onChanged: (value) => password = value,
+                controller: passwordController,
               ),
               SizedBox(
                 height: 8.0,
@@ -69,33 +71,27 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   color: AppTheme.darkBlue,
                   text: 'Register',
                   onPressed: () async {
-                    try {
-                      setState(() {
-                        _isLoading = true;
-                      });
-                      final newUser =
-                          await _auth.createUserWithEmailAndPassword(
-                              email: email, password: password);
-                      if (newUser != null) {
-                        Navigator.pushNamed(context, GroceryScreen.id);
-                      }
-                    } on FirebaseAuthException catch (e) {
-                      if (e.code == 'weak-password') {
-                        ScaffoldSnackbar.of(context)
-                            .show('The password provided too weak');
-                        print(e);
-                      } else if (e.code == 'email-already-in-use') {
-                        ScaffoldSnackbar.of(context)
-                            .show('An account already exists for that email');
-                        print(e);
-                      }
-                    } catch (e) {
-                      print(e);
-                    } finally {
-                      setState(() {
-                        _isLoading = false;
-                      });
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    final result =
+                        await context.read<AuthenticationService>().signUp(
+                              email: emailController.text.trim(),
+                              password: passwordController.text.trim(),
+                            );
+                    if (result == 'Signed up') {
+                      Navigator.pushNamed(context, GroceryScreen.id);
+                    } else if (result == 'weak-password') {
+                      ScaffoldSnackbar.of(context)
+                          .show('The password provided too weak');
+                    } else if (result == 'email-already-in-use') {
+                      print('email already in user');
+                      ScaffoldSnackbar.of(context)
+                          .show('An account already exists for that email');
                     }
+                    setState(() {
+                      _isLoading = false;
+                    });
                   }),
             ],
           ),
