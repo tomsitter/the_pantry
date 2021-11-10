@@ -16,37 +16,38 @@ class GroceryList extends StatelessWidget {
     var user = context.read<User>();
 
     return StreamBuilder<UserData>(
-        stream: db.streamUserData(user),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            var userData = snapshot.data!;
-            return ListView.builder(
-              itemBuilder: (context, index) {
-                final item = userData.items[index];
-                return Dismissible(
-                  key: Key(item.name),
-                  onDismissed: (direction) {
-                    userData.deleteItem(item);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('${item.name} deleted')));
+      stream: db.streamUserData(user),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          var userData = snapshot.data!;
+          return ListView.builder(
+            itemBuilder: (context, index) {
+              final item = userData.items[index];
+              return Dismissible(
+                key: Key(item.name),
+                onDismissed: (direction) {
+                  userData.deleteItem(item);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('${item.name} deleted')));
+                },
+                background: Container(color: AppTheme.warmRed),
+                child: _GroceryTile(
+                  name: item.name,
+                  isChecked: item.isSelected,
+                  checkboxCallback: (bool? checkboxState) {
+                    userData.toggleItem(item);
+                    db.updateUserData(user, userData);
                   },
-                  background: Container(color: AppTheme.warmRed),
-                  child: _GroceryTile(
-                    name: item.name,
-                    isChecked: item.isSelected,
-                    checkboxCallback: (bool? checkboxState) {
-                      userData.toggleItem(item);
-                      db.updateUserData(user, userData);
-                    },
-                  ),
-                );
-              },
-              itemCount: userData.count,
-            );
-          } else {
-            return Text('Could not get user data');
-          }
-        });
+                ),
+              );
+            },
+            itemCount: userData.count,
+          );
+        } else {
+          return Text('Could not get user data');
+        }
+      },
+    );
   }
 }
 
