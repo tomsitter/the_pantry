@@ -1,40 +1,52 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:the_pantry/models/grocery_cart.dart';
+import 'package:the_pantry/models/user_data.dart';
+import 'package:the_pantry/services/firestore_service.dart';
 
 import '../constants.dart';
 
 class GroceryList extends StatelessWidget {
-  const GroceryList({Key? key}) : super(key: key);
+  final db = FirestoreService();
+
+  GroceryList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GroceryCart>(
-      builder: (BuildContext context, groceryCart, child) {
-        return ListView.builder(
-          itemBuilder: (context, index) {
-            final item = groceryCart.items[index];
-            return Dismissible(
-              key: Key(item.name),
-              onDismissed: (direction) {
-                groceryCart.deleteItem(item);
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('${item.name} deleted')));
+    var user = context.read<User>();
+
+    return StreamBuilder<UserData>(
+        stream: db.streamUserData(user),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var userData = snapshot.data!;
+            return ListView.builder(
+              itemBuilder: (context, index) {
+                final item = userData.items[index];
+                return Dismissible(
+                  key: Key(item.name),
+                  onDismissed: (direction) {
+                    userData.deleteItem(item);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('${item.name} deleted')));
+                  },
+                  background: Container(color: AppTheme.warmRed),
+                  child: _GroceryTile(
+                    name: item.name,
+                    isChecked: item.isSelected,
+                    checkboxCallback: (bool? checkboxState) {
+                      userData.toggleItem(item);
+                      db.updateUserData(user, userData);
+                    },
+                  ),
+                );
               },
-              background: Container(color: AppTheme.warmRed),
-              child: _GroceryTile(
-                name: item.name,
-                isChecked: item.isSelected,
-                checkboxCallback: (bool? checkboxState) {
-                  groceryCart.toggleItem(item);
-                },
-              ),
+              itemCount: userData.count,
             );
-          },
-          itemCount: groceryCart.count,
-        );
-      },
-    );
+          } else {
+            return Text('Could not get user data');
+          }
+        });
   }
 }
 

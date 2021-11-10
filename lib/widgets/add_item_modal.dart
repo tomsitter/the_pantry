@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:the_pantry/models/grocery_cart.dart';
+import 'package:the_pantry/services/firestore_service.dart';
 
 import '../constants.dart';
+import '../models/user_data.dart';
 
 class AddItemModal extends StatelessWidget {
   final textController = TextEditingController();
@@ -39,8 +41,11 @@ class AddItemModal extends StatelessWidget {
                     MaterialStateProperty.all<Color>(AppTheme.blue),
               ),
               onPressed: () {
-                Provider.of<GroceryCart>(context, listen: false)
-                    .addItem(textController.text);
+                final userData = context.read<UserData>();
+                userData.addItem(textController.text);
+                context
+                    .read<FirestoreService>()
+                    .updateUserData(context.read<User>(), userData);
                 Navigator.pop(context);
                 // addItemCallback(textController.text);
               },

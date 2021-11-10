@@ -7,8 +7,9 @@ import 'package:the_pantry/screens/login_screen.dart';
 import 'package:the_pantry/screens/registration_screen.dart';
 import 'package:the_pantry/screens/welcome_screen.dart';
 import 'package:the_pantry/services/authentication_service.dart';
+import 'package:the_pantry/services/firestore_service.dart';
 
-import 'models/grocery_cart.dart';
+import 'models/user_data.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,13 +28,21 @@ class MyApp extends StatelessWidget {
         Provider<AuthenticationService>(
           create: (_) => AuthenticationService(FirebaseAuth.instance),
         ),
-        StreamProvider(
+        StreamProvider<User?>(
           create: (context) =>
               context.read<AuthenticationService>().authStateChanges,
           initialData: null,
         ),
-        ChangeNotifierProvider<GroceryCart>(
-            create: (_) => GroceryCart(<GroceryItem>[])),
+        Provider<FirestoreService>(
+          create: (_) => FirestoreService(),
+        ),
+        StreamProvider<UserData>(
+          create: (context) {
+            final user = context.read<User>();
+            return context.read<FirestoreService>().streamUserData(user);
+          },
+          initialData: UserData([]),
+        ),
       ],
       child: MaterialApp(
         title: 'The Pantry',
