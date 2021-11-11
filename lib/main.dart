@@ -25,6 +25,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        Provider<FirestoreService>(create: (_) => FirestoreService()),
         Provider<AuthenticationService>(
           create: (_) => AuthenticationService(FirebaseAuth.instance),
         ),
@@ -33,16 +34,13 @@ class MyApp extends StatelessWidget {
               context.read<AuthenticationService>().authStateChanges,
           initialData: null,
         ),
-        Provider<FirestoreService>(
-          create: (_) => FirestoreService(),
-        ),
         StreamProvider<UserData>(
           create: (context) {
             final user = context.read<User>();
-            return context.read<FirestoreService>().streamUserData(user);
+            return FirestoreService().streamUserData(user);
           },
           initialData: UserData([]),
-        ),
+        )
       ],
       child: MaterialApp(
         title: 'The Pantry',

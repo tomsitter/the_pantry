@@ -13,30 +13,31 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    User? user = context.watch<User?>();
+    String displayName = 'No username';
+    String email = 'No email';
+    if (user != null) {
+      displayName = user.displayName ?? displayName;
+      email = user.email ?? email;
+    }
     return Drawer(
-      child: ListView(padding: EdgeInsets.zero, children: [
-        // const DrawerHeader(
-        //   decoration: BoxDecoration(
-        //     color: AppTheme.redBrown,
-        //   ),
-        //   child: Text('Drawer Header'),
-        // ),
-        ListTile(
-          title: const Text('Logout'),
-          onTap: () async {
-            context.read<AuthenticationService>().signOut();
-            Navigator.pushNamed(context, WelcomeScreen.id);
-          },
-        ),
-        ListTile(
-          title: const Text('Save List'),
-          onTap: () async {
-            final user = context.read<User>();
-            final userData = context.read<UserData>();
-            context.read<FirestoreService>().updateUserData(user, userData);
-          },
-        ),
-      ]),
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          UserAccountsDrawerHeader(
+            accountName: Text(displayName),
+            accountEmail: Text(email),
+          ),
+          ListTile(
+            title: const Text('Logout'),
+            onTap: () async {
+              context.read<AuthenticationService>().signOut();
+              context.read<UserData>().deleteAllItems();
+              Navigator.pushNamed(context, WelcomeScreen.id);
+            },
+          ),
+        ],
+      ),
     );
   }
 }

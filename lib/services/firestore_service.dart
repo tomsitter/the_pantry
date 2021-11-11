@@ -13,6 +13,23 @@ class FirestoreService {
         .map((snap) => UserData.fromFirestore(snap));
   }
 
+  Future<UserData> getUserData(User user) async {
+    return firestore
+        .collection('user_data')
+        .doc(user.uid)
+        .get()
+        .then((data) => UserData.fromFirestore(data))
+        .catchError(
+      (e) {
+        if (e.code == "NOT_FOUND") {
+          var newUserData = UserData(<GroceryItem>[]);
+          updateUserData(user, newUserData);
+          return newUserData;
+        }
+      },
+    );
+  }
+
   Future<void> updateUserData(User user, UserData userData) {
     return firestore
         .collection('user_data')

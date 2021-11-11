@@ -7,47 +7,42 @@ import 'package:the_pantry/services/firestore_service.dart';
 import '../constants.dart';
 
 class GroceryList extends StatelessWidget {
-  final db = FirestoreService();
-
   GroceryList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var user = context.read<User>();
+    User? user = context.watch<User?>();
+    UserData userData = context.watch<UserData>();
+    FirestoreService db = context.read<FirestoreService>();
 
-    return StreamBuilder<UserData>(
-      stream: db.streamUserData(user),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          var userData = snapshot.data!;
-          return ListView.builder(
-            itemBuilder: (context, index) {
-              final item = userData.items[index];
-              return Dismissible(
-                key: Key(item.name),
-                onDismissed: (direction) {
-                  userData.deleteItem(item);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('${item.name} deleted')));
-                },
-                background: Container(color: AppTheme.warmRed),
-                child: _GroceryTile(
-                  name: item.name,
-                  isChecked: item.isSelected,
-                  checkboxCallback: (bool? checkboxState) {
-                    userData.toggleItem(item);
-                    db.updateUserData(user, userData);
-                  },
-                ),
-              );
+    if (user == null) {
+      return CircularProgressIndicator(color: AppTheme.warmRed);
+    } else {
+      return ListView.builder(
+        itemBuilder: (context, index) {
+          final item = userData.items[index];
+          return Dismissible(
+            key: Key(item.name),
+            onDismissed: (direction) {
+              userData.deleteItem(item);
+              db.updateUserData(user, userData);
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('${item.name} deleted')));
             },
-            itemCount: userData.count,
+            background: Container(color: AppTheme.warmRed),
+            child: _GroceryTile(
+              name: item.name,
+              isChecked: item.isSelected,
+              checkboxCallback: (bool? checkboxState) {
+                userData.toggleItem(item);
+                db.updateUserData(user, userData);
+              },
+            ),
           );
-        } else {
-          return Text('Could not get user data');
-        }
-      },
-    );
+        },
+        itemCount: userData.count,
+      );
+    }
   }
 }
 

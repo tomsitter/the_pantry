@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:provider/src/provider.dart';
 import 'package:the_pantry/services/authentication_service.dart';
+import 'package:username_generator/username_generator.dart';
 
 import '../constants.dart';
 import '../widgets/scaffold_snackbar.dart';
@@ -22,6 +23,8 @@ class RegistrationScreen extends StatefulWidget {
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final displayNameController =
+      TextEditingController(text: UsernameGenerator().generateRandom());
   bool _isLoading = false;
 
   @override
@@ -46,6 +49,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 ),
               ),
               SizedBox(height: 48.0),
+              TextField(
+                textAlign: TextAlign.center,
+                decoration: AppTheme.textFieldDecoration
+                    .copyWith(hintText: 'Choose a username'),
+                controller: displayNameController,
+              ),
+              SizedBox(
+                height: 8.0,
+              ),
               TextField(
                 keyboardType: TextInputType.emailAddress,
                 textAlign: TextAlign.center,
@@ -74,10 +86,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     setState(() {
                       _isLoading = true;
                     });
+                    String displayName = displayNameController.text.trim();
                     final result =
                         await context.read<AuthenticationService>().signUp(
                               email: emailController.text.trim(),
                               password: passwordController.text.trim(),
+                              displayName: displayName.isNotEmpty
+                                  ? displayName
+                                  : UsernameGenerator().generateRandom(),
                             );
                     if (result == 'Signed up') {
                       Navigator.pushNamed(context, GroceryScreen.id);

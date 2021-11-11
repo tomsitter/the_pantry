@@ -35,10 +35,17 @@ class AuthenticationService {
   /// use your own custom class that would take the exception and return better
   /// error messages. That way you can throw, return or whatever you prefer with that instead.
   Future<String> signUp(
-      {required String email, required String password}) async {
+      {required String email,
+      required String password,
+      required String displayName}) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      await _firebaseAuth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((userCred) {
+        if (userCred.user != null) {
+          userCred.user!.updateDisplayName(displayName);
+        }
+      });
       return "Signed up";
     } on FirebaseAuthException catch (e) {
       return e.message ?? e.toString();

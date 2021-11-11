@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tomsitter.the_pantry">
    <application
-        android:label="the_pantry"
+        android:label="The Pantry"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

@@ -1,10 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:the_pantry/models/user_data.dart';
-import 'package:the_pantry/screens/welcome_screen.dart';
-import 'package:the_pantry/services/authentication_service.dart';
 import 'package:the_pantry/services/firestore_service.dart';
 import 'package:the_pantry/widgets/app_drawer.dart';
 import 'package:the_pantry/widgets/grocery_list.dart';
@@ -12,22 +9,13 @@ import 'package:the_pantry/widgets/grocery_list.dart';
 import '../constants.dart';
 import '../widgets/add_item_modal.dart';
 
-final Stream<QuerySnapshot> _dataStream =
-    FirebaseFirestore.instance.collection('user_data').snapshots();
-User? user;
-
-class GroceryScreen extends StatefulWidget {
+class GroceryScreen extends StatelessWidget {
   static String id = 'grocery_screen';
-
   const GroceryScreen({Key? key}) : super(key: key);
 
   @override
-  State<GroceryScreen> createState() => _GroceryScreenState();
-}
-
-class _GroceryScreenState extends State<GroceryScreen> {
-  @override
   Widget build(BuildContext context) {
+    UserData userData = context.watch<UserData>();
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppTheme.blue,
@@ -60,7 +48,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
                             fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        '${context.watch<UserData>().count} Items',
+                        '${userData.count} Items',
                         style: const TextStyle(color: Colors.white),
                       ),
                     ],

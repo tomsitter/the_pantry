@@ -42,6 +42,11 @@ class UserData extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteAllItems() {
+    _items = <GroceryItem>[];
+    notifyListeners();
+  }
+
   void toggleItem(GroceryItem item) {
     item.toggleSelected();
     notifyListeners();

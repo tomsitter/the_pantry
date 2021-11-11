@@ -14,6 +14,10 @@ class AddItemModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final db = context.read<FirestoreService>();
+    UserData userData = Provider.of<UserData>(context);
+    User user = Provider.of<User>(context);
+
     return Material(
       child: SingleChildScrollView(
         padding: EdgeInsets.only(
@@ -41,13 +45,9 @@ class AddItemModal extends StatelessWidget {
                     MaterialStateProperty.all<Color>(AppTheme.blue),
               ),
               onPressed: () {
-                final userData = context.read<UserData>();
                 userData.addItem(textController.text);
-                context
-                    .read<FirestoreService>()
-                    .updateUserData(context.read<User>(), userData);
+                db.updateUserData(user, userData);
                 Navigator.pop(context);
-                // addItemCallback(textController.text);
               },
               child: const Text('Add', style: TextStyle(color: Colors.white)),
             ),
