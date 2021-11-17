@@ -55,7 +55,8 @@ class PantryScreen extends StatelessWidget {
         onPressed: () => showModalBottomSheet(
           isScrollControlled: true,
           context: context,
-          builder: (context) => AddItemModal(itemList: userData.pantryList),
+          builder: (context) =>
+              AddItemModal(itemList: userData.pantryList, color: color),
         ),
         child: Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,

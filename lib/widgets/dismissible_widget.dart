@@ -9,13 +9,15 @@ class DismissibleWidget<T> extends StatelessWidget {
   final T item;
   final Widget child;
   final DismissDirectionCallback onDismissed;
-  final IconData altListIcon;
+  final IconData altDismissIcon;
+  final String altDismissText;
   final DismissDirection deleteDirection;
 
   const DismissibleWidget({
     required this.item,
     required this.child,
-    required this.altListIcon,
+    required this.altDismissIcon,
+    required this.altDismissText,
     required this.onDismissed,
     this.deleteDirection = left,
     Key? key,
@@ -26,17 +28,17 @@ class DismissibleWidget<T> extends StatelessWidget {
         key: ObjectKey(item),
         // background shown when widget swiped right or down
         background: deleteDirection == left
-            ? buildAlternateAction(deleteDirection)
-            : buildDeleteAction(deleteDirection),
+            ? buildAlternateAction()
+            : buildDeleteAction(),
         // secondaryBackground shown when widget swiped left or up
         secondaryBackground: deleteDirection == left
-            ? buildDeleteAction(deleteDirection)
-            : buildAlternateAction(deleteDirection),
+            ? buildDeleteAction()
+            : buildAlternateAction(),
         child: child,
         onDismissed: onDismissed,
       );
 
-  Widget buildDeleteAction(DismissDirection deleteDirection) => Container(
+  Widget buildDeleteAction() => Container(
         alignment: deleteDirection == left
             ? Alignment.centerRight
             : Alignment.centerLeft,
@@ -45,17 +47,24 @@ class DismissibleWidget<T> extends StatelessWidget {
         child: Icon(Icons.delete_forever, color: Colors.white, size: 32),
       );
 
-  Widget buildAlternateAction(DismissDirection deleteDirection) => Container(
+  Widget buildAlternateAction() => Container(
         alignment: deleteDirection == left
             ? Alignment.centerLeft
             : Alignment.centerRight,
         padding: EdgeInsets.symmetric(horizontal: 20),
-        color: AppTheme.almostWhite,
+        color: AppTheme.paleTeal,
+        child: dismissActionIcon(altDismissIcon, altDismissText),
+      );
+
+  Widget dismissActionIcon(IconData icon, String text) => Container(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: deleteDirection == left
+              ? MainAxisAlignment.start
+              : MainAxisAlignment.end,
           children: [
-            //Icon(altListIcon, color: Colors.white, size: 32),
-            //Text('To Pantry'),
+            Icon(icon, color: Colors.white, size: 32),
+            Text(text, style: TextStyle(color: Colors.white)),
           ],
         ),
       );

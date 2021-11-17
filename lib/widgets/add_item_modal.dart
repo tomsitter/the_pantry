@@ -10,8 +10,10 @@ import '../models/user_data.dart';
 class AddItemModal extends StatelessWidget {
   final textController = TextEditingController();
   final AbstractItemList itemList;
+  final Color color;
 
-  AddItemModal({Key? key, required this.itemList}) : super(key: key);
+  AddItemModal({Key? key, required this.itemList, required this.color})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +28,11 @@ class AddItemModal extends StatelessWidget {
         ),
         child: Column(
           children: [
-            const Padding(
-              padding: EdgeInsets.all(16.0),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
               child: Text(
                 'Add item',
-                style: TextStyle(color: AppTheme.blue, fontSize: 24.0),
+                style: TextStyle(color: color, fontSize: 24.0),
               ),
             ),
             TextField(
@@ -42,8 +44,7 @@ class AddItemModal extends StatelessWidget {
               style: ButtonStyle(
                 padding: MaterialStateProperty.all<EdgeInsets>(
                     const EdgeInsets.symmetric(horizontal: 64.0)),
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(AppTheme.blue),
+                backgroundColor: MaterialStateProperty.all<Color>(color),
               ),
               onPressed: () {
                 itemList.add(textController.text);

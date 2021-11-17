@@ -25,7 +25,8 @@ class DismissiblePantryList extends StatelessWidget {
           final item = pantryList.items[index];
           return DismissibleWidget(
             item: item,
-            altListIcon: Icons.shopping_cart,
+            altDismissIcon: Icons.shopping_cart,
+            altDismissText: 'To Groceries',
             // swipe left to delete
             deleteDirection: DismissibleWidget.right,
             child: _PantryTile(

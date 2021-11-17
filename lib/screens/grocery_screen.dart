@@ -54,7 +54,8 @@ class GroceryScreen extends StatelessWidget {
         onPressed: () => showModalBottomSheet(
           isScrollControlled: true,
           context: context,
-          builder: (context) => AddItemModal(itemList: userData.groceryList),
+          builder: (context) =>
+              AddItemModal(itemList: userData.groceryList, color: color),
         ),
         child: Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,

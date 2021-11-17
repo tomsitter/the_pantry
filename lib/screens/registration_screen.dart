@@ -8,9 +8,7 @@ import 'package:username_generator/username_generator.dart';
 import '../constants.dart';
 import '../widgets/scaffold_snackbar.dart';
 import '../widgets/wide_button.dart';
-import 'grocery_screen.dart';
-
-final FirebaseAuth _auth = FirebaseAuth.instance;
+import 'home_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static String id = 'registration';
@@ -96,7 +94,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   : UsernameGenerator().generateRandom(),
                             );
                     if (result == 'Signed up') {
-                      Navigator.pushNamed(context, GroceryScreen.id);
+                      Navigator.pushNamed(context, HomeScreen.id);
                     } else if (result == 'weak-password') {
                       ScaffoldSnackbar.of(context)
                           .show('The password provided too weak');

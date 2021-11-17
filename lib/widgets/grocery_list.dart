@@ -25,7 +25,8 @@ class DismissibleGroceryList extends StatelessWidget {
           final item = groceryList.items[index];
           return DismissibleWidget(
             item: item,
-            altListIcon: Icons.home,
+            altDismissIcon: Icons.home,
+            altDismissText: 'To Pantry',
             // swipe left to delete
             deleteDirection: DismissibleWidget.left,
             child: _GroceryTile(
@@ -42,7 +43,7 @@ class DismissibleGroceryList extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('${item.name} deleted')));
               } else if (direction == DismissDirection.startToEnd) {
-                // Tranfer item to pantry
+                // Transfer item to pantry
                 userData.transferItemFromGroceryToPantry(item);
                 db.updateUserData(user, userData);
               }

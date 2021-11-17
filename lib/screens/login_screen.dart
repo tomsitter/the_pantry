@@ -2,13 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:provider/src/provider.dart';
-import 'package:the_pantry/screens/grocery_screen.dart';
 import 'package:the_pantry/services/authentication_service.dart';
 import '../constants.dart';
 import '../widgets/scaffold_snackbar.dart';
 import '../widgets/wide_button.dart';
-
-final FirebaseAuth _auth = FirebaseAuth.instance;
+import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static String id = 'login';
@@ -24,8 +22,8 @@ class _LoginScreenState extends State<LoginScreen> {
   User? user;
   bool _isLoading = false;
 
+  @override
   initState() {
-    _auth.userChanges().listen((event) => setState(() => user = event));
     super.initState();
   }
 
@@ -33,7 +31,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.almostWhite,
-      // appBar: AppBar(title: Text("Login Screen")),
       body: LoadingOverlay(
         isLoading: _isLoading,
         child: Padding(
@@ -56,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 keyboardType: TextInputType.emailAddress,
                 textAlign: TextAlign.center,
                 decoration: AppTheme.textFieldDecoration.copyWith(
-                  hintText: 'Enter your email',
+                  hintText: 'Enter your email or username',
                 ),
                 controller: emailController,
               ),
@@ -82,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             password: passwordController.text.trim(),
                           );
                   if (result == 'Signed in') {
-                    Navigator.pushNamed(context, GroceryScreen.id);
+                    Navigator.pushNamed(context, HomeScreen.id);
                   } else {
                     ScaffoldSnackbar.of(context).show(result);
                   }
