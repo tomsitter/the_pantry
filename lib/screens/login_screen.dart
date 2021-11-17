@@ -83,16 +83,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           );
                   if (result == 'Signed in') {
                     Navigator.pushNamed(context, GroceryScreen.id);
-                  } else if (result == 'user-not-found') {
-                    ScaffoldSnackbar.of(context)
-                        .show('No user found for that email.');
-                  } else if (result == 'wrong-password') {
-                    ScaffoldSnackbar.of(context)
-                        .show('Wrong password provided for that user.');
                   } else {
-                    ScaffoldSnackbar.of(context)
-                        .show('Unexpected error... please try again.');
-                    print(result);
+                    ScaffoldSnackbar.of(context).show(result);
                   }
                   setState(() {
                     _isLoading = false;

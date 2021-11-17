@@ -4,11 +4,13 @@ import 'package:provider/provider.dart';
 import 'package:the_pantry/models/user_data.dart';
 import 'package:the_pantry/screens/welcome_screen.dart';
 import 'package:the_pantry/services/authentication_service.dart';
-import 'package:the_pantry/services/firestore_service.dart';
 
 class AppDrawer extends StatelessWidget {
+  final Color color;
+
   const AppDrawer({
     Key? key,
+    required this.color,
   }) : super(key: key);
 
   @override
@@ -27,12 +29,15 @@ class AppDrawer extends StatelessWidget {
           UserAccountsDrawerHeader(
             accountName: Text(displayName),
             accountEmail: Text(email),
+            decoration: BoxDecoration(
+              color: color,
+            ),
           ),
           ListTile(
             title: const Text('Logout'),
             onTap: () async {
               context.read<AuthenticationService>().signOut();
-              context.read<UserData>().deleteAllItems();
+              context.read<UserData>().groceryList.deleteAll();
               Navigator.pushNamed(context, WelcomeScreen.id);
             },
           ),

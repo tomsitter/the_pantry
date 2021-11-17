@@ -1,14 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:the_pantry/screens/grocery_screen.dart';
+import 'package:the_pantry/screens/home_screen.dart';
 import 'package:the_pantry/screens/login_screen.dart';
+import 'package:the_pantry/screens/pantry_screen.dart';
 import 'package:the_pantry/screens/registration_screen.dart';
 import 'package:the_pantry/screens/welcome_screen.dart';
 import 'package:the_pantry/services/authentication_service.dart';
 import 'package:the_pantry/services/firestore_service.dart';
 
+import 'constants.dart';
 import 'models/user_data.dart';
 
 Future main() async {
@@ -43,13 +47,18 @@ class MyApp extends StatelessWidget {
         )
       ],
       child: MaterialApp(
+        theme: Theme.of(context).copyWith(
+          primaryColor: AppTheme.blue,
+        ),
         title: 'The Pantry',
         home: AuthenticationWrapper(),
         routes: {
           WelcomeScreen.id: (context) => const WelcomeScreen(),
           LoginScreen.id: (context) => const LoginScreen(),
-          GroceryScreen.id: (context) => const GroceryScreen(),
           RegistrationScreen.id: (context) => const RegistrationScreen(),
+          HomeScreen.id: (context) => const HomeScreen(),
+          // PantryScreen.id: (context) => const PantryScreen(),
+          // GroceryScreen.id: (context) => const GroceryScreen(),
         },
       ),
     );
@@ -62,7 +71,7 @@ class AuthenticationWrapper extends StatelessWidget {
     final firebaseUser = context.watch<User?>();
 
     if (firebaseUser != null) {
-      return GroceryScreen();
+      return HomeScreen();
     }
     return WelcomeScreen();
   }

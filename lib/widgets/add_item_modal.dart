@@ -9,8 +9,9 @@ import '../models/user_data.dart';
 
 class AddItemModal extends StatelessWidget {
   final textController = TextEditingController();
+  final AbstractItemList itemList;
 
-  AddItemModal({Key? key}) : super(key: key);
+  AddItemModal({Key? key, required this.itemList}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,7 @@ class AddItemModal extends StatelessWidget {
                     MaterialStateProperty.all<Color>(AppTheme.blue),
               ),
               onPressed: () {
-                userData.addItem(textController.text);
+                itemList.add(textController.text);
                 db.updateUserData(user, userData);
                 Navigator.pop(context);
               },

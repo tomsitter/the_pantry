@@ -1,71 +1,33 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:the_pantry/models/user_data.dart';
-import 'package:the_pantry/services/firestore_service.dart';
-import 'package:the_pantry/widgets/app_drawer.dart';
 import 'package:the_pantry/widgets/grocery_list.dart';
 
-import '../constants.dart';
 import '../widgets/add_item_modal.dart';
 
 class GroceryScreen extends StatelessWidget {
   static String id = 'grocery_screen';
-  const GroceryScreen({Key? key}) : super(key: key);
+  final Color color;
+  const GroceryScreen({required this.color, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     UserData userData = context.watch<UserData>();
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppTheme.blue,
-        onPressed: () => showModalBottomSheet(
-          isScrollControlled: true,
-          context: context,
-          builder: (context) => AddItemModal(),
-        ),
-        child: const Icon(Icons.add),
-      ),
-      drawer: AppDrawer(),
+      backgroundColor: color,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 32.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'My grocery list',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 32.0,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        '${userData.count} Items',
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
-                MaterialButton(
-                  onPressed: () {},
-                  elevation: 5.0,
-                  shape: const CircleBorder(),
-                  padding: EdgeInsets.all(10.0),
-                  color: Colors.white,
-                  child: const Icon(Icons.shopping_basket,
-                      color: AppTheme.blue, size: 40.0),
-                ),
-              ],
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+              child: Text(
+                '${userData.groceryList.count} Items',
+                style: const TextStyle(color: Colors.white),
+              ),
             ),
-            const SizedBox(height: 16.0),
             Expanded(
               child: Container(
                 decoration: const BoxDecoration(
@@ -78,14 +40,30 @@ class GroceryScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(
                       left: 8.0, top: 8.0, right: 8.0, bottom: 88.0),
-                  child: GroceryList(),
+                  child: DismissibleGroceryList(),
                 ),
               ),
             ),
           ],
         ),
       ),
-      backgroundColor: AppTheme.blue,
+      floatingActionButton: ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(color),
+        ),
+        onPressed: () => showModalBottomSheet(
+          isScrollControlled: true,
+          context: context,
+          builder: (context) => AddItemModal(itemList: userData.groceryList),
+        ),
+        child: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: const [
+            Icon(Icons.add),
+            Text('Add item'),
+          ],
+        ),
+      ),
     );
   }
 }
