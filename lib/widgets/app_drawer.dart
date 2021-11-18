@@ -37,7 +37,7 @@ class AppDrawer extends StatelessWidget {
             title: const Text('Logout'),
             onTap: () async {
               context.read<AuthenticationService>().signOut();
-              context.read<UserData>().groceryList.deleteAll();
+              context.read<UserData>().groceryList.clear();
               Navigator.pushNamed(context, WelcomeScreen.id);
             },
           ),

@@ -4,13 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
 
-enum Remaining { full, half, low, empty, expired }
-Map<String, Remaining> remainingConverter = {
-  'full': Remaining.full,
-  'half': Remaining.half,
-  'low': Remaining.low,
-  'empty': Remaining.empty,
-  'expired': Remaining.expired,
+enum Amount { full, half, low, empty, expired }
+enum Category { produce, refrigerated, frozen, nonperishable, uncategorized }
+Map<String, Amount> amountConverter = {
+  'full': Amount.full,
+  'half': Amount.half,
+  'low': Amount.low,
+  'empty': Amount.empty,
+  'expired': Amount.expired,
 };
 
 class UserData extends ChangeNotifier {
@@ -45,8 +46,7 @@ class UserData extends ChangeNotifier {
               (entry) => PantryItem(
                 name: entry.key,
                 dateAdded: entry.value['dateAdded'].toDate(),
-                remaining: remainingConverter[entry.value['remaining']] ??
-                    Remaining.full,
+                amount: amountConverter[entry.value['amount']] ?? Amount.full,
               ),
             )
             .toList());
@@ -59,7 +59,7 @@ class UserData extends ChangeNotifier {
           for (var item in pantryList.items)
             item.name: {
               'dateAdded': item.dateAdded,
-              'remaining': describeEnum(item.remaining),
+              'amount': describeEnum(item.amount),
             }
         }
       };
@@ -75,15 +75,17 @@ class UserData extends ChangeNotifier {
   }
 }
 
-abstract class AbstractItemList<T> {
-  final List<T> _items;
+abstract class AbstractItemList<AbstractItem> {
+  final List<AbstractItem> _items;
   AbstractItemList(this._items);
   void add(String name);
-  void delete(T item);
-  void deleteAll();
+  void delete(AbstractItem item);
+  void clear();
   int get count;
-  UnmodifiableListView<T> get items {
-    return UnmodifiableListView(_items);
+
+  UnmodifiableListView<AbstractItem> get items {
+    return UnmodifiableListView(
+        _items); // .sort((a, b) => a.name.compareTo(b.name);
   }
 }
 
@@ -106,7 +108,7 @@ class GroceryList extends AbstractItemList<GroceryItem> with ChangeNotifier {
   }
 
   @override
-  void deleteAll() {
+  void clear() {
     _items.clear();
     notifyListeners();
   }
@@ -118,21 +120,18 @@ class GroceryList extends AbstractItemList<GroceryItem> with ChangeNotifier {
     item.toggleSelected();
     notifyListeners();
   }
-}
 
-/// A [GroceryItem] has a name, and a selected state (i.e., in the grocery basket)
-class GroceryItem {
-  final String name;
-  bool isSelected;
-
-  GroceryItem({required this.name, this.isSelected = false});
-
-  void toggleSelected() {
-    isSelected = !isSelected;
+  @override
+  UnmodifiableListView<GroceryItem> get items {
+    _items.sort((a, b) => a.name.compareTo(b.name));
+    return UnmodifiableListView(_items);
   }
 }
 
-/// [PantryList] manages a list of [PantryItem]s
+/// [PantryList] manages a list of [PantryItem]s and is a [ChangeNotifier]
+///
+/// You can add to, delete from, and clear the list of items. You can also get
+/// a count of items. You can also update the amount of item remaining
 class PantryList extends AbstractItemList<PantryItem> with ChangeNotifier {
   PantryList(_items) : super(_items);
 
@@ -151,31 +150,86 @@ class PantryList extends AbstractItemList<PantryItem> with ChangeNotifier {
   }
 
   @override
-  void deleteAll() {
+  void clear() {
     _items.clear();
     notifyListeners();
   }
 
   @override
   int get count => _items.length;
+
+  void updateItemAmount(PantryItem item, String newAmount) {
+    var itemIndex = _items.indexOf(item);
+    if (itemIndex >= 0) {
+      if (amountConverter.containsKey(newAmount)) {
+        Amount amount = amountConverter[newAmount]!;
+        _items[itemIndex].updateQuantity(amount);
+        notifyListeners();
+      } else {
+        print('The amount $newAmount is not a known amount');
+      }
+    } else {
+      print('Item ${item.name} not found!');
+    }
+  }
+
+  @override
+  UnmodifiableListView<PantryItem> get items {
+    _items.sort((a, b) => a.name.compareTo(b.name));
+    return UnmodifiableListView(_items);
+  }
 }
 
-/// A [PantryItem] has a name, a date added, and a remaining amount
-class PantryItem {
+/// Abstract class for [GroceryItem]s and [PantryItem]s so some widgets can
+/// accept either type.
+///
+/// Abstract items have a name and a category. The name cannot be changed but
+/// the category can.
+class AbstractItem {
+  /// The name of the item.
   final String name;
-  final DateTime dateAdded;
-  Remaining remaining;
 
-  PantryItem(
-      {required this.name,
-      this.remaining = Remaining.full,
-      required this.dateAdded});
+  /// The category of food type of the item.
+  Category category;
+
+  void updateCategory(Category newCategory) {
+    category = newCategory;
+  }
+
+  AbstractItem({required this.name, this.category = Category.uncategorized});
+}
+
+/// A [GroceryItem] has a name, a category, and a selected state (i.e., in the grocery basket)
+///
+/// A grocery item can toggle whether it is selected or not, and inherits a
+/// category that can be updated
+class GroceryItem extends AbstractItem {
+  /// The state of whether the item should show as checked or not
+  bool isSelected;
+
+  GroceryItem({name, this.isSelected = false}) : super(name: name);
+
+  void toggleSelected() {
+    isSelected = !isSelected;
+  }
+}
+
+/// A [PantryItem] has a name, a date added, and an amount
+///
+/// PantryItems can return how long ago they were added to the pantry list
+/// and can have the amount of product changed
+class PantryItem extends AbstractItem {
+  final DateTime dateAdded;
+  Amount amount;
+
+  PantryItem({name, this.amount = Amount.full, required this.dateAdded})
+      : super(name: name);
 
   String daysAgo() {
     return Jiffy(dateAdded).fromNow();
   }
 
-  void updateQuantity(Remaining newAmount) {
-    remaining = newAmount;
+  void updateQuantity(Amount newAmount) {
+    amount = newAmount;
   }
 }

@@ -6,9 +6,11 @@ An app for tracking grocery lists and pantry management.
 
 - <strike>Add firebase for authentication and cloud saved grocery and pantry items</strike> **Done!**
 - <strike>Add a pantry list to move items purchased from the grocery list</strike> **Done!**
-- Update the status of pantry items to mark them as full, low, empty, or expired
+- <strike>Update the status of pantry items to mark them as full, low, empty, or expired</strike> **Done!**
 - <strike>Moved pantry items back into the grocery list</strike> **Done!**
-- Add a search bar to grocery items and pantry items screens
+- <strike>Add a search bar to grocery items and pantry items screens</strike> **Done!**
+- Add categories to grocery and pantry items (e.g. produce, nonperishable, frozen, etc.)
+- Group items by category type and make collapsible for easier sorting
 - Upload screenshots to this readme document
 
 

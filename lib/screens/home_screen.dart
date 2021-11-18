@@ -4,7 +4,7 @@ import 'package:the_pantry/models/user_data.dart';
 import 'package:the_pantry/screens/grocery_screen.dart';
 import 'package:the_pantry/screens/pantry_screen.dart';
 import 'package:the_pantry/widgets/app_drawer.dart';
-import 'package:the_pantry/widgets/grocery_list.dart';
+import 'package:the_pantry/widgets/dismissible_grocery_list.dart';
 
 import '../constants.dart';
 import '../widgets/add_item_modal.dart';
