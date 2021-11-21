@@ -8,7 +8,7 @@ import 'package:username_generator/username_generator.dart';
 import '../constants.dart';
 import '../widgets/scaffold_snackbar.dart';
 import '../widgets/wide_button.dart';
-import 'home_screen.dart';
+import 'home/home.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static String id = 'registration';

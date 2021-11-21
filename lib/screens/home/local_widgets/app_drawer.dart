@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:the_pantry/models/user_data.dart';
-import 'package:the_pantry/screens/welcome_screen.dart';
+import 'package:the_pantry/screens/welcome.dart';
 import 'package:the_pantry/services/authentication_service.dart';
 
 class AppDrawer extends StatelessWidget {

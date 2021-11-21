@@ -6,7 +6,7 @@ import 'package:the_pantry/services/authentication_service.dart';
 import '../constants.dart';
 import '../widgets/scaffold_snackbar.dart';
 import '../widgets/wide_button.dart';
-import 'home_screen.dart';
+import 'home/home.dart';
 
 class LoginScreen extends StatefulWidget {
   static String id = 'login';

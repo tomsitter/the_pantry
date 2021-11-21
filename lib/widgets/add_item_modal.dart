@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:the_pantry/services/firestore_service.dart';
 
-import '../models/user_data.dart';
+import 'package:the_pantry/models/abstract_list_model.dart';
+import 'package:the_pantry/services/firestore_service.dart';
+import 'package:the_pantry/models/user_data.dart';
 
 /// [AddItemModal] is a screen that pops up from the bottom of the screen
 /// to allow users to add a new item to either the pantry or the grocery lists

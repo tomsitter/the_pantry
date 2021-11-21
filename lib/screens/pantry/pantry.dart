@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:the_pantry/models/user_data.dart';
-import 'package:the_pantry/widgets/dismissible_pantry_list.dart';
 
-import '../widgets/add_item_modal.dart';
+import 'package:the_pantry/models/pantry_model.dart';
+import 'package:the_pantry/models/user_data.dart';
+import 'package:the_pantry/screens/pantry/local_widgets/dismissible_pantry_list.dart';
+import 'package:the_pantry/widgets/add_item_modal.dart';
 
 class PantryScreen extends StatefulWidget {
   static String id = 'pantry_screen';

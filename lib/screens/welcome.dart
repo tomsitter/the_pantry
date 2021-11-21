@@ -3,8 +3,8 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 
 import '../widgets/wide_button.dart';
 import '../constants.dart';
-import 'login_screen.dart';
-import 'registration_screen.dart';
+import 'login.dart';
+import 'registration.dart';
 
 class WelcomeScreen extends StatefulWidget {
   static String id = 'welcome';

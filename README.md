@@ -10,7 +10,8 @@ An app for tracking grocery lists and pantry management.
 - <strike>Moved pantry items back into the grocery list</strike> **Done!**
 - <strike>Add a search bar to grocery items and pantry items screens</strike> **Done!**
 - Add categories to grocery and pantry items (e.g. produce, nonperishable, frozen, etc.)
-- Group items by category type and make collapsible for easier sorting
+- Group items by category type and make collapsible for easier filtering
+- Add support for offline mode (will still require an account)
 - Upload screenshots to this readme document
 
 

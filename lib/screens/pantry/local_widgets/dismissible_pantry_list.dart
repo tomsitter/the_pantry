@@ -2,11 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:the_pantry/models/pantry_model.dart';
 import 'package:the_pantry/models/user_data.dart';
 import 'package:the_pantry/services/firestore_service.dart';
-
-import '../constants.dart';
-import 'dismissible_widget.dart';
+import 'package:the_pantry/constants.dart';
+import 'package:the_pantry/widgets/dismissible_widget.dart';
 
 class DismissiblePantryList extends StatelessWidget {
   final List<PantryItem> displayItems;
@@ -49,7 +50,7 @@ class DismissiblePantryList extends StatelessWidget {
                     ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('${item.name} deleted')));
                   } else if (direction == DismissDirection.endToStart) {
-                    userData.transferItemFromPantryToGrocery(item);
+                    userData.transferFromPantryToGrocery(item);
                     db.updateUserData(user, userData);
                   }
                   db.updateUserData(user, userData);

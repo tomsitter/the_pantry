@@ -3,10 +3,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:the_pantry/screens/home_screen.dart';
-import 'package:the_pantry/screens/login_screen.dart';
-import 'package:the_pantry/screens/registration_screen.dart';
-import 'package:the_pantry/screens/welcome_screen.dart';
+import 'package:the_pantry/screens/home/home.dart';
+import 'package:the_pantry/screens/login.dart';
+import 'package:the_pantry/screens/registration.dart';
+import 'package:the_pantry/screens/welcome.dart';
 import 'package:the_pantry/services/authentication_service.dart';
 import 'package:the_pantry/services/firestore_service.dart';
 
@@ -42,7 +42,8 @@ class MyApp extends StatelessWidget {
             return FirestoreService().streamUserData(user);
           },
           initialData: UserData([]),
-        )
+        ),
+        // ChangeNotifierProvider<UserData>(create: (context) {})
       ],
       child: MaterialApp(
         theme: Theme.of(context).copyWith(

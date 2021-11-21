@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:the_pantry/models/user_data.dart';
-import 'package:the_pantry/screens/grocery_screen.dart';
-import 'package:the_pantry/screens/pantry_screen.dart';
-import 'package:the_pantry/widgets/app_drawer.dart';
-import 'package:the_pantry/widgets/dismissible_grocery_list.dart';
+import 'package:the_pantry/screens/grocery/grocery.dart';
+import 'package:the_pantry/screens/pantry/pantry.dart';
+import 'package:the_pantry/screens/home/local_widgets/app_drawer.dart';
 
-import '../constants.dart';
-import '../widgets/add_item_modal.dart';
+import '../../constants.dart';
 
 class HomeScreen extends StatefulWidget {
   static String id = 'home_screen';

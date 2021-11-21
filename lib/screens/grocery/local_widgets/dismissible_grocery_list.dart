@@ -1,16 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:the_pantry/models/grocery_model.dart';
 import 'package:the_pantry/models/user_data.dart';
 import 'package:the_pantry/services/firestore_service.dart';
 
-import '../constants.dart';
-import 'dismissible_widget.dart';
+import 'package:the_pantry/constants.dart';
+import 'package:the_pantry/widgets/dismissible_widget.dart';
 
 class DismissibleGroceryList extends StatelessWidget {
   final List<GroceryItem> displayItems;
 
-  DismissibleGroceryList({required this.displayItems, Key? key})
+  const DismissibleGroceryList({required this.displayItems, Key? key})
       : super(key: key);
 
   @override
@@ -50,13 +51,13 @@ class DismissibleGroceryList extends StatelessWidget {
                         SnackBar(content: Text('${item.name} deleted')));
                   } else if (direction == DismissDirection.startToEnd) {
                     // Transfer item to pantry
-                    userData.transferItemFromGroceryToPantry(item);
+                    userData.transferFromGroceryToPantry(item);
                     db.updateUserData(user, userData);
                   }
                   db.updateUserData(user, userData);
                 },
               ),
-              Divider(),
+              const Divider(),
             ],
           );
         },
@@ -76,6 +77,7 @@ class _GroceryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CheckboxListTile(
+      //dense: true,
       title: Text(
         item.name,
         style: TextStyle(

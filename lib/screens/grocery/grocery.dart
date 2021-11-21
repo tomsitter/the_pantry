@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:the_pantry/models/grocery_model.dart';
 import 'package:the_pantry/models/user_data.dart';
-import 'package:the_pantry/widgets/dismissible_grocery_list.dart';
+import 'package:the_pantry/screens/grocery/local_widgets/dismissible_grocery_list.dart';
 
-import '../widgets/add_item_modal.dart';
+import '../../widgets/add_item_modal.dart';
 
 class GroceryScreen extends StatefulWidget {
   static String id = 'grocery_screen';
