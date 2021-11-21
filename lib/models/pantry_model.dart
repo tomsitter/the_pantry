@@ -21,7 +21,7 @@ Map<String, Amount> amountConverter = {
 ///
 /// You can add to, delete from, and clear the list of items. You can also get
 /// a count of items. You can also update the amount of item remaining
-class PantryList extends AbstractItemList<PantryItem> with ChangeNotifier {
+class PantryList extends AbstractItemList<PantryItem> {
   PantryList({required items}) : super(items);
 
   @override
@@ -31,21 +31,6 @@ class PantryList extends AbstractItemList<PantryItem> with ChangeNotifier {
     );
     notifyListeners();
   }
-
-  @override
-  void delete(PantryItem item) {
-    items.remove(item);
-    notifyListeners();
-  }
-
-  @override
-  void clear() {
-    items.clear();
-    notifyListeners();
-  }
-
-  @override
-  int get count => items.length;
 
   void updateItemAmount(PantryItem item, String newAmount) {
     var itemIndex = items.indexOf(item);

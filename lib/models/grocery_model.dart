@@ -1,11 +1,9 @@
 import 'dart:collection';
 
-import 'package:flutter/cupertino.dart';
-
 import 'abstract_list_model.dart';
 
 /// [GroceryList] manages a list of [GroceryItem]s
-class GroceryList extends AbstractItemList<GroceryItem> with ChangeNotifier {
+class GroceryList extends AbstractItemList<GroceryItem> {
   GroceryList({required items}) : super(items);
 
   @override
@@ -17,25 +15,10 @@ class GroceryList extends AbstractItemList<GroceryItem> with ChangeNotifier {
   }
 
   @override
-  void delete(GroceryItem item) {
-    items.remove(item);
-    notifyListeners();
-  }
-
-  @override
-  void clear() {
-    items.clear();
-    notifyListeners();
-  }
-
-  @override
   UnmodifiableListView<GroceryItem> sorted() {
     items.sort((a, b) => a.name.compareTo(b.name));
     return UnmodifiableListView(items);
   }
-
-  @override
-  int get count => items.length;
 
   void toggle(GroceryItem item) {
     item.toggleSelected();
