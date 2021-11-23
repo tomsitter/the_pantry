@@ -25,38 +25,50 @@ class DismissiblePantryList extends StatelessWidget {
     if (user == null) {
       return const CircularProgressIndicator(color: AppTheme.warmRed);
     } else {
+      var foodTypes = pantryList.uniqueFoodTypes();
+      print(foodTypes);
       return ListView.builder(
-        itemCount: displayItems.length,
+        itemCount: foodTypes.length,
         itemBuilder: (context, index) {
-          final item = displayItems[index];
-          return Column(
+          final foodType = foodTypes[index];
+          final items = pantryList.ofFoodType(foodType);
+          return ExpansionTile(
+            title: Text(describeEnum(foodType)),
+            subtitle: items.length > 1
+                ? Text('${items.length} items')
+                : Text('1 item'),
             children: [
-              DismissibleWidget(
-                item: item,
-                altDismissIcon: Icons.shopping_cart,
-                altDismissText: 'To Groceries',
-                // swipe left to delete
-                deleteDirection: DismissibleWidget.right,
-                child: _PantryTile(
-                  item: item,
-                  onAmountChanged: (String? newAmount) {
-                    pantryList.updateItemAmount(item, newAmount!);
-                    db.updateUserData(user, userData);
-                  },
-                ),
-                onDismissed: (direction) {
-                  if (direction == DismissDirection.startToEnd) {
-                    pantryList.delete(item);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('${item.name} deleted')));
-                  } else if (direction == DismissDirection.endToStart) {
-                    userData.transferFromPantryToGrocery(item);
-                    db.updateUserData(user, userData);
-                  }
-                  db.updateUserData(user, userData);
-                },
-              ),
-              Divider(),
+              ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+                    return DismissibleWidget(
+                      item: item,
+                      altDismissIcon: Icons.shopping_cart,
+                      altDismissText: 'To Groceries',
+                      // swipe left to delete
+                      deleteDirection: DismissibleWidget.right,
+                      child: _PantryTile(
+                        item: item,
+                        onAmountChanged: (String? newAmount) {
+                          pantryList.updateItemAmount(item, newAmount!);
+                          db.updateUserData(user, userData);
+                        },
+                      ),
+                      onDismissed: (direction) {
+                        if (direction == DismissDirection.startToEnd) {
+                          pantryList.delete(item);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('${item.name} deleted')));
+                        } else if (direction == DismissDirection.endToStart) {
+                          userData.transferFromPantryToGrocery(item);
+                          db.updateUserData(user, userData);
+                        }
+                        db.updateUserData(user, userData);
+                      },
+                    );
+                  }),
             ],
           );
         },
@@ -80,7 +92,7 @@ class _PantryTile extends StatelessWidget {
       subtitle: Text('Added ${item.daysAgo()}'),
       trailing: DropdownButton<String>(
         value: describeEnum(item.amount),
-        items: amountConverter.keys.map<DropdownMenuItem<String>>((key) {
+        items: amountMap.keys.map<DropdownMenuItem<String>>((key) {
           return DropdownMenuItem<String>(
             value: key,
             child: Text(key),

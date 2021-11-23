@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:provider/src/provider.dart';
-import 'package:the_pantry/services/authentication_service.dart';
 import 'package:username_generator/username_generator.dart';
 
+import 'package:the_pantry/services/authentication_service.dart';
 import '../constants.dart';
 import '../widgets/scaffold_snackbar.dart';
 import '../widgets/wide_button.dart';

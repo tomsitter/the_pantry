@@ -55,16 +55,14 @@ class DismissibleWidget<T> extends StatelessWidget {
         child: dismissActionIcon(altDismissIcon, altDismissText),
       );
 
-  Widget dismissActionIcon(IconData icon, String text) => Container(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: deleteDirection == left
-              ? MainAxisAlignment.start
-              : MainAxisAlignment.end,
-          children: [
-            Icon(icon, color: Colors.white, size: 24),
-            Text(text, style: TextStyle(color: Colors.white)),
-          ],
-        ),
+  Widget dismissActionIcon(IconData icon, String text) => Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: deleteDirection == left
+            ? MainAxisAlignment.start
+            : MainAxisAlignment.end,
+        children: [
+          Icon(icon, color: Colors.white, size: 24),
+          Text(text, style: TextStyle(color: Colors.white)),
+        ],
       );
 }

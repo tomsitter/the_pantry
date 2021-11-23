@@ -1,8 +1,22 @@
 import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
-enum Category { produce, refrigerated, frozen, nonperishable, uncategorized }
+enum FoodType {
+  produce,
+  refrigerated,
+  frozen,
+  nonperishable,
+  uncategorized,
+  pantry,
+  spices,
+  fresh,
+}
+
+Map<String, FoodType> foodTypeMap = {
+  for (var category in FoodType.values) describeEnum(category): category
+};
 
 /// Abstract class for [GroceryItem]s and [PantryItem]s so some widgets can
 /// accept either type.
@@ -14,12 +28,12 @@ class AbstractItem {
   final String name;
 
   /// The category of food type of the item.
-  Category category;
+  FoodType foodType;
 
-  AbstractItem({required this.name, this.category = Category.uncategorized});
+  AbstractItem({required this.name, this.foodType = FoodType.uncategorized});
 
-  void setCategory(Category newCategory) {
-    category = newCategory;
+  void setCategory(FoodType newCategory) {
+    foodType = newCategory;
   }
 }
 
@@ -33,7 +47,7 @@ abstract class AbstractItemList<AbstractItem> extends ChangeNotifier {
 
   AbstractItemList(this.items);
 
-  void add(String name);
+  void add(AbstractItem item);
 
   void delete(AbstractItem item) {
     items.remove(item);

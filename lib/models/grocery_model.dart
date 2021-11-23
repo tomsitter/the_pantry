@@ -7,10 +7,8 @@ class GroceryList extends AbstractItemList<GroceryItem> {
   GroceryList({required items}) : super(items);
 
   @override
-  void add(String name) {
-    items.add(
-      GroceryItem(name: name, isSelected: false),
-    );
+  void add(GroceryItem item) {
+    items.add(item);
     notifyListeners();
   }
 
@@ -22,6 +20,7 @@ class GroceryList extends AbstractItemList<GroceryItem> {
 
   void toggle(GroceryItem item) {
     item.toggleSelected();
+    print(item.foodType);
     notifyListeners();
   }
 }
@@ -34,7 +33,11 @@ class GroceryItem extends AbstractItem {
   /// The state of whether the item should show as checked or not
   bool isSelected;
 
-  GroceryItem({name, this.isSelected = false}) : super(name: name);
+  GroceryItem(
+      {name,
+      FoodType foodType = FoodType.uncategorized,
+      this.isSelected = false})
+      : super(name: name, foodType: foodType);
 
   void toggleSelected() {
     isSelected = !isSelected;

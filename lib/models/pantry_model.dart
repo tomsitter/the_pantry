@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:jiffy/jiffy.dart';
 
 import 'abstract_list_model.dart';
@@ -9,13 +10,22 @@ import 'abstract_list_model.dart';
 enum Amount { full, half, low, empty, expired }
 
 /// Helper to convert between String <-> eNum for Firebase
-Map<String, Amount> amountConverter = {
-  'full': Amount.full,
-  'half': Amount.half,
-  'low': Amount.low,
-  'empty': Amount.empty,
-  'expired': Amount.expired,
+Map<String, Amount> amountMap = {
+  for (var amount in Amount.values) describeEnum(amount): amount
 };
+
+extension IterableExtension<T> on Iterable<T> {
+  Iterable<T> distinctBy(Object Function(T e) getCompareValue) {
+    var result = <T>[];
+    forEach((element) {
+      if (!result.any((x) => getCompareValue(x) == getCompareValue(element))) {
+        result.add(element);
+      }
+    });
+
+    return result;
+  }
+}
 
 /// [PantryList] manages a list of [PantryItem]s and is a [ChangeNotifier]
 ///
@@ -25,18 +35,27 @@ class PantryList extends AbstractItemList<PantryItem> {
   PantryList({required items}) : super(items);
 
   @override
-  void add(String name) {
-    items.add(
-      PantryItem(name: name, dateAdded: DateTime.now()),
-    );
+  void add(PantryItem item) {
+    items.add(item);
     notifyListeners();
+  }
+
+  List<FoodType> uniqueFoodTypes() {
+    return items
+        .distinctBy((x) => x.foodType)
+        .map((item) => item.foodType)
+        .toList();
+  }
+
+  List<PantryItem> ofFoodType(FoodType foodType) {
+    return items.where((item) => item.foodType == foodType).toList();
   }
 
   void updateItemAmount(PantryItem item, String newAmount) {
     var itemIndex = items.indexOf(item);
     if (itemIndex >= 0) {
-      if (amountConverter.containsKey(newAmount)) {
-        Amount amount = amountConverter[newAmount]!;
+      if (amountMap.containsKey(newAmount)) {
+        Amount amount = amountMap[newAmount]!;
         items[itemIndex].updateQuantity(amount);
         notifyListeners();
       } else {
@@ -62,8 +81,13 @@ class PantryItem extends AbstractItem {
   final DateTime dateAdded;
   Amount amount;
 
-  PantryItem({name, this.amount = Amount.full, required this.dateAdded})
-      : super(name: name);
+  PantryItem(
+      {name,
+      this.amount = Amount.full,
+      FoodType foodType = FoodType.uncategorized,
+      DateTime? dateAdded})
+      : dateAdded = dateAdded ?? DateTime.now(),
+        super(name: name, foodType: foodType);
 
   String daysAgo() {
     return Jiffy(dateAdded).fromNow();
