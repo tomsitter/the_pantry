@@ -70,13 +70,11 @@ class UserData extends ChangeNotifier {
 
   transferFromGroceryToPantry(GroceryItem item) {
     groceryList.delete(item);
-    // TODO check if this item has previously had a foodtype assigned and re-use
-    pantryList.add(PantryItem(name: item.name));
+    pantryList.add(PantryItem(name: item.name, foodType: item.foodType));
   }
 
   transferFromPantryToGrocery(PantryItem item) {
     pantryList.delete(item);
-    // TODO check if this item has previously had a foodtype assigned and re-use
-    groceryList.add(GroceryItem(name: item.name));
+    groceryList.add(GroceryItem(name: item.name, foodType: item.foodType));
   }
 }

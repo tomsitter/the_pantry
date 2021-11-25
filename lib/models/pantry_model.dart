@@ -44,7 +44,8 @@ class PantryList extends AbstractItemList<PantryItem> {
     return items
         .distinctBy((x) => x.foodType)
         .map((item) => item.foodType)
-        .toList();
+        .toList()
+      ..sort((a, b) => a.displayName.compareTo(b.displayName));
   }
 
   List<PantryItem> ofFoodType(FoodType foodType) {

@@ -77,7 +77,7 @@ class _GroceryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CheckboxListTile(
-      //dense: true,
+      dense: true,
       title: Text(
         item.name,
         style: TextStyle(

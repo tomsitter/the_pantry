@@ -46,6 +46,7 @@ class MyApp extends StatelessWidget {
         // ChangeNotifierProvider<UserData>(create: (context) {})
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: Theme.of(context).copyWith(
           primaryColor: AppTheme.blue,
         ),
@@ -56,8 +57,6 @@ class MyApp extends StatelessWidget {
           LoginScreen.id: (context) => const LoginScreen(),
           RegistrationScreen.id: (context) => const RegistrationScreen(),
           HomeScreen.id: (context) => const HomeScreen(),
-          // PantryScreen.id: (context) => const PantryScreen(),
-          // GroceryScreen.id: (context) => const GroceryScreen(),
         },
       ),
     );

@@ -4,14 +4,24 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 enum FoodType {
-  produce,
-  refrigerated,
+  fresh,
   frozen,
   nonperishable,
-  uncategorized,
   pantry,
+  produce,
+  refrigerated,
   spices,
-  fresh,
+  uncategorized,
+}
+
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${this.substring(1)}";
+  }
+}
+
+extension FoodTypeExtension on FoodType {
+  String get displayName => describeEnum(this).capitalize();
 }
 
 Map<String, FoodType> foodTypeMap = {

@@ -8,6 +8,7 @@ import 'package:the_pantry/models/user_data.dart';
 import 'package:the_pantry/services/firestore_service.dart';
 import 'package:the_pantry/constants.dart';
 import 'package:the_pantry/widgets/dismissible_widget.dart';
+import 'package:the_pantry/models/abstract_list_model.dart';
 
 class DismissiblePantryList extends StatelessWidget {
   final List<PantryItem> displayItems;
@@ -26,17 +27,16 @@ class DismissiblePantryList extends StatelessWidget {
       return const CircularProgressIndicator(color: AppTheme.warmRed);
     } else {
       var foodTypes = pantryList.uniqueFoodTypes();
-      print(foodTypes);
       return ListView.builder(
         itemCount: foodTypes.length,
         itemBuilder: (context, index) {
           final foodType = foodTypes[index];
           final items = pantryList.ofFoodType(foodType);
           return ExpansionTile(
-            title: Text(describeEnum(foodType)),
+            title: Text(foodType.displayName),
             subtitle: items.length > 1
                 ? Text('${items.length} items')
-                : Text('1 item'),
+                : const Text('1 item'),
             children: [
               ListView.builder(
                   shrinkWrap: true,
@@ -69,6 +69,7 @@ class DismissiblePantryList extends StatelessWidget {
                       },
                     );
                   }),
+              Divider(),
             ],
           );
         },
@@ -88,6 +89,7 @@ class _PantryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      dense: true,
       title: Text(item.name),
       subtitle: Text('Added ${item.daysAgo()}'),
       trailing: DropdownButton<String>(
