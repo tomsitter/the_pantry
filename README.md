@@ -2,6 +2,10 @@
 
 An app for tracking grocery lists and pantry management.
 
+See what's in your pantry, how long it's been there, and how much is left. Swipe items onto your grocery list when you want to buy more. Swipe items back into your pantry once you've restocked.
+
+<img src="https://user-images.githubusercontent.com/2029528/143378356-4b4a7498-9a50-4481-a0a4-ee6255130799.png" width="425" /> <img src="https://user-images.githubusercontent.com/2029528/143378345-6cd7b7f1-d49a-4e7b-92f3-c50070c6c763.gif" width="400" />
+
 # To Do
 
 - <strike>Add firebase for authentication and cloud saved grocery and pantry items</strike> **Done!**
@@ -17,3 +21,4 @@ An app for tracking grocery lists and pantry management.
 
 
 <div>Icons made by <a href="https://www.flaticon.com/authors/flat-icons" title="Flat Icons">Flat Icons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+
