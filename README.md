@@ -17,7 +17,7 @@ See what's in your pantry, how long it's been there, and how much is left. Swipe
   - Make categories changeable for each item
 - Group items by category type and make collapsible for easier filtering
 - Add support for offline mode (will still require an account)
-- Upload screenshots to this readme document
+- <strike>Upload screenshots to this readme document</strike> **Done!**
 
 
 <div>Icons made by <a href="https://www.flaticon.com/authors/flat-icons" title="Flat Icons">Flat Icons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
