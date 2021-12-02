@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:the_pantry/models/user_data.dart';
-import 'package:the_pantry/screens/welcome.dart';
-import 'package:the_pantry/services/authentication_service.dart';
+import 'package:the_pantry/data/models/pantry_model.dart';
+import 'package:the_pantry/data/services/authentication_service.dart';
+import '../screens/welcome_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   final Color color;
@@ -36,8 +36,10 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             title: const Text('Logout'),
             onTap: () async {
-              context.read<AuthenticationService>().signOut();
-              context.read<UserData>().groceryList.clear();
+              final AuthenticationService user =
+                  Provider.of<AuthenticationService>(context, listen: false);
+              user.signOut();
+              // Provider.of<PantryList>(context).clear();
               Navigator.pushNamed(context, WelcomeScreen.id);
             },
           ),

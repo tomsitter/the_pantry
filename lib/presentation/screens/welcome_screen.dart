@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 
 import '../widgets/wide_button.dart';
-import '../constants.dart';
-import 'login.dart';
-import 'registration.dart';
+import 'package:the_pantry/constants.dart';
+import 'login_screen.dart';
+import 'registration_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
-  static String id = 'welcome';
+  static const String id = 'welcome';
 
   const WelcomeScreen({Key? key}) : super(key: key);
 

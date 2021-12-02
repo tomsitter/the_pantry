@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:the_pantry/screens/grocery/grocery.dart';
-import 'package:the_pantry/screens/pantry/pantry.dart';
-import 'package:the_pantry/screens/home/local_widgets/app_drawer.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:the_pantry/bloc/pantry_list_cubit.dart';
+import 'grocery_screen.dart';
+import 'pantry_screen.dart';
+import '../widgets/app_drawer.dart';
 
-import '../../constants.dart';
+import 'package:the_pantry/constants.dart';
 
 class HomeScreen extends StatefulWidget {
-  static String id = 'home_screen';
+  static const String id = 'home_screen';
   const HomeScreen({Key? key}) : super(key: key);
 
   @override

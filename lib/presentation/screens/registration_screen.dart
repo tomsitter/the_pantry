@@ -4,14 +4,14 @@ import 'package:loading_overlay/loading_overlay.dart';
 import 'package:provider/src/provider.dart';
 import 'package:username_generator/username_generator.dart';
 
-import 'package:the_pantry/services/authentication_service.dart';
-import '../constants.dart';
+import 'package:the_pantry/data/services/authentication_service.dart';
+import 'package:the_pantry/constants.dart';
 import '../widgets/scaffold_snackbar.dart';
 import '../widgets/wide_button.dart';
-import 'home/home.dart';
+import 'home_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
-  static String id = 'registration';
+  static const String id = 'registration';
   const RegistrationScreen({Key? key}) : super(key: key);
 
   @override
@@ -99,7 +99,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       ScaffoldSnackbar.of(context)
                           .show('The password provided too weak');
                     } else if (result == 'email-already-in-use') {
-                      print('email already in user');
                       ScaffoldSnackbar.of(context)
                           .show('An account already exists for that email');
                     }

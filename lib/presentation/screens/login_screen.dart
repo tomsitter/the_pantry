@@ -2,14 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:provider/src/provider.dart';
-import 'package:the_pantry/services/authentication_service.dart';
-import '../constants.dart';
+import 'package:the_pantry/data/services/authentication_service.dart';
+import 'package:the_pantry/constants.dart';
 import '../widgets/scaffold_snackbar.dart';
 import '../widgets/wide_button.dart';
-import 'home/home.dart';
+import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  static String id = 'login';
+  static const String id = 'login';
   const LoginScreen({Key? key}) : super(key: key);
 
   @override

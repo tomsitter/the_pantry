@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 
-import '../constants.dart';
+import 'package:the_pantry/constants.dart';
 
 class DismissibleWidget<T> extends StatelessWidget {
   static const DismissDirection left = DismissDirection.endToStart;
   static const DismissDirection right = DismissDirection.startToEnd;
   final T item;
   final Widget child;
-  final DismissDirectionCallback onDismissed;
+  final DismissDirectionCallback? onDismissed;
   final IconData altDismissIcon;
   final String altDismissText;
   final DismissDirection deleteDirection;
+  // On pantry screen do not want to dismiss items added to groceries
+  final ConfirmDismissCallback? confirmDismiss;
 
   const DismissibleWidget({
     required this.item,
     required this.child,
     required this.altDismissIcon,
     required this.altDismissText,
-    required this.onDismissed,
+    this.onDismissed,
     this.deleteDirection = left,
+    this.confirmDismiss,
     Key? key,
   }) : super(key: key);
 
@@ -35,6 +38,7 @@ class DismissibleWidget<T> extends StatelessWidget {
             : buildAlternateAction(),
         child: child,
         onDismissed: onDismissed,
+        confirmDismiss: confirmDismiss,
       );
 
   Widget buildDeleteAction() => Container(
