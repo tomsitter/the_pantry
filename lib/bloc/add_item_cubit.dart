@@ -21,10 +21,16 @@ class AddItemCubit extends Cubit<AddItemState> {
       return;
     }
 
-    emit(AddingItem());
-    Timer(Duration(seconds: 2), () {
-      repository
-          .addItem(PantryItem(name: itemName, inGroceryList: inGroceryList));
+    emit(AddItemInProgress());
+    PantryItem newItem =
+        PantryItem(name: itemName, inGroceryList: inGroceryList);
+    repository.addItem(newItem).then((success) {
+      if (success) {
+        pantryListCubit.addItem(newItem);
+        emit(ItemAdded());
+      } else {
+        emit(AddItemError(error: "Failed to add new item"));
+      }
     });
   }
 }

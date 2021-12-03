@@ -11,6 +11,6 @@ class AddItemError extends AddItemState {
   AddItemError({required this.error});
 }
 
-class AddingItem extends AddItemState {}
+class AddItemInProgress extends AddItemState {}
 
 class ItemAdded extends AddItemState {}

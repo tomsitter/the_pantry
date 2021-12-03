@@ -56,4 +56,13 @@ class PantryListCubit extends Cubit<PantryListState> {
       }
     });
   }
+
+  void addItem(PantryItem newItem) {
+    final currentState = state;
+    if (currentState is PantryListLoaded) {
+      final pantryList = currentState.pantryList;
+      pantryList.add(newItem);
+      emit(PantryListLoaded(pantryList: pantryList));
+    }
+  }
 }

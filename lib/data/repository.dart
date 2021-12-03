@@ -50,11 +50,14 @@ class Repository {
     return false;
   }
 
-  void addItem(PantryItem item) async {
+  Future<bool> addItem(PantryItem item) async {
     final user = auth.currentUser;
 
     if (user != null) {
-      await db.updateItem(item.name, item.toJson(), user);
+      final success = await db.updateItem(item.name, item.toJson(), user);
+      return success;
     }
+
+    return false;
   }
 }

@@ -48,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 48.0),
+              const SizedBox(height: 48.0),
               TextField(
                 keyboardType: TextInputType.emailAddress,
                 textAlign: TextAlign.center,
@@ -57,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 controller: emailController,
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               TextField(
                   textAlign: TextAlign.center,
                   obscureText: true,
@@ -65,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     hintText: 'Enter your password',
                   ),
                   controller: passwordController),
-              SizedBox(height: 24.0),
+              const SizedBox(height: 24.0),
               WideButton(
                 color: AppTheme.blue,
                 text: 'Login',
