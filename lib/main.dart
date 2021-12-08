@@ -114,6 +114,7 @@ class AuthenticationWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.watch<User?>();
     if (user != null) {
+      BlocProvider.of<PantryListCubit>(context).fetchPantryList();
       return const HomeScreen();
     }
     return const WelcomeScreen();

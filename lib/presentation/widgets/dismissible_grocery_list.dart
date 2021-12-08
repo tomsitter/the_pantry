@@ -43,20 +43,22 @@ class DismissibleGroceryList extends StatelessWidget {
                     checkboxCallback: (bool? checkboxState) {
                       BlocProvider.of<PantryListCubit>(context)
                           .toggleChecked(item);
-                      // pantryList.toggle(item);
-                      // db.updateUser(user, pantryList);
                     },
                   ),
-                  onDismissed: (direction) {
+                  confirmDismiss: (direction) async {
+                    // delete direction
                     if (direction == DismissDirection.endToStart) {
-                      // pantryList.delete(item);
+                      BlocProvider.of<PantryListCubit>(context)
+                          .deleteItem(item);
                       ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('${item.name} deleted')));
+                      return true;
+                      // to pantry direction
                     } else if (direction == DismissDirection.startToEnd) {
-                      // Transfer item to pantry
-                      // pantryList.removeFromGroceries(item);
+                      BlocProvider.of<PantryListCubit>(context)
+                          .toggleGroceries(item, status: false);
+                      return false;
                     }
-                    // db.updateUser(user, pantryList);
                   },
                 ),
                 const Divider(),

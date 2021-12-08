@@ -25,7 +25,7 @@ class AddItemModal extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<AddItemCubit, AddItemState>(
       listener: (context, state) {
-        if (state is ItemAdded) {
+        if (state is AddItemComplete) {
           Navigator.pop(context);
           return;
         }

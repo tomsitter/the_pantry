@@ -13,4 +13,4 @@ class AddItemError extends AddItemState {
 
 class AddItemInProgress extends AddItemState {}
 
-class ItemAdded extends AddItemState {}
+class AddItemComplete extends AddItemState {}

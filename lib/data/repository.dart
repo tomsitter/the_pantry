@@ -41,6 +41,16 @@ class Repository {
     return false;
   }
 
+  Future<bool> changeAmount(PantryItem item, Amount amount) async {
+    final user = auth.currentUser;
+
+    if (user != null) {
+      final newItem = item.copyWith(amount: amount);
+      return await db.updateItem(newItem.name, newItem.toJson(), user);
+    }
+    return false;
+  }
+
   Future<bool> deleteItem(PantryItem item) async {
     final user = auth.currentUser;
 

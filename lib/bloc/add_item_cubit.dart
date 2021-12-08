@@ -27,7 +27,7 @@ class AddItemCubit extends Cubit<AddItemState> {
     repository.addItem(newItem).then((success) {
       if (success) {
         pantryListCubit.addItem(newItem);
-        emit(ItemAdded());
+        emit(AddItemComplete());
       } else {
         emit(AddItemError(error: "Failed to add new item"));
       }

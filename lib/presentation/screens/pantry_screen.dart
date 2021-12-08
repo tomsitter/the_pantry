@@ -44,10 +44,6 @@ class _PantryScreenState extends State<PantryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<PantryListCubit>(context).fetchPantryList();
-    print('Fetching pantry list');
-    // final pantryList = context.watch<PantryList>();
-
     return Scaffold(
       backgroundColor: widget.color,
       body: SafeArea(

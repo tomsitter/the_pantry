@@ -1,13 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 import 'package:the_pantry/bloc/pantry_list_cubit.dart';
 
 import 'package:the_pantry/constants.dart';
 import 'package:the_pantry/data/models/pantry_model.dart';
-import 'package:the_pantry/data/services/firestore_service.dart';
 import 'dismissible_widget.dart';
 
 class DismissiblePantryList extends StatelessWidget {
@@ -18,12 +15,9 @@ class DismissiblePantryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    User? user = context.watch<User?>();
-    // final pantryList = context.watch<PantryList>();
-    FirestoreService db = context.read<FirestoreService>();
-
     final foodTypes = List.of(FoodType.values)
       ..sort((a, b) => a.displayName.compareTo(b.displayName));
+
     return BlocBuilder<PantryListCubit, PantryListState>(
       builder: (context, state) {
         if (state is! PantryListLoaded) {
@@ -55,10 +49,6 @@ class DismissiblePantryList extends StatelessWidget {
                         deleteDirection: DismissibleWidget.right,
                         child: _PantryTile(
                           item: item,
-                          onAmountChanged: (String? newAmount) {
-                            // pantryList.updateItemAmount(item, newAmount!);
-                            // db.updateUser(user, pantryList);
-                          },
                         ),
                         confirmDismiss: (direction) async {
                           if (direction == DismissDirection.startToEnd) {
@@ -69,7 +59,6 @@ class DismissiblePantryList extends StatelessWidget {
                                 content: Text('${item.name} deleted'),
                               ),
                             );
-                            return true;
                           } else if (direction == DismissDirection.endToStart) {
                             BlocProvider.of<PantryListCubit>(context)
                                 .toggleGroceries(item, status: true);
@@ -92,11 +81,8 @@ class DismissiblePantryList extends StatelessWidget {
 
 class _PantryTile extends StatelessWidget {
   final PantryItem item;
-  final void Function(String?) onAmountChanged;
 
-  const _PantryTile(
-      {Key? key, required this.item, required this.onAmountChanged})
-      : super(key: key);
+  const _PantryTile({Key? key, required this.item}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +101,12 @@ class _PantryTile extends StatelessWidget {
             child: Text(key),
           );
         }).toList(),
-        onChanged: onAmountChanged,
+        onChanged: (String? newAmount) {
+          if (newAmount != null) {
+            BlocProvider.of<PantryListCubit>(context)
+                .changeAmount(item, newAmount);
+          }
+        },
       ),
     );
   }

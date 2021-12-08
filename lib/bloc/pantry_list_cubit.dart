@@ -36,9 +36,22 @@ class PantryListCubit extends Cubit<PantryListState> {
     });
   }
 
+  void changeAmount(PantryItem item, String amount) {
+    if (amountMap.containsKey(amount)) {
+      Amount newAmount = amountMap[amount]!;
+      repository.changeAmount(item, newAmount).then((success) {
+        if (success) {
+          item.amount = newAmount;
+          updatePantryList();
+        }
+      });
+    }
+  }
+
   void updatePantryList() {
     final currentState = state;
     if (currentState is PantryListLoaded) {
+      print("emitting new state");
       emit(PantryListLoaded(pantryList: currentState.pantryList));
     }
   }
