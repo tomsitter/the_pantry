@@ -32,7 +32,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       body: LoadingOverlay(
         isLoading: _isLoading,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -40,20 +40,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               Flexible(
                 child: Hero(
                   tag: 'logo',
-                  child: Container(
+                  child: SizedBox(
                     height: 150.0,
                     child: Image.asset('assets/images/icon.png'),
                   ),
                 ),
               ),
-              SizedBox(height: 48.0),
+              const SizedBox(height: 48.0),
               TextField(
                 textAlign: TextAlign.center,
                 decoration: AppTheme.textFieldDecoration
                     .copyWith(hintText: 'Choose a username'),
                 controller: displayNameController,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8.0,
               ),
               TextField(
@@ -63,7 +63,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     .copyWith(hintText: 'Enter your email'),
                 controller: emailController,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8.0,
               ),
               TextField(
@@ -74,7 +74,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 ),
                 controller: passwordController,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8.0,
               ),
               WideButton(

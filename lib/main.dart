@@ -4,8 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:the_pantry/bloc/authentication_cubit.dart';
-import 'package:the_pantry/presentation/router.dart';
 
 import 'bloc/add_item_cubit.dart';
 import 'bloc/pantry_list_cubit.dart';
@@ -16,7 +14,6 @@ import 'presentation/screens/registration_screen.dart';
 import 'presentation/screens/welcome_screen.dart';
 import 'data/services/authentication_service.dart';
 import 'data/services/firestore_service.dart';
-import 'data/models/pantry_model.dart';
 import 'constants.dart';
 
 Future main() async {

@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:the_pantry/data/models/pantry_model.dart';
 import 'package:the_pantry/data/services/authentication_service.dart';
 import '../screens/welcome_screen.dart';
 

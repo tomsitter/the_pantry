@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:the_pantry/bloc/add_item_cubit.dart';
-import 'package:the_pantry/presentation/widgets/scaffold_snackbar.dart';
 
 /// [AddItemModal] is a screen that pops up from the bottom of the screen
 /// to allow users to add a new item to either the pantry or the grocery lists
