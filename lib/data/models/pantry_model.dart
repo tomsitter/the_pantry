@@ -116,12 +116,14 @@ class PantryList extends ChangeNotifier {
   List<PantryItem> get pantry =>
       items.where((item) => item.inGroceryList == false).toList();
 
-  /// Toogle an items isChecked property
+  /// Toggle an item's isChecked property
   void toggle(PantryItem item) {
     item.isChecked = !item.isChecked;
     notifyListeners();
   }
 
+  /// Return an alphabetically sorted list of unique food types for the
+  /// items in the users pantry
   List<FoodType> uniqueFoodTypes() {
     return items
         .distinctBy((x) => x.foodType)
@@ -168,10 +170,11 @@ class PantryList extends ChangeNotifier {
   }
 }
 
-/// A [PantryItem] has a name, a date added, and an amount
+/// A [PantryItem] has a name, a date added, and an amount remaining
+/// [PantryItem]s can be in the grocery list, and can be checked or not
 ///
-/// PantryItems can return how long ago they were added to the pantry list
-/// and can have the amount of product changed
+/// Use the [daysAgo] method for a human-readable string for how long ago
+/// the item was added to the pantry list
 class PantryItem {
   /// The name of the item.
   final String name;

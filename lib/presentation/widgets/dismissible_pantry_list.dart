@@ -7,6 +7,13 @@ import 'package:the_pantry/constants.dart';
 import 'package:the_pantry/data/models/pantry_model.dart';
 import 'dismissible_widget.dart';
 
+/// A scrollable list of Expansion tiles
+///
+/// [DismissiblePantryList] is used to display a scrollable
+/// list of [DismissibleWidgets] each containing a [_PantryTile],
+/// one for each of the user's current pantry items
+/// Items are grouped into Expansion tiles by category for easier navigation.
+
 class DismissiblePantryList extends StatelessWidget {
   final List<PantryItem> displayItems;
 
@@ -43,10 +50,12 @@ class DismissiblePantryList extends StatelessWidget {
                       return DismissibleWidget(
                         key: UniqueKey(),
                         item: item,
-                        altDismissIcon: Icons.shopping_cart,
-                        altDismissText: 'To Groceries',
-                        // swipe left to delete
-                        deleteDirection: DismissibleWidget.right,
+                        leftSwipeIcon: Icons.shopping_cart,
+                        leftSwipeText: 'To Groceries',
+                        leftSwipeColor: AppTheme.paleTeal,
+                        rightSwipeIcon: Icons.delete_forever,
+                        rightSwipeText: 'Delete',
+                        rightSwipeColor: Colors.red,
                         child: _PantryTile(
                           item: item,
                         ),
@@ -64,6 +73,7 @@ class DismissiblePantryList extends StatelessWidget {
                                 .toggleGroceries(item, status: true);
                             return false;
                           }
+                          return null;
                         },
                       );
                     },

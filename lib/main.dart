@@ -57,23 +57,6 @@ class MyApp extends StatelessWidget {
           },
           initialData: null,
         ),
-        // StreamProvider<UserData>(
-        //   create: (context) {
-        //     final user = context.read<User>();
-        //     return FirestoreService().streamUserData(user);
-        //   },
-        //   initialData: UserData(),
-        // ),
-        // ChangeNotifierProxyProvider<User?, PantryList>(
-        //     lazy: false,
-        //     create: (_) => PantryList(items: <PantryItem>[]),
-        //     update: (_, user, pantryList) {
-        //       if (user != null) {
-        //         pantryListCubit.fetchPantryList();
-        //       } else {
-        //         return pantryList!;
-        //       }
-        //     }),
       ],
       child: MultiBlocProvider(
         providers: [

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:the_pantry/bloc/pantry_list_cubit.dart';
 
 import 'package:the_pantry/data/models/pantry_model.dart';
-import 'package:the_pantry/data/services/firestore_service.dart';
 import 'package:the_pantry/constants.dart';
 import '../widgets/dismissible_widget.dart';
 
@@ -17,8 +14,6 @@ class DismissibleGroceryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    User? user = context.watch<User?>();
-    FirestoreService db = context.read<FirestoreService>();
     return BlocBuilder<PantryListCubit, PantryListState>(
       builder: (context, state) {
         if (state is! PantryListLoaded) {
@@ -34,10 +29,12 @@ class DismissibleGroceryList extends StatelessWidget {
                 DismissibleWidget(
                   key: UniqueKey(),
                   item: item,
-                  altDismissIcon: Icons.home,
-                  altDismissText: 'To Pantry',
-                  // swipe left to delete
-                  deleteDirection: DismissibleWidget.left,
+                  leftSwipeIcon: Icons.delete_forever,
+                  leftSwipeText: 'Delete',
+                  leftSwipeColor: Colors.red,
+                  rightSwipeIcon: Icons.home,
+                  rightSwipeText: 'To Pantry',
+                  rightSwipeColor: AppTheme.paleTeal,
                   child: _GroceryTile(
                     item: item,
                     checkboxCallback: (bool? checkboxState) {
@@ -59,6 +56,7 @@ class DismissibleGroceryList extends StatelessWidget {
                           .toggleGroceries(item, status: false);
                       return false;
                     }
+                    return null;
                   },
                 ),
                 const Divider(),
