@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:the_pantry/bloc/pantry_list_cubit.dart';
+import 'package:the_pantry/bloc/pantry_cubit.dart';
 
 import 'package:the_pantry/constants.dart';
 import 'package:the_pantry/data/models/pantry_model.dart';
@@ -25,9 +25,9 @@ class DismissiblePantryList extends StatelessWidget {
     final foodTypes = List.of(FoodType.values)
       ..sort((a, b) => a.displayName.compareTo(b.displayName));
 
-    return BlocBuilder<PantryListCubit, PantryListState>(
+    return BlocBuilder<PantryCubit, PantryState>(
       builder: (context, state) {
-        if (state is! PantryListLoaded) {
+        if (state.status != PantryStatus.loaded) {
           return const CircularProgressIndicator(color: AppTheme.warmRed);
         }
         final pantryList = state.pantryList;
@@ -61,7 +61,7 @@ class DismissiblePantryList extends StatelessWidget {
                         ),
                         confirmDismiss: (direction) async {
                           if (direction == DismissDirection.startToEnd) {
-                            BlocProvider.of<PantryListCubit>(context)
+                            BlocProvider.of<PantryCubit>(context)
                                 .deleteItem(item);
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -69,7 +69,7 @@ class DismissiblePantryList extends StatelessWidget {
                               ),
                             );
                           } else if (direction == DismissDirection.endToStart) {
-                            BlocProvider.of<PantryListCubit>(context)
+                            BlocProvider.of<PantryCubit>(context)
                                 .toggleGroceries(item, status: true);
                             return false;
                           }
@@ -113,8 +113,7 @@ class _PantryTile extends StatelessWidget {
         }).toList(),
         onChanged: (String? newAmount) {
           if (newAmount != null) {
-            BlocProvider.of<PantryListCubit>(context)
-                .changeAmount(item, newAmount);
+            BlocProvider.of<PantryCubit>(context).changeAmount(item, newAmount);
           }
         },
       ),

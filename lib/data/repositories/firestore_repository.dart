@@ -1,11 +1,11 @@
-import 'package:the_pantry/data/services/authentication_service.dart';
+import 'package:the_pantry/data/repositories/auth_repository.dart';
 import 'package:the_pantry/data/services/firestore_service.dart';
 
-import 'models/pantry_model.dart';
+import '../models/pantry_model.dart';
 
 class Repository {
   final FirestoreService db;
-  final AuthenticationService auth;
+  final AuthRepository auth;
 
   Repository({required this.db, required this.auth});
 
@@ -14,9 +14,15 @@ class Repository {
 
     if (user != null) {
       final data = await db.fetchPantryItems(user);
-      if (data != null) return PantryList.fromJson(data);
+      if (data != null) {
+        return PantryList.fromJson(data);
+      } else {
+        final newData = await db.createNewPantry(user);
+        if (newData != null) return PantryList.fromJson(newData);
+      }
     }
 
+    print('Could not retrieve or create new pantry');
     return PantryList(items: <PantryItem>[PantryItem(name: 'test')]);
   }
 
@@ -63,8 +69,7 @@ class Repository {
     final user = auth.currentUser;
 
     if (user != null) {
-      final success = await db.updateItem(item.name, item.toJson(), user);
-      return success;
+      return await db.updateItem(item.name, item.toJson(), user);
     }
 
     return false;

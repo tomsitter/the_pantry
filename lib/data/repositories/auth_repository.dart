@@ -1,14 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:the_pantry/data/repositories/base_auth_repository.dart';
 
-class AuthenticationService {
+class AuthRepository extends BaseAuthRepository {
   final FirebaseAuth _firebaseAuth;
 
-  AuthenticationService(this._firebaseAuth);
-
-  /// Changed to idTokenChanges as it updates depending on more cases.
-  Stream<User?> get authStateChanges => _firebaseAuth.idTokenChanges();
-
-  User? get currentUser => _firebaseAuth.currentUser;
+  AuthRepository({FirebaseAuth? firebaseAuth})
+      : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
 
   /// This won't pop routes so you could do something like
   /// Navigator.of(context).pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
@@ -23,36 +20,30 @@ class AuthenticationService {
   /// error messages. That way you can throw, return or whatever you prefer with that instead.
   Future<String> signIn(
       {required String email, required String password}) async {
-    try {
-      await _firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: password);
-      return "Signed in";
-    } on FirebaseAuthException catch (e) {
-      return getMessageFromErrorCode(e.code);
-    }
+    return await _firebaseAuth
+        .signInWithEmailAndPassword(email: email, password: password)
+        .then((value) => "success")
+        .catchError((err) => getMessageFromErrorCode(err.code));
   }
 
-  /// There are a lot of different ways on how you can do exception handling.
-  /// This is to make it as easy as possible but a better way would be to
-  /// use your own custom class that would take the exception and return better
-  /// error messages. That way you can throw, return or whatever you prefer with that instead.
-  Future<String> signUp(
-      {required String email,
-      required String password,
-      required String displayName}) async {
-    try {
-      await _firebaseAuth
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .then((userCred) {
-        if (userCred.user != null) {
-          userCred.user!.updateDisplayName(displayName);
-        }
-      });
-      return "Signed up";
-    } on FirebaseAuthException catch (e) {
-      return e.message ?? e.toString();
-    }
+  Future<String> signInWithGoogle(
+      {required String email, required String password}) async {
+    // TODO: Implement
+    throw Exception("signInWithGoogle Not implemented!");
   }
+
+  @override
+  Future<String> signUp(
+      {required String email, required String password}) async {
+    return await _firebaseAuth
+        .createUserWithEmailAndPassword(email: email, password: password)
+        .then((value) => "success")
+        .catchError((err) => getMessageFromErrorCode(err.code));
+  }
+
+  @override
+  Stream<User?> get user => _firebaseAuth.userChanges();
+  User? get currentUser => _firebaseAuth.currentUser;
 
   String getMessageFromErrorCode(code) {
     switch (code) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:the_pantry/bloc/pantry_list_cubit.dart';
+import 'package:the_pantry/bloc/pantry_cubit.dart';
 import 'package:the_pantry/constants.dart';
 
 import 'package:the_pantry/data/models/pantry_model.dart';
@@ -46,14 +46,16 @@ class _PantryScreenState extends State<PantryScreen> {
     return Scaffold(
       backgroundColor: widget.color,
       body: SafeArea(
-        child: BlocBuilder<PantryListCubit, PantryListState>(
-            builder: (context, state) {
-          if (state is! PantryListLoaded) {
+        child: BlocBuilder<PantryCubit, PantryState>(builder: (context, state) {
+          if (state.status == PantryStatus.initial) {
+            context.read<PantryCubit>().fetchPantryList();
             return const Center(
                 child: CircularProgressIndicator(color: AppTheme.warmRed));
           }
+
           final pantryList = state.pantryList;
           _foundItems = pantryList.pantry;
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

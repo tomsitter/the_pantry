@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:the_pantry/bloc/pantry_list_cubit.dart';
+import 'package:the_pantry/bloc/pantry_cubit.dart';
 import 'package:the_pantry/data/models/pantry_model.dart';
 import 'package:the_pantry/presentation/widgets/dismissible_grocery_list.dart';
 
@@ -45,16 +45,17 @@ class _GroceryScreenState extends State<GroceryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // PantryList pantryList = context.watch<PantryList>();
     return Scaffold(
       backgroundColor: widget.color,
       body: SafeArea(
-        child: BlocBuilder<PantryListCubit, PantryListState>(
+        child: BlocBuilder<PantryCubit, PantryState>(
           builder: (context, state) {
-            if (state is! PantryListLoaded) {
+            if (state.status == PantryStatus.initial) {
+              context.read<PantryCubit>().fetchPantryList();
               return const Center(
                   child: CircularProgressIndicator(color: AppTheme.warmRed));
             }
+
             final pantryList = state.pantryList;
             _foundItems = pantryList.groceries;
 

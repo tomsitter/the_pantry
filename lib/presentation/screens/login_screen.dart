@@ -1,40 +1,38 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:loading_overlay/loading_overlay.dart';
-import 'package:provider/src/provider.dart';
-import 'package:the_pantry/data/services/authentication_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:the_pantry/constants.dart';
+import 'package:the_pantry/presentation/widgets/auth_text_field.dart';
+import '../../bloc/auth_bloc.dart';
 import '../widgets/scaffold_snackbar.dart';
 import '../widgets/wide_button.dart';
 import 'home_screen.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatelessWidget {
   static const String id = 'login';
-  const LoginScreen({Key? key}) : super(key: key);
-
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  User? user;
-  bool _isLoading = false;
 
-  @override
-  initState() {
-    super.initState();
-  }
+  LoginScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.almostWhite,
-      body: LoadingOverlay(
-        isLoading: _isLoading,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is Authenticated) {
+          Navigator.pushNamed(context, HomeScreen.id);
+        }
+
+        if (state is AuthError) {
+          ScaffoldSnackbar.of(context).show(state.error);
+        }
+
+        if (state is AuthLoading) {
+          ScaffoldSnackbar.of(context).show("Logging in");
+        }
+      },
+      child: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -49,43 +47,19 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 48.0),
-              TextField(
-                keyboardType: TextInputType.emailAddress,
-                textAlign: TextAlign.center,
-                decoration: AppTheme.textFieldDecoration.copyWith(
-                  hintText: 'Enter your email or username',
-                ),
-                controller: emailController,
-              ),
+              AuthTextField.email(
+                  hintText: 'Enter your email', controller: emailController),
               const SizedBox(height: 8.0),
-              TextField(
-                  textAlign: TextAlign.center,
-                  obscureText: true,
-                  decoration: AppTheme.textFieldDecoration.copyWith(
-                    hintText: 'Enter your password',
-                  ),
+              AuthTextField.password(
+                  hintText: 'Enter your password',
                   controller: passwordController),
               const SizedBox(height: 24.0),
               WideButton(
                 color: AppTheme.blue,
                 text: 'Login',
                 onPressed: () async {
-                  setState(() {
-                    _isLoading = true;
-                  });
-                  final result =
-                      await context.read<AuthenticationService>().signIn(
-                            email: emailController.text.trim(),
-                            password: passwordController.text.trim(),
-                          );
-                  if (result == 'Signed in') {
-                    Navigator.pushNamed(context, HomeScreen.id);
-                  } else {
-                    ScaffoldSnackbar.of(context).show(result);
-                  }
-                  setState(() {
-                    _isLoading = false;
-                  });
+                  context.read<AuthBloc>().add(SignInRequested(
+                      emailController.text, passwordController.text));
                 },
               ),
             ],

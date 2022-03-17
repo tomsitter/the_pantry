@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'package:the_pantry/bloc/add_item_cubit.dart';
+import '../../bloc/pantry_cubit.dart';
 
 /// [AddItemModal] is a screen that pops up from the bottom of the screen
 /// to allow users to add a new item to either the pantry or the grocery lists
@@ -22,9 +22,9 @@ class AddItemModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AddItemCubit, AddItemState>(
+    return BlocListener<PantryCubit, PantryState>(
       listener: (context, state) {
-        if (state is AddItemComplete) {
+        if (state.status == PantryStatus.loaded) {
           Navigator.pop(context);
           return;
         }
@@ -48,29 +48,15 @@ class AddItemModal extends StatelessWidget {
                 textAlign: TextAlign.center,
                 autofocus: true,
               ),
-              BlocBuilder<AddItemCubit, AddItemState>(
+              BlocBuilder<PantryCubit, PantryState>(
                 builder: (context, state) {
-                  if (state is AddItemInProgress) {
+                  if (state.status == PantryStatus.loading) {
                     return Center(
                         child: CircularProgressIndicator(color: color));
                   }
-
-                  if (state is AddItemError) {
+                  if (state.status == PantryStatus.error) {
                     Fluttertoast.showToast(msg: state.error);
                   }
-                  // if (state is AddItemError) {
-                  //   showFlash(
-                  //       context: context,
-                  //       builder: (context, controller) {
-                  //         return Flash(
-                  //           controller: controller,
-                  //           child: FlashBar(
-                  //             content: Text(state.error),
-                  //           ),
-                  //         );
-                  //       });
-                  // }
-
                   return TextButton(
                     style: ButtonStyle(
                       padding: MaterialStateProperty.all<EdgeInsets>(
@@ -79,7 +65,7 @@ class AddItemModal extends StatelessWidget {
                     ),
                     onPressed: () {
                       final itemName = _textController.text;
-                      BlocProvider.of<AddItemCubit>(context)
+                      BlocProvider.of<PantryCubit>(context)
                           .addItem(itemName, inGroceryList);
                     },
                     child: const Text(

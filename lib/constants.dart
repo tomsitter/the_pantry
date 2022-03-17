@@ -12,24 +12,6 @@ class AppTheme {
   static const Color darkBlue = Color(0xFF40a4dd);
   static const Color redBrown = Color(0xFFB35034);
 
-  static const sendButtonTextStyle = TextStyle(
-    color: warmRed,
-    fontWeight: FontWeight.bold,
-    fontSize: 18.0,
-  );
-
-  static const messageTextFieldDecoration = InputDecoration(
-    contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-    hintText: 'Type your message here...',
-    border: InputBorder.none,
-  );
-
-  static const messageContainerDecoration = BoxDecoration(
-    border: Border(
-      top: BorderSide(color: paleYellow, width: 2.0),
-    ),
-  );
-
   static const textFieldDecoration = InputDecoration(
     hintText: '',
     contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
@@ -39,12 +21,12 @@ class AppTheme {
       ),
     ),
     enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: redBrown, width: 1.0),
-      borderRadius: BorderRadius.all(Radius.circular(32.0)),
+      borderSide: BorderSide(color: darkBlue, width: 1.0),
+      borderRadius: BorderRadius.all(Radius.circular(16.0)),
     ),
     focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: redBrown, width: 2.0),
-      borderRadius: BorderRadius.all(Radius.circular(32.0)),
+      borderSide: BorderSide(color: darkBlue, width: 2.0),
+      borderRadius: BorderRadius.all(Radius.circular(16.0)),
     ),
     filled: true,
     fillColor: Colors.white,

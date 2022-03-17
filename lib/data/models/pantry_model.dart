@@ -89,6 +89,10 @@ class PantryList extends ChangeNotifier {
         }
       };
 
+  bool hasItem(String itemName) {
+    return items.where((item) => item.name == itemName).isNotEmpty;
+  }
+
   void add(PantryItem item) {
     items.add(item);
     notifyListeners();

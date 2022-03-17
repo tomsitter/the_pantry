@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:the_pantry/bloc/pantry_list_cubit.dart';
+import 'package:the_pantry/bloc/pantry_cubit.dart';
 
 import 'package:the_pantry/data/models/pantry_model.dart';
 import 'package:the_pantry/constants.dart';
@@ -14,12 +14,8 @@ class DismissibleGroceryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PantryListCubit, PantryListState>(
+    return BlocBuilder<PantryCubit, PantryState>(
       builder: (context, state) {
-        if (state is! PantryListLoaded) {
-          return const Center(
-              child: CircularProgressIndicator(color: AppTheme.warmRed));
-        }
         return ListView.builder(
           itemCount: displayItems.length,
           itemBuilder: (context, index) {
@@ -38,21 +34,20 @@ class DismissibleGroceryList extends StatelessWidget {
                   child: _GroceryTile(
                     item: item,
                     checkboxCallback: (bool? checkboxState) {
-                      BlocProvider.of<PantryListCubit>(context)
-                          .toggleChecked(item);
+                      context.read<PantryCubit>().toggleChecked(item);
                     },
                   ),
                   confirmDismiss: (direction) async {
                     // delete direction
                     if (direction == DismissDirection.endToStart) {
-                      BlocProvider.of<PantryListCubit>(context)
-                          .deleteItem(item);
+                      context.read<PantryCubit>().deleteItem(item);
                       ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('${item.name} deleted')));
                       return true;
                       // to pantry direction
                     } else if (direction == DismissDirection.startToEnd) {
-                      BlocProvider.of<PantryListCubit>(context)
+                      context
+                          .read<PantryCubit>()
                           .toggleGroceries(item, status: false);
                       return false;
                     }

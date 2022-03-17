@@ -1,37 +1,37 @@
 import 'package:flutter/material.dart';
-
-import 'package:loading_overlay/loading_overlay.dart';
-import 'package:provider/src/provider.dart';
-import 'package:username_generator/username_generator.dart';
-
-import 'package:the_pantry/data/services/authentication_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:the_pantry/constants.dart';
+import '../../bloc/auth_bloc.dart';
+import '../widgets/auth_text_field.dart';
 import '../widgets/scaffold_snackbar.dart';
 import '../widgets/wide_button.dart';
 import 'home_screen.dart';
 
-class RegistrationScreen extends StatefulWidget {
+class RegistrationScreen extends StatelessWidget {
   static const String id = 'registration';
-  const RegistrationScreen({Key? key}) : super(key: key);
-
-  @override
-  State<RegistrationScreen> createState() => _RegistrationScreenState();
-}
-
-class _RegistrationScreenState extends State<RegistrationScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final displayNameController =
-      TextEditingController(text: UsernameGenerator().generateRandom());
-  bool _isLoading = false;
+
+  RegistrationScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.almostWhite,
-      body: LoadingOverlay(
-        isLoading: _isLoading,
-        child: Padding(
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is Authenticated) {
+          Navigator.pushNamed(context, HomeScreen.id);
+        }
+
+        if (state is AuthError) {
+          ScaffoldSnackbar.of(context).show(state.error);
+        }
+
+        if (state is AuthLoading) {
+          ScaffoldSnackbar.of(context).show("Registering...");
+        }
+      },
+      child: Scaffold(
+        body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -47,65 +47,24 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 ),
               ),
               const SizedBox(height: 48.0),
-              TextField(
-                textAlign: TextAlign.center,
-                decoration: AppTheme.textFieldDecoration
-                    .copyWith(hintText: 'Choose a username'),
-                controller: displayNameController,
-              ),
-              const SizedBox(
-                height: 8.0,
-              ),
-              TextField(
-                keyboardType: TextInputType.emailAddress,
-                textAlign: TextAlign.center,
-                decoration: AppTheme.textFieldDecoration
-                    .copyWith(hintText: 'Enter your email'),
+              AuthTextField.email(
+                hintText: 'Enter your email',
                 controller: emailController,
               ),
-              const SizedBox(
-                height: 8.0,
-              ),
-              TextField(
-                textAlign: TextAlign.center,
-                obscureText: true,
-                decoration: AppTheme.textFieldDecoration.copyWith(
-                  hintText: 'Enter your password',
-                ),
+              const SizedBox(height: 8.0),
+              AuthTextField.password(
+                hintText: 'Enter your password',
                 controller: passwordController,
               ),
-              const SizedBox(
-                height: 8.0,
-              ),
+              const SizedBox(height: 8.0),
               WideButton(
-                  color: AppTheme.darkBlue,
-                  text: 'Register',
-                  onPressed: () async {
-                    setState(() {
-                      _isLoading = true;
-                    });
-                    String displayName = displayNameController.text.trim();
-                    final result =
-                        await context.read<AuthenticationService>().signUp(
-                              email: emailController.text.trim(),
-                              password: passwordController.text.trim(),
-                              displayName: displayName.isNotEmpty
-                                  ? displayName
-                                  : UsernameGenerator().generateRandom(),
-                            );
-                    if (result == 'Signed up') {
-                      Navigator.pushNamed(context, HomeScreen.id);
-                    } else if (result == 'weak-password') {
-                      ScaffoldSnackbar.of(context)
-                          .show('The password provided too weak');
-                    } else if (result == 'email-already-in-use') {
-                      ScaffoldSnackbar.of(context)
-                          .show('An account already exists for that email');
-                    }
-                    setState(() {
-                      _isLoading = false;
-                    });
-                  }),
+                color: AppTheme.darkBlue,
+                text: 'Register',
+                onPressed: () async {
+                  context.read<AuthBloc>().add(SignUpRequested(
+                      emailController.text, passwordController.text));
+                },
+              ),
             ],
           ),
         ),

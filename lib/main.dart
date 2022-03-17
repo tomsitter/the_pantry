@@ -1,18 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 
-import 'bloc/add_item_cubit.dart';
-import 'bloc/pantry_list_cubit.dart';
-import 'data/repository.dart';
+import 'data/repositories/auth_repository.dart';
+import 'bloc/auth_bloc.dart';
+import 'bloc/pantry_cubit.dart';
+import 'data/repositories/firestore_repository.dart';
 import 'presentation/screens/home_screen.dart';
 import 'presentation/screens/login_screen.dart';
 import 'presentation/screens/registration_screen.dart';
 import 'presentation/screens/welcome_screen.dart';
-import 'data/services/authentication_service.dart';
 import 'data/services/firestore_service.dart';
 import 'constants.dart';
 
@@ -22,8 +21,8 @@ Future main() async {
   runApp(
     MyApp(
       repository: Repository(
-        db: FirestoreService(),
-        auth: AuthenticationService(FirebaseAuth.instance),
+        db: FirestoreService(firestore: FirebaseFirestore.instance),
+        auth: AuthRepository(firebaseAuth: FirebaseAuth.instance),
       ),
     ),
   );
@@ -36,49 +35,37 @@ class MyApp extends StatelessWidget {
   MyApp({
     Key? key,
     required this.repository,
-    // required this.router
   }) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final pantryListCubit = PantryListCubit(repository: repository);
-
-    return MultiProvider(
-      providers: [
-        Provider<FirestoreService>(create: (_) => FirestoreService()),
-        Provider<AuthenticationService>(
-          create: (_) => AuthenticationService(FirebaseAuth.instance),
-        ),
-        StreamProvider<User?>(
-          create: (context) {
-            final auth = AuthenticationService(FirebaseAuth.instance);
-            return auth.authStateChanges;
-          },
-          initialData: null,
-        ),
-      ],
+    return RepositoryProvider(
+      create: (context) => repository,
       child: MultiBlocProvider(
         providers: [
-          BlocProvider<PantryListCubit>.value(
-            value: pantryListCubit,
+          BlocProvider(
+            create: (_) => AuthBloc(authRepository: repository.auth),
           ),
-          BlocProvider<AddItemCubit>(
-            create: (context) => AddItemCubit(
-                repository: repository, pantryListCubit: pantryListCubit),
-          ),
+          BlocProvider(
+              create: (context) => PantryCubit(repository: repository)),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: Theme.of(context).copyWith(
-            primaryColor: AppTheme.blue,
+          // theme: Theme.of(context).copyWith(
+          //   primaryColor: AppTheme.blue,
+          // ),
+          theme: ThemeData(
+            brightness: Brightness.light,
+            colorScheme: ColorScheme.fromSeed(
+                seedColor: AppTheme.blue, secondary: AppTheme.redBrown),
+            fontFamily: 'Roboto',
           ),
           title: 'The Pantry',
-          home: const AuthenticationWrapper(),
+          home: const WelcomeScreen(),
           routes: {
             WelcomeScreen.id: (context) => const WelcomeScreen(),
-            LoginScreen.id: (context) => const LoginScreen(),
-            RegistrationScreen.id: (context) => const RegistrationScreen(),
+            LoginScreen.id: (context) => LoginScreen(),
+            RegistrationScreen.id: (context) => RegistrationScreen(),
             HomeScreen.id: (context) => const HomeScreen(),
           },
         ),
@@ -94,7 +81,7 @@ class AuthenticationWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.watch<User?>();
     if (user != null) {
-      BlocProvider.of<PantryListCubit>(context).fetchPantryList();
+      BlocProvider.of<PantryCubit>(context).fetchPantryList();
       return const HomeScreen();
     }
     return const WelcomeScreen();

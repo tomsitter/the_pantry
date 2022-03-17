@@ -3,10 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:the_pantry/data/models/pantry_model.dart';
 
 class FirestoreService {
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore;
+
+  FirestoreService({FirebaseFirestore? firestore})
+      : _firestore = firestore ?? FirebaseFirestore.instance;
 
   Stream<PantryList> streamUserData(User user) {
-    return firestore
+    return _firestore
         .collection('user_data')
         .doc(user.uid)
         .snapshots()
@@ -14,7 +17,7 @@ class FirestoreService {
   }
 
   Future<PantryList> getUserDataSnapshot(User user) async {
-    return firestore
+    return _firestore
         .collection('user_data')
         .doc(user.uid)
         .get()
@@ -31,32 +34,41 @@ class FirestoreService {
   }
 
   Future<void> updateUser(User user, PantryList pantryList) {
-    return firestore
+    return _firestore
         .collection('user_data')
         .doc(user.uid)
         .set(pantryList.toJson());
   }
 
   Future<Map<String, dynamic>?> fetchPantryItems(User user) async {
-    return await firestore
+    return await _firestore
         .collection('user_data')
         .doc(user.uid)
         .get()
         .then((docSnapshot) => docSnapshot.data())
-        .catchError(
-      (e) {
-        if (e.code == "NOT_FOUND") {
+        .catchError((e) {
+      print('An error occurred in fetch');
+      return <String, dynamic>{};
+    });
+  }
+
+  Future<Map<String, dynamic>?> createNewPantry(User user) async {
+    return await _firestore
+        .collection('user_data')
+        .doc(user.uid)
+        .set({"pantry": {}})
+        .then((_) => fetchPantryItems(user))
+        .catchError((error) {
+          print("Failed to create a new pantry for user");
           return <String, dynamic>{};
-        }
-      },
-    );
+        });
   }
 
   Future<bool> updateItem(
       String name, Map<String, dynamic> item, User user) async {
-    // Overwrites an item with the same name property.
+    /// Overwrites an item with the same name property.
     try {
-      return await firestore
+      return await _firestore
           .collection('user_data')
           .doc(user.uid)
           .update({'pantry.$name': item[name]}).then((value) => true);
@@ -67,7 +79,7 @@ class FirestoreService {
 
   Future<bool> deleteItem(String name, User user) async {
     try {
-      return await firestore
+      return await _firestore
           .collection('user_data')
           .doc(user.uid)
           .update({'pantry.$name': FieldValue.delete()}).then((value) => true);
@@ -75,13 +87,4 @@ class FirestoreService {
       return false;
     }
   }
-
-  // addItem(String name, Map<String, dynamic> newItem, User user) {
-  //   try {
-  //     return await firestore
-  //     .collect('user_data')
-  //     .doc(user.uid)
-  //     .update({'')
-  //   }
-  // }
 }

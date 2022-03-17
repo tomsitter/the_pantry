@@ -10,9 +10,9 @@ class AppRouter {
       case WelcomeScreen.id:
         return MaterialPageRoute(builder: (_) => const WelcomeScreen());
       case LoginScreen.id:
-        return MaterialPageRoute(builder: (_) => const LoginScreen());
+        return MaterialPageRoute(builder: (_) => LoginScreen());
       case RegistrationScreen.id:
-        return MaterialPageRoute(builder: (_) => const RegistrationScreen());
+        return MaterialPageRoute(builder: (_) => RegistrationScreen());
       case HomeScreen.id:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       default:
