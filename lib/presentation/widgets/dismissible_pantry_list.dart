@@ -27,7 +27,7 @@ class DismissiblePantryList extends StatelessWidget {
 
     return BlocBuilder<PantryCubit, PantryState>(
       builder: (context, state) {
-        if (state.status != PantryStatus.loaded) {
+        if (state.status == PantryStatus.initial) {
           return const CircularProgressIndicator(color: AppTheme.warmRed);
         }
         final pantryList = state.pantryList;

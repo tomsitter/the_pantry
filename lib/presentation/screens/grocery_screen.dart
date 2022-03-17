@@ -48,10 +48,14 @@ class _GroceryScreenState extends State<GroceryScreen> {
     return Scaffold(
       backgroundColor: widget.color,
       body: SafeArea(
-        child: BlocBuilder<PantryCubit, PantryState>(
-          builder: (context, state) {
+        child: BlocConsumer<PantryCubit, PantryState>(
+          listener: (context, state) {
             if (state.status == PantryStatus.initial) {
               context.read<PantryCubit>().fetchPantryList();
+            }
+          },
+          builder: (context, state) {
+            if (state.status == PantryStatus.initial) {
               return const Center(
                   child: CircularProgressIndicator(color: AppTheme.warmRed));
             }
