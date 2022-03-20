@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "538499252909-jtcuaoa80g56lm5k2ku3p64h12omsqcd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tomsitter.the_pantry",
+            "certificate_hash": "e26bf59bcec72642609f7c00546d308dcb68a5f2"
+          }
+        },
+        {
           "client_id": "538499252909-2god1lr8ddt5h465j1oosu3tbi07ivsc.apps.googleusercontent.com",
           "client_type": 3
         }
