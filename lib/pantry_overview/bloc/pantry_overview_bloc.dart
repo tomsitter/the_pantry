@@ -5,7 +5,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:pantry_repository/pantry_repository.dart';
 import 'package:the_pantry/pantry_overview/pantry_overview.dart';
-import 'package:pantry_api/pantry_api.dart';
 
 part 'pantry_overview_event.dart';
 part 'pantry_overview_state.dart';

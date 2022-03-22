@@ -2,16 +2,14 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pantry_repository/pantry_repository.dart';
-import 'package:the_pantry/constants.dart';
 import 'package:the_pantry/pantry_overview/pantry_overview.dart';
 import 'package:the_pantry/edit_pantry_item/edit_pantry_item.dart';
 import 'package:the_pantry/home/home.dart';
 
 class GroceryScreen extends StatelessWidget {
   static const String id = 'grocery_screen';
-  final Color color;
 
-  const GroceryScreen({required this.color, Key? key}) : super(key: key);
+  const GroceryScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +40,6 @@ class GroceryOverviewView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: MultiBlocListener(
         listeners: [
           BlocListener<PantryOverviewBloc, PantryOverviewState>(
@@ -109,8 +106,7 @@ class GroceryOverviewView extends StatelessWidget {
                   child: Row(
                     children: [
                       Text(
-                        '$numItems nm /Items',
-                        style: const TextStyle(color: Colors.black),
+                        '$numItems Items',
                       ),
                       const SizedBox(width: 32.0),
                       const PantrySearchField(),
@@ -120,7 +116,6 @@ class GroceryOverviewView extends StatelessWidget {
                 Expanded(
                   child: Container(
                     decoration: const BoxDecoration(
-                      color: Colors.white,
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(12.0),
                         topRight: Radius.circular(12.0),
@@ -144,8 +139,9 @@ class GroceryOverviewView extends StatelessWidget {
       ),
       floatingActionButton: ElevatedButton(
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(
-              showGroceries ? AppTheme.blue : AppTheme.redBrown),
+          backgroundColor: MaterialStateProperty.all<Color>(showGroceries
+              ? Theme.of(context).primaryColor
+              : Theme.of(context).secondaryHeaderColor),
         ),
         onPressed: () {
           Navigator.of(context).push(
@@ -183,112 +179,11 @@ class PantrySearchField extends StatelessWidget {
         // style: const TextStyle(
         //   color: Colors.black,
         // ),
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white.withOpacity(0.3),
+        decoration: const InputDecoration(
           labelText: 'Search',
-          labelStyle: const TextStyle(
-            color: Colors.white,
-          ),
-          suffixIcon: const Icon(Icons.search, color: Colors.white),
+          suffixIcon: Icon(Icons.search),
         ),
       ),
     );
   }
 }
-//         ],
-//         child: SafeArea(
-//         child: BlocConsumer<PantryCubit, PantryState>(
-//           listener: (context, state) {
-//             if (state.status == PantryStatus.initial) {
-//               context.read<PantryCubit>().fetchPantryList();
-//             }
-//           },
-//           builder: (context, state) {
-//             if (state.status == PantryStatus.initial) {
-//               return const Center(
-//                   child: CircularProgressIndicator(color: AppTheme.warmRed));
-//             }
-//
-//             final pantryList = state.pantryList;
-//             _foundItems = pantryList.groceries;
-//
-//             return Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 Padding(
-//                   padding: const EdgeInsets.symmetric(
-//                       horizontal: 32.0, vertical: 8.0),
-//                   child: Row(
-//                     children: [
-//                       Text(
-//                         '${pantryList.countGroceries} Items',
-//                         style: const TextStyle(color: Colors.white),
-//                       ),
-//                       const SizedBox(width: 32.0),
-//                       Expanded(
-//                         child: TextField(
-//                           autofocus: false,
-//                           controller: searchController,
-//                           onChanged: (value) =>
-//                               _runFilter(pantryList.items, value),
-//                           style: const TextStyle(
-//                             color: Colors.white,
-//                           ),
-//                           decoration: InputDecoration(
-//                             filled: true,
-//                             fillColor: Colors.white.withOpacity(0.3),
-//                             labelText: 'Search',
-//                             labelStyle: const TextStyle(
-//                               color: Colors.white,
-//                             ),
-//                             suffixIcon:
-//                                 const Icon(Icons.search, color: Colors.white),
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 Expanded(
-//                   child: Container(
-//                     decoration: const BoxDecoration(
-//                       color: Colors.white,
-//                       borderRadius: BorderRadius.only(
-//                         topLeft: Radius.circular(12.0),
-//                         topRight: Radius.circular(12.0),
-//                       ),
-//                     ),
-//                     child: Padding(
-//                       padding: const EdgeInsets.only(
-//                           left: 8.0, top: 8.0, right: 8.0, bottom: 88.0),
-//                       child: DismissibleGroceryList(displayItems: _foundItems),
-//                     ),
-//                   ),
-//                 ),
-//               ],
-//             );
-//           },
-//         ),
-//       ),
-//       floatingActionButton: ElevatedButton(
-//         style: ButtonStyle(
-//           backgroundColor: MaterialStateProperty.all<Color>(widget.color),
-//         ),
-//         onPressed: () => showModalBottomSheet(
-//           isScrollControlled: true,
-//           context: context,
-//           builder: (context) =>
-//               AddItemModal(inGroceryList: true, color: widget.color),
-//         ),
-//         child: Wrap(
-//           crossAxisAlignment: WrapCrossAlignment.center,
-//           children: const [
-//             Icon(Icons.add),
-//             Text('Add item'),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:the_pantry/constants.dart';
 import 'package:the_pantry/pantry_overview/pantry_overview.dart';
 import 'package:pantry_api/pantry_api.dart';
 import 'package:the_pantry/edit_pantry_item/edit_pantry_item.dart';
@@ -29,7 +28,7 @@ class DismissibleGroceryList extends StatelessWidget {
                   leftSwipeColor: Colors.red,
                   rightSwipeIcon: Icons.home,
                   rightSwipeText: 'To Pantry',
-                  rightSwipeColor: AppTheme.paleTeal,
+                  rightSwipeColor: Theme.of(context).primaryColorLight,
                   child: _GroceryTile(
                     item: item,
                     checkboxCallback: (bool? checkboxState) {
@@ -38,7 +37,6 @@ class DismissibleGroceryList extends StatelessWidget {
                               item: item, isChecked: checkboxState!));
                     },
                     onLongPressCallback: () {
-                      print("detected long press");
                       Navigator.of(context).push(
                         EditPantryItemPage.route(initialItem: item),
                       );

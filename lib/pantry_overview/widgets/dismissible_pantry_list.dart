@@ -1,12 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pantry_api/pantry_api.dart';
 import 'package:pantry_repository/pantry_repository.dart';
 import 'package:the_pantry/pantry_overview/pantry_overview.dart';
 import 'package:the_pantry/edit_pantry_item/edit_pantry_item.dart';
-
-import 'package:the_pantry/constants.dart';
 
 /// A scrollable list of Expansion tiles
 ///
@@ -39,10 +36,12 @@ class DismissiblePantryList extends StatelessWidget {
               ignoring: items.isEmpty,
               child: ExpansionTile(
                 collapsedTextColor: items.isEmpty ? Colors.grey : Colors.black,
+                textColor: Theme.of(context).secondaryHeaderColor,
                 title: Text(foodType.displayName),
                 subtitle: Text(displayItemCount(items.length)),
                 children: [
                   ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: items.length,
                     itemBuilder: (context, index) {
@@ -52,7 +51,7 @@ class DismissiblePantryList extends StatelessWidget {
                         item: item,
                         leftSwipeIcon: Icons.shopping_cart,
                         leftSwipeText: 'To Groceries',
-                        leftSwipeColor: AppTheme.paleTeal,
+                        leftSwipeColor: Theme.of(context).primaryColor,
                         rightSwipeIcon: Icons.delete_forever,
                         rightSwipeText: 'Delete',
                         rightSwipeColor: Colors.red,
@@ -80,7 +79,7 @@ class DismissiblePantryList extends StatelessWidget {
                       );
                     },
                   ),
-                  const Divider(),
+                  // const Divider(),
                 ],
               ),
             );
@@ -102,7 +101,8 @@ class _PantryTile extends StatelessWidget {
       child: ListTile(
         dense: true,
         leading: item.inGroceryList
-            ? const Icon(Icons.shopping_cart, color: AppTheme.paleBlue)
+            ? Icon(Icons.shopping_cart,
+                color: Theme.of(context).primaryColorLight)
             : null,
         title: Text(item.name),
         subtitle: Text('Added ${item.daysAgo()}'),

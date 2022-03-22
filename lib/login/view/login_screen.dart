@@ -26,7 +26,7 @@ class LoginScreen extends StatelessWidget {
               Flexible(
                 child: Hero(
                   tag: 'logo',
-                  child: Container(
+                  child: SizedBox(
                     height: 150.0,
                     child: Image.asset('assets/images/icon.png'),
                   ),

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../constants.dart';
-
 class AuthTextField extends StatelessWidget {
   final String hintText;
   final TextInputType _inputType;
@@ -12,11 +10,12 @@ class AuthTextField extends StatelessWidget {
   const AuthTextField(
       {required this.hintText,
       required this.controller,
+      Key? key,
       inputType,
       obscureText})
       : _inputType = inputType ?? TextInputType.text,
         _obscureText = obscureText ?? false,
-        super();
+        super(key: key);
 
   factory AuthTextField.email(
       {required String hintText, required TextEditingController controller}) {
@@ -42,7 +41,7 @@ class AuthTextField extends StatelessWidget {
       keyboardType: _inputType,
       textAlign: TextAlign.center,
       obscureText: _obscureText,
-      decoration: AppTheme.textFieldDecoration.copyWith(hintText: hintText),
+      // decoration: Theme.of(context).copyWith(hintText: hintText),
       controller: controller,
     );
   }

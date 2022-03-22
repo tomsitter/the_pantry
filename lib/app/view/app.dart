@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pantry_repository/pantry_repository.dart';
 import 'package:the_pantry/app/app.dart';
-import 'package:the_pantry/theme.dart';
+import 'package:the_pantry/theme/theme.dart';
 
 class App extends StatelessWidget {
   const App({
@@ -45,7 +45,7 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: theme,
+      theme: CustomTheme.light,
       home: FlowBuilder<AppStatus>(
         state: context.select((AppBloc bloc) => bloc.state.status),
         onGeneratePages: onGenerateAppViewPages,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:the_pantry/constants.dart';
 import 'package:the_pantry/home/home.dart';
 import 'package:the_pantry/pantry_overview/pantry_overview.dart';
 
@@ -31,17 +30,12 @@ class HomeView extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: selectedTab == HomeTab.grocery
-              ? AppTheme.blue
-              : AppTheme.redBrown,
+              ? Theme.of(context).primaryColor
+              : Theme.of(context).secondaryHeaderColor,
           title: Text(
             selectedTab == HomeTab.grocery ? 'My Grocery List' : 'My Pantry',
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold),
           ),
           bottom: TabBar(
-            indicatorColor: AppTheme.paleYellow,
             tabs: const [
               Tab(icon: Icon(Icons.shopping_cart)),
               Tab(icon: Icon(Icons.home)),
@@ -53,12 +47,12 @@ class HomeView extends StatelessWidget {
         ),
         drawer: AppDrawer(
             color: selectedTab == HomeTab.grocery
-                ? AppTheme.blue
-                : AppTheme.redBrown),
+                ? Theme.of(context).primaryColorLight
+                : Theme.of(context).secondaryHeaderColor),
         body: const TabBarView(
           children: [
-            GroceryScreen(color: AppTheme.blue),
-            GroceryScreen(color: AppTheme.redBrown),
+            GroceryScreen(),
+            GroceryScreen(),
           ],
         ),
       ),

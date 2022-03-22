@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pantry_repository/pantry_repository.dart';
 import 'package:the_pantry/edit_pantry_item/bloc/edit_pantry_item_bloc.dart';
-import 'package:the_pantry/pantry_overview/pantry_overview.dart';
 
 class EditPantryItemPage extends StatelessWidget {
   const EditPantryItemPage({Key? key}) : super(key: key);
@@ -48,7 +47,7 @@ class EditPantryItemView extends StatelessWidget {
         theme.colorScheme.secondary;
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(title: Text(isNewItem ? "Add an item" : "Edit item")),
       floatingActionButton: FloatingActionButton(
         backgroundColor: status.isLoadingOrSuccess
             ? fabBackgroundColor.withOpacity(0.5)
@@ -71,7 +70,7 @@ class EditPantryItemView extends StatelessWidget {
                   _NameField(),
                   _AmountField(),
                   _CategoryField(),
-                  _inGroceryField(),
+                  _InGroceryField(),
                 ],
               )),
         ),
@@ -88,21 +87,27 @@ class _NameField extends StatelessWidget {
     final state = context.watch<EditPantryItemBloc>().state;
     final hintText = state.initialItem?.name ?? '';
 
-    return TextFormField(
-      key: const Key('editPantryItemView_name_textFormField'),
-      initialValue: state.name,
-      decoration: InputDecoration(
-          enabled: !state.status.isLoadingOrSuccess,
-          labelText: "name",
-          hintText: hintText),
-      maxLength: 50,
-      inputFormatters: [
-        LengthLimitingTextInputFormatter(50),
-        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s]'))
+    return Row(
+      children: [
+        Expanded(
+          child: TextFormField(
+            key: const Key('editPantryItemView_name_textFormField'),
+            initialValue: state.name,
+            decoration: InputDecoration(
+                enabled: !state.status.isLoadingOrSuccess,
+                labelText: "name",
+                hintText: hintText),
+            maxLength: 50,
+            inputFormatters: [
+              LengthLimitingTextInputFormatter(50),
+              FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s]'))
+            ],
+            onChanged: (value) {
+              context.read<EditPantryItemBloc>().add(EditPantryItemName(value));
+            },
+          ),
+        ),
       ],
-      onChanged: (value) {
-        context.read<EditPantryItemBloc>().add(EditPantryItemName(value));
-      },
     );
   }
 }
@@ -115,22 +120,29 @@ class _CategoryField extends StatelessWidget {
     final state = context.watch<EditPantryItemBloc>().state;
     final hintText = state.initialItem?.category ?? FoodCategory.uncategorized;
 
-    return DropdownButtonFormField(
-        key: const Key('editPantryItemView_category_dropdownTextField'),
-        value: state.category,
-        items: FoodCategory.categories
-            .map<DropdownMenuItem<FoodCategory>>((FoodType value) {
-          FoodCategory category = FoodCategory(value);
-          return DropdownMenuItem<FoodCategory>(
-            value: category,
-            child: Text(category.displayName),
-          );
-        }).toList(),
-        onChanged: (FoodCategory? value) {
-          context
-              .read<EditPantryItemBloc>()
-              .add(EditPantryItemCategory(value!));
-        });
+    return Row(
+      children: [
+        const Text("Category:"),
+        Expanded(
+          child: DropdownButtonFormField(
+              key: const Key('editPantryItemView_category_dropdownTextField'),
+              value: state.category,
+              items: FoodCategory.categories
+                  .map<DropdownMenuItem<FoodCategory>>((FoodType value) {
+                FoodCategory category = FoodCategory(value);
+                return DropdownMenuItem<FoodCategory>(
+                  value: category,
+                  child: Text(category.displayName),
+                );
+              }).toList(),
+              onChanged: (FoodCategory? value) {
+                context
+                    .read<EditPantryItemBloc>()
+                    .add(EditPantryItemCategory(value!));
+              }),
+        ),
+      ],
+    );
   }
 }
 
@@ -142,25 +154,34 @@ class _AmountField extends StatelessWidget {
     final state = context.watch<EditPantryItemBloc>().state;
     // final hintText = state.initialItem?.category ?? FoodCategory.uncategorized;
 
-    return DropdownButtonFormField(
-        value: state.amount,
-        key: const Key('editPantryItemView_amount_dropdownTextField'),
-        items: FoodAmount.amounts
-            .map<DropdownMenuItem<FoodAmount>>((Amount value) {
-          FoodAmount amount = FoodAmount(value);
-          return DropdownMenuItem<FoodAmount>(
-            value: amount,
-            child: Text(amount.displayName),
-          );
-        }).toList(),
-        onChanged: (FoodAmount? value) {
-          context.read<EditPantryItemBloc>().add(EditPantryItemAmount(value!));
-        });
+    return Row(
+      children: [
+        const Text("Amount remaining:"),
+        Expanded(
+          child: DropdownButtonFormField(
+              value: state.amount,
+              key: const Key('editPantryItemView_amount_dropdownTextField'),
+              items: FoodAmount.amounts
+                  .map<DropdownMenuItem<FoodAmount>>((Amount value) {
+                FoodAmount amount = FoodAmount(value);
+                return DropdownMenuItem<FoodAmount>(
+                  value: amount,
+                  child: Text(amount.displayName),
+                );
+              }).toList(),
+              onChanged: (FoodAmount? value) {
+                context
+                    .read<EditPantryItemBloc>()
+                    .add(EditPantryItemAmount(value!));
+              }),
+        ),
+      ],
+    );
   }
 }
 
-class _inGroceryField extends StatelessWidget {
-  const _inGroceryField({Key? key}) : super(key: key);
+class _InGroceryField extends StatelessWidget {
+  const _InGroceryField({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
