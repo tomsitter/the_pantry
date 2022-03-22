@@ -64,10 +64,12 @@ class PantryOverviewUndoDeletionRequested extends PantryOverviewEvent {
 }
 
 class PantryOverviewFilterChanged extends PantryOverviewEvent {
-  final PantryViewFilter filter;
+  final PantryFilter filter;
+  final String searchText;
 
-  const PantryOverviewFilterChanged({required this.filter});
+  const PantryOverviewFilterChanged({required this.filter, searchText})
+      : searchText = searchText ?? "";
 
   @override
-  List<Object> get props => [filter];
+  List<Object> get props => [filter, searchText];
 }

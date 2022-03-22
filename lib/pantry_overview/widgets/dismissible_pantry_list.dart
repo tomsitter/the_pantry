@@ -2,7 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pantry_api/pantry_api.dart';
+import 'package:pantry_repository/pantry_repository.dart';
 import 'package:the_pantry/pantry_overview/pantry_overview.dart';
+import 'package:the_pantry/edit_pantry_item/edit_pantry_item.dart';
 
 import 'package:the_pantry/constants.dart';
 
@@ -21,8 +23,8 @@ class DismissiblePantryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final foodTypes = List.of(FoodType.values)
-      ..sort((a, b) => a.displayName.compareTo(b.displayName));
+    List<FoodCategory> foodTypes =
+        FoodCategory.categories.map((value) => FoodCategory(value)).toList();
 
     return BlocBuilder<PantryOverviewBloc, PantryOverviewState>(
       builder: (context, state) {
@@ -32,10 +34,11 @@ class DismissiblePantryList extends StatelessWidget {
           itemBuilder: (context, index) {
             final foodType = foodTypes[index];
             final items =
-                pantryList.where((item) => item.foodType == foodType).toList();
+                pantryList.where((item) => item.category == foodType).toList();
             return IgnorePointer(
               ignoring: items.isEmpty,
               child: ExpansionTile(
+                collapsedTextColor: items.isEmpty ? Colors.grey : Colors.black,
                 title: Text(foodType.displayName),
                 subtitle: Text(displayItemCount(items.length)),
                 children: [
@@ -95,28 +98,38 @@ class _PantryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      dense: true,
-      leading: item.inGroceryList
-          ? const Icon(Icons.shopping_cart, color: AppTheme.paleBlue)
-          : null,
-      title: Text(item.name),
-      subtitle: Text('Added ${item.daysAgo()}'),
-      trailing: DropdownButton<String>(
-        value: describeEnum(item.amount),
-        items: amountMap.keys.map<DropdownMenuItem<String>>((key) {
-          return DropdownMenuItem<String>(
-            value: key,
-            child: Text(key),
-          );
-        }).toList(),
-        onChanged: (String? newAmount) {
-          if (newAmount != null) {
-            // BlocProvider.of<PantryCubit>(context).changeAmount(item, newAmount);
-            context.read<PantryOverviewBloc>().add(
-                PantryOverviewAmountChanged(item: item, amount: newAmount));
-          }
-        },
+    return GestureDetector(
+      child: ListTile(
+        dense: true,
+        leading: item.inGroceryList
+            ? const Icon(Icons.shopping_cart, color: AppTheme.paleBlue)
+            : null,
+        title: Text(item.name),
+        subtitle: Text('Added ${item.daysAgo()}'),
+        trailing: SizedBox(
+          width: 150,
+          height: 150,
+          child: DropdownButton<FoodAmount>(
+            value: item.amount,
+            items: FoodAmount.amounts
+                .map<DropdownMenuItem<FoodAmount>>((Amount value) {
+              FoodAmount amount = FoodAmount(value);
+              return DropdownMenuItem<FoodAmount>(
+                value: amount,
+                child: Text(amount.displayName),
+              );
+            }).toList(),
+            onChanged: (FoodAmount? newAmount) {
+              if (newAmount != null) {
+                context.read<PantryOverviewBloc>().add(
+                    PantryOverviewAmountChanged(
+                        item: item, amount: newAmount.toString()));
+              }
+            },
+          ),
+        ),
+        onLongPress: () => Navigator.of(context)
+            .push(EditPantryItemPage.route(initialItem: item)),
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:the_pantry/constants.dart';
 import 'package:the_pantry/pantry_overview/pantry_overview.dart';
 import 'package:pantry_api/pantry_api.dart';
+import 'package:the_pantry/edit_pantry_item/edit_pantry_item.dart';
 
 class DismissibleGroceryList extends StatelessWidget {
   final List<PantryItem> displayItems;
@@ -35,6 +36,12 @@ class DismissibleGroceryList extends StatelessWidget {
                       context.read<PantryOverviewBloc>().add(
                           PantryOverviewGroceryToggled(
                               item: item, isChecked: checkboxState!));
+                    },
+                    onLongPressCallback: () {
+                      print("detected long press");
+                      Navigator.of(context).push(
+                        EditPantryItemPage.route(initialItem: item),
+                      );
                     },
                   ),
                   confirmDismiss: (direction) async {
@@ -69,22 +76,29 @@ class DismissibleGroceryList extends StatelessWidget {
 class _GroceryTile extends StatelessWidget {
   final PantryItem item;
   final Function(bool?) checkboxCallback;
+  final VoidCallback onLongPressCallback;
 
   const _GroceryTile(
-      {Key? key, required this.item, required this.checkboxCallback})
+      {Key? key,
+      required this.item,
+      required this.checkboxCallback,
+      required this.onLongPressCallback})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return CheckboxListTile(
-      dense: true,
-      title: Text(
-        item.name,
-        style: TextStyle(
-            decoration: item.isChecked ? TextDecoration.lineThrough : null),
+    return GestureDetector(
+      child: CheckboxListTile(
+        dense: true,
+        title: Text(
+          item.name,
+          style: TextStyle(
+              decoration: item.isChecked ? TextDecoration.lineThrough : null),
+        ),
+        value: item.isChecked,
+        onChanged: checkboxCallback,
       ),
-      value: item.isChecked,
-      onChanged: checkboxCallback,
+      onLongPress: onLongPressCallback,
     );
   }
 }

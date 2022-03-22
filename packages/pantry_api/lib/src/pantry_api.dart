@@ -33,15 +33,9 @@ abstract class PantryApi {
   /// Creates and returns a new Pantry if user does not yet have one.
   Future<void> fetchPantryItems(String docId);
 
-  /// Add a new [PantryItem] to a [user]'s pantry
-  ///
-  /// Throws a [PantryException] if item with the same name exists
-  Future<void> addItem(String docId, PantryItem item);
-
-  /// Overwrite an existing [PantryItem] by name in a [user]s pantry.
-  ///
-  /// Throws a [PantryException] if item with same name not found.
-  Future<void> updateItem(String docId, PantryItem item);
+  /// Add a new [PantryItem] or overwrite an existing [PantryItem]
+  /// in a [user]s pantry.
+  Future<void> saveItem(String docId, PantryItem item);
 
   /// Delete a [PantryItem] with the given name
   ///
@@ -51,7 +45,13 @@ abstract class PantryApi {
   /// Changes the amount remaining on an item in the user's pantry
   ///
   /// Throws a [PantryException] if item is not in the user's pantry
-  Future<void> changeAmount(String docId, PantryItem item, Amount amount);
+  Future<void> changeAmount(String docId, PantryItem item, FoodAmount amount);
+
+  /// Changes the category of the item in the user's pantry
+  ///
+  /// Throws a [PantryException] if item is not in the user's pantry
+  Future<void> changeCategory(
+      String docId, PantryItem item, FoodCategory category);
 
   /// Toggles whether an item is in the grocery list or the pantry
   Future<void> toggleInGroceries(

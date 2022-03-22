@@ -58,7 +58,7 @@ class HomeView extends StatelessWidget {
         body: const TabBarView(
           children: [
             GroceryScreen(color: AppTheme.blue),
-            PantryScreen(color: AppTheme.redBrown),
+            GroceryScreen(color: AppTheme.redBrown),
           ],
         ),
       ),

@@ -35,7 +35,7 @@ class DismissibleWidget<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Dismissible(
-        key: ObjectKey(item),
+        key: Key('pantryTile_dismissible_${item.toString()}'),
         // background shown when widget swiped right or down
         background: buildSwipeAction(
             right, rightSwipeColor, rightSwipeIcon, rightSwipeText),

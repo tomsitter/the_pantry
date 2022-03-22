@@ -1,43 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:pantry_api/pantry_api.dart';
 
 class FirestoreService {
   final FirebaseFirestore _firestore;
 
   FirestoreService({FirebaseFirestore? firestore})
       : _firestore = firestore ?? FirebaseFirestore.instance;
-
-  // Stream<PantryList> streamUserData(String userId) {
-  //   return _firestore
-  //       .collection('user_data')
-  //       .doc(userId)
-  //       .snapshots()
-  //       .map((snap) => PantryList.fromFirestore(snap));
-  // }
-  //
-  // Future<PantryList> getUserDataSnapshot(String userId) async {
-  //   return _firestore
-  //       .collection('user_data')
-  //       .doc(userId)
-  //       .get()
-  //       .then((data) => PantryList.fromFirestore(data))
-  //       .catchError(
-  //     (e) {
-  //       if (e.code == "NOT_FOUND") {
-  //         var newPantryList = PantryList(items: <PantryItem>[]);
-  //         updateUser(userId, newPantryList);
-  //         return newPantryList;
-  //       }
-  //     },
-  //   );
-  // }
-
-  Future<void> updateUser(String userId, PantryList pantryList) {
-    return _firestore
-        .collection('user_data')
-        .doc(userId)
-        .set(pantryList.toJson());
-  }
 
   Future<Map<String, dynamic>?> fetchPantryItems(String userId) async {
     return await _firestore
@@ -64,24 +31,24 @@ class FirestoreService {
   }
 
   Future<bool> updateItem(
-      String name, Map<String, dynamic> item, String userId) async {
-    /// Overwrites an item with the same name property.
+      String id, Map<String, dynamic> item, String userId) async {
+    /// Overwrites an item with the same name property or creates a new item.
     try {
       return await _firestore
           .collection('user_data')
           .doc(userId)
-          .update({'pantry.$name': item[name]}).then((value) => true);
+          .update({'pantry.$id': item[id]}).then((value) => true);
     } catch (e) {
       return false;
     }
   }
 
-  Future<void> deleteItem(String name, String userId) async {
+  Future<void> deleteItem(String id, String userId) async {
     try {
       return await _firestore
           .collection('user_data')
           .doc(userId)
-          .update({'pantry.$name': FieldValue.delete()}).then((value) => true);
+          .update({'pantry.$id': FieldValue.delete()}).then((value) => true);
     } catch (_) {
       print('An error occurred');
       return;

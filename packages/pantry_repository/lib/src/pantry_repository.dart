@@ -15,17 +15,9 @@ class PantryRepository {
   Future<void> fetchPantryItems(String docId) =>
       _pantryApi.fetchPantryItems(docId);
 
-  /// Adds a new [PantryItem] to a [user]s pantry
-  ///
-  /// If a [PantryItem] with the same name already exists, throws a [PantryException]
-  Future<void> addPantryItem(String docId, PantryItem item) =>
-      _pantryApi.addItem(docId, item);
-
-  /// Updates an existing [PantryItem] in a [user]s pantry
-  ///
-  /// throws a [PantryException] if item does not exist in pantry
-  Future<void> updatePantryItem(String docId, PantryItem item) =>
-      _pantryApi.updateItem(docId, item);
+  /// Adds a new [PantryItem] or overwrites an existing one in a [user]s pantry
+  Future<void> savePantryItem(String docId, PantryItem item) =>
+      _pantryApi.saveItem(docId, item);
 
   /// Delete a [PantryItem] from a [user]'s pantry
   ///
@@ -37,8 +29,15 @@ class PantryRepository {
   /// Changes the amount remaining on an item in the user's pantry
   ///
   /// Throws a [PantryException] if item is not in the user's pantry
-  Future<void> changeAmount(String docId, PantryItem item, Amount amount) =>
+  Future<void> changeAmount(String docId, PantryItem item, FoodAmount amount) =>
       _pantryApi.changeAmount(docId, item, amount);
+
+  /// Changes the category of an item in the user's pantry
+  ///
+  /// Throws a [PantryException] if item is not in the user's pantry
+  Future<void> changeCategory(
+          String docId, PantryItem item, FoodCategory category) =>
+      _pantryApi.changeCategory(docId, item, category);
 
   /// Toggles whether an item is in the grocery list or the pantry
   Future<void> toggleInGroceries(

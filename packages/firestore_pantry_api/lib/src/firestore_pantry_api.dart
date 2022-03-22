@@ -49,20 +49,19 @@ class FirestorePantryApi extends PantryApi {
   Stream<List<PantryItem>> getPantryItems() =>
       _pantryItemStreamController.asBroadcastStream();
 
-  /// Add a new [PantryItem] to a [user]'s pantry
-  ///
-  /// Throws a [PantryException] if item with the same name exists
+  /// Add a new [PantryItem] to a [user]'s pantry, or updates an existing
+  /// one if item with same [id] exists.
   @override
-  Future<void> addItem(String docId, PantryItem item) {
+  Future<void> saveItem(String docId, PantryItem item) {
     final pantryItems = [..._pantryItemStreamController.value];
-    final index = pantryItems.indexWhere((i) => i.name == item.name);
-    if (index >= 0) {
-      throw PantryException.duplicateItem();
-    } else {
+    final index = pantryItems.indexWhere((i) => i.id == item.id);
+    if (index < 0) {
       pantryItems.add(item);
-      _pantryItemStreamController.add(pantryItems);
-      return _firestoreService.updateItem(item.name, item.toJson(), docId);
+    } else {
+      pantryItems[index] = item;
     }
+    _pantryItemStreamController.add(pantryItems);
+    return _firestoreService.updateItem(item.id, item.toJson(), docId);
   }
 
   /// Deletes a [PantryItem] from a [user]s pantry
@@ -71,13 +70,13 @@ class FirestorePantryApi extends PantryApi {
   @override
   Future<void> deleteItem(String docId, PantryItem item) async {
     final pantryItems = [..._pantryItemStreamController.value];
-    final index = pantryItems.indexWhere((i) => i.name == item.name);
+    final index = pantryItems.indexWhere((i) => i.id == item.id);
     if (index < 0) {
       throw PantryException.itemNotFound();
     } else {
       pantryItems.removeAt(index);
       _pantryItemStreamController.add(pantryItems);
-      return _firestoreService.deleteItem(item.name, docId);
+      return _firestoreService.deleteItem(item.id, docId);
     }
   }
 
@@ -85,15 +84,32 @@ class FirestorePantryApi extends PantryApi {
   ///
   /// Throws a [PantryException] if item is not in the user's pantry
   @override
-  Future<void> changeAmount(String docId, PantryItem item, Amount amount) {
+  Future<void> changeAmount(String docId, PantryItem item, FoodAmount amount) {
     final pantryItems = [..._pantryItemStreamController.value];
-    final index = pantryItems.indexWhere((i) => i.name == item.name);
+    final index = pantryItems.indexWhere((i) => i.id == item.id);
     if (index < 0) {
       throw PantryException.itemNotFound();
     } else {
       pantryItems[index] = item.copyWith(amount: amount);
       _pantryItemStreamController.add(pantryItems);
-      return _firestoreService.updateItem(item.name, item.toJson(), docId);
+      return _firestoreService.updateItem(item.id, item.toJson(), docId);
+    }
+  }
+
+  /// Changes the category on an item in the user's pantry
+  ///
+  /// Throws a [PantryException] if item is not in the user's pantry
+  @override
+  Future<void> changeCategory(
+      String docId, PantryItem item, FoodCategory category) {
+    final pantryItems = [..._pantryItemStreamController.value];
+    final index = pantryItems.indexWhere((i) => i.id == item.id);
+    if (index < 0) {
+      throw PantryException.itemNotFound();
+    } else {
+      pantryItems[index] = item.copyWith(category: category);
+      _pantryItemStreamController.add(pantryItems);
+      return _firestoreService.updateItem(item.id, item.toJson(), docId);
     }
   }
 
@@ -103,13 +119,13 @@ class FirestorePantryApi extends PantryApi {
   @override
   Future<void> toggleChecked(String docId, PantryItem item, bool isChecked) {
     final pantryItems = [..._pantryItemStreamController.value];
-    final index = pantryItems.indexWhere((i) => i.name == item.name);
+    final index = pantryItems.indexWhere((i) => i.id == item.id);
     if (index < 0) {
       throw PantryException.itemNotFound();
     } else {
       pantryItems[index] = item.copyWith(isChecked: isChecked);
       _pantryItemStreamController.add(pantryItems);
-      return _firestoreService.updateItem(item.name, item.toJson(), docId);
+      return _firestoreService.updateItem(item.id, item.toJson(), docId);
     }
   }
 
@@ -118,26 +134,13 @@ class FirestorePantryApi extends PantryApi {
   Future<void> toggleInGroceries(
       String docId, PantryItem item, bool inGroceryList) {
     final pantryItems = [..._pantryItemStreamController.value];
-    final index = pantryItems.indexWhere((i) => i.name == item.name);
+    final index = pantryItems.indexWhere((i) => i.id == item.id);
     if (index < 0) {
       throw PantryException.itemNotFound();
     } else {
       pantryItems[index] = item.copyWith(inGroceryList: inGroceryList);
       _pantryItemStreamController.add(pantryItems);
-      return _firestoreService.updateItem(item.name, item.toJson(), docId);
-    }
-  }
-
-  @override
-  Future<void> updateItem(String docId, PantryItem item) {
-    final pantryItems = [..._pantryItemStreamController.value];
-    final index = pantryItems.indexWhere((i) => i.name == item.name);
-    if (index < 0) {
-      throw PantryException.itemNotFound();
-    } else {
-      pantryItems[index] = item;
-      _pantryItemStreamController.add(pantryItems);
-      return _firestoreService.updateItem(item.name, item.toJson(), docId);
+      return _firestoreService.updateItem(item.id, item.toJson(), docId);
     }
   }
 }

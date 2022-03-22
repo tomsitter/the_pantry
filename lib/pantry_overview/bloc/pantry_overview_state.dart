@@ -5,14 +5,14 @@ enum PantryOverviewStatus { initial, loading, success, failure }
 class PantryOverviewState extends Equatable {
   final PantryOverviewStatus status;
   final List<PantryItem> items;
-  final PantryViewFilter filter;
+  final PantryFilter filter;
   final PantryItem? lastDeletedItem;
   final String? errorMessage;
 
   const PantryOverviewState({
     this.status = PantryOverviewStatus.initial,
     this.items = const [],
-    this.filter = PantryViewFilter.all,
+    this.filter = PantryFilter.allItems,
     this.lastDeletedItem,
     this.errorMessage,
   });
@@ -22,7 +22,7 @@ class PantryOverviewState extends Equatable {
   PantryOverviewState copyWith(
       {PantryOverviewStatus? status,
       List<PantryItem>? items,
-      PantryViewFilter? filter,
+      PantryFilter? filter,
       PantryItem? lastDeletedItem,
       String? errorMessage}) {
     return PantryOverviewState(

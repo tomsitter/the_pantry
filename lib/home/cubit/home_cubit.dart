@@ -7,7 +7,7 @@ class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(const HomeState());
 
   void setTab(int index) {
-    HomeTab tab = index == 1 ? HomeTab.grocery : HomeTab.pantry;
+    HomeTab tab = index == 0 ? HomeTab.grocery : HomeTab.pantry;
     emit(HomeState(tab: tab));
   }
 }
