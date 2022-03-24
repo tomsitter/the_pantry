@@ -1,6 +1,8 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:form_inputs/form_inputs.dart';
+import 'package:formz/formz.dart';
 import 'package:pantry_repository/pantry_repository.dart';
 
 part 'edit_pantry_item_event.dart';
@@ -11,17 +13,19 @@ class EditPantryItemBloc
   final PantryRepository _pantryRepository;
   final AuthenticationRepository _authRepository;
 
-  EditPantryItemBloc(
-      {required PantryRepository pantryRepository,
-      required AuthenticationRepository authRepository,
-      required PantryItem? initialItem})
-      : _pantryRepository = pantryRepository,
+  EditPantryItemBloc({
+    required PantryRepository pantryRepository,
+    required AuthenticationRepository authRepository,
+    required PantryItem? initialItem,
+    required bool isGroceryScreen,
+  })  : _pantryRepository = pantryRepository,
         _authRepository = authRepository,
         super(EditPantryItemState(
+          isGroceryScreen: isGroceryScreen,
           initialItem: initialItem,
-          name: initialItem?.name ?? '',
+          name: ItemName.dirty(initialItem?.name ?? ''),
           category: initialItem?.category ?? FoodCategory.uncategorized,
-          inGroceryList: initialItem?.inGroceryList ?? true,
+          inGroceryList: initialItem?.inGroceryList ?? isGroceryScreen,
         )) {
     on<EditPantryItemName>(_onNameChanged);
     on<EditPantryItemCategory>(_onCategoryChanged);
@@ -34,7 +38,8 @@ class EditPantryItemBloc
     EditPantryItemName event,
     Emitter<EditPantryItemState> emit,
   ) {
-    emit(state.copyWith(name: event.name));
+    final name = ItemName.dirty(event.name);
+    emit(state.copyWith(name: name, formStatus: Formz.validate([name])));
   }
 
   void _onCategoryChanged(
@@ -66,7 +71,7 @@ class EditPantryItemBloc
   ) async {
     emit(state.copyWith(status: EditPantryItemStatus.loading));
     final item = (state.initialItem ?? PantryItem(name: '')).copyWith(
-      name: state.name,
+      name: state.name.value,
       category: state.category,
       amount: state.amount,
       inGroceryList: state.inGroceryList,

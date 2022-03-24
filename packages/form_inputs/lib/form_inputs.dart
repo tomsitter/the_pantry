@@ -1,5 +1,6 @@
 library form_inputs;
 
-export './src/confirmed_password.dart';
-export './src/email.dart';
-export './src/password.dart';
+export 'src/confirmed_password.dart';
+export 'src/email.dart';
+export 'src/password.dart';
+export 'src/item_name.dart';

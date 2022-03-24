@@ -1,29 +1,17 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pantry_repository/pantry_repository.dart';
 import 'package:the_pantry/edit_pantry_item/bloc/edit_pantry_item_bloc.dart';
 
 class EditPantryItemPage extends StatelessWidget {
   final PantryItem? initialItem;
+  final bool isGroceryScreen;
 
-  const EditPantryItemPage({this.initialItem, Key? key}) : super(key: key);
-
-  // static Route<void> route(
-  //     {PantryItem? initialItem}) {
-  //   return MaterialPageRoute(
-  //     fullscreenDialog: true,
-  //     builder: (context) => BlocProvider(
-  //       create: (context) => EditPantryItemBloc(
-  //           pantryRepository: context.read<PantryRepository>(),
-  //           authRepository: context.read<AuthenticationRepository>(),
-  //           initialItem: initialItem),
-  //       child: const EditPantryItemPage(),
-  //     ),
-  //   );
-  // }
+  const EditPantryItemPage(
+      {this.initialItem, required this.isGroceryScreen, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +19,8 @@ class EditPantryItemPage extends StatelessWidget {
       create: (context) => EditPantryItemBloc(
           pantryRepository: context.read<PantryRepository>(),
           authRepository: context.read<AuthenticationRepository>(),
-          initialItem: initialItem),
+          initialItem: initialItem,
+          isGroceryScreen: isGroceryScreen),
       child: BlocListener<EditPantryItemBloc, EditPantryItemState>(
         listenWhen: (previous, current) =>
             previous.status != current.status &&
@@ -50,8 +39,12 @@ class EditPantryItemView extends StatelessWidget {
   Widget build(BuildContext context) {
     final status =
         context.select((EditPantryItemBloc bloc) => bloc.state.status);
+    final isFormValid =
+        context.select((EditPantryItemBloc bloc) => bloc.state.isFormValid);
     final isNewItem =
         context.select((EditPantryItemBloc bloc) => bloc.state.isNewItem);
+    final bool isGroceryScreen =
+        context.select((EditPantryItemBloc bloc) => bloc.state.isGroceryScreen);
     final theme = Theme.of(context);
     final floatingActionButtonTheme = theme.floatingActionButtonTheme;
     final fabBackgroundColor = floatingActionButtonTheme.backgroundColor ??
@@ -63,7 +56,7 @@ class EditPantryItemView extends StatelessWidget {
         backgroundColor: status.isLoadingOrSuccess
             ? fabBackgroundColor.withOpacity(0.5)
             : fabBackgroundColor,
-        onPressed: status.isLoadingOrSuccess
+        onPressed: status.isLoadingOrSuccess || !isFormValid
             ? null
             : () => context
                 .read<EditPantryItemBloc>()
@@ -77,11 +70,12 @@ class EditPantryItemView extends StatelessWidget {
           child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
-                children: const [
-                  _NameField(),
-                  _AmountField(),
-                  _CategoryField(),
-                  _InGroceryField(),
+                children: [
+                  const _NameField(),
+                  // only show amount remaining from grocery screen, not pantry
+                  isGroceryScreen ? Container() : const _AmountField(),
+                  const _CategoryField(),
+                  const _InGroceryField(),
                 ],
               )),
         ),
@@ -96,23 +90,17 @@ class _NameField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<EditPantryItemBloc>().state;
-    final hintText = state.initialItem?.name ?? '';
 
     return Row(
       children: [
         Expanded(
           child: TextFormField(
             key: const Key('editPantryItemView_name_textFormField'),
-            initialValue: state.name,
+            initialValue: state.name.value,
             decoration: InputDecoration(
                 enabled: !state.status.isLoadingOrSuccess,
                 labelText: "name",
-                hintText: hintText),
-            maxLength: 50,
-            inputFormatters: [
-              LengthLimitingTextInputFormatter(50),
-              FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s]'))
-            ],
+                errorText: state.name.invalid ? 'Name too short' : null),
             onChanged: (value) {
               context.read<EditPantryItemBloc>().add(EditPantryItemName(value));
             },

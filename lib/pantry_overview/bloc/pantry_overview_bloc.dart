@@ -16,10 +16,11 @@ class PantryOverviewBloc
 
   PantryOverviewBloc(
       {required PantryRepository pantryRepository,
-      required AuthenticationRepository authRepository})
+      required AuthenticationRepository authRepository,
+      required bool isGroceryScreen})
       : _pantryRepository = pantryRepository,
         _authRepository = authRepository,
-        super(const PantryOverviewState()) {
+        super(PantryOverviewState(isGroceryScreen: isGroceryScreen)) {
     _pantryRepository.fetchPantryItems(_authRepository.currentUser.id);
     on<PantryOverviewSubscriptionRequested>(_onSubscriptionRequested);
     on<PantryOverviewMoveBetweenLists>(_onMoveBetweenLists);

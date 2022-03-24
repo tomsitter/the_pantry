@@ -7,26 +7,25 @@ import 'package:the_pantry/edit_pantry_item/edit_pantry_item.dart';
 
 class GroceryScreen extends StatelessWidget {
   static const String id = 'grocery_screen';
-  final bool showGroceries;
+  final bool isGroceryScreen;
 
-  const GroceryScreen({Key? key, required this.showGroceries})
+  const GroceryScreen({Key? key, required this.isGroceryScreen})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    print("Showing groceries: $showGroceries");
-
     return BlocProvider(
       create: (context) => PantryOverviewBloc(
         pantryRepository: context.read<PantryRepository>(),
         authRepository: context.read<AuthenticationRepository>(),
+        isGroceryScreen: isGroceryScreen,
       )
         ..add(const PantryOverviewSubscriptionRequested())
         ..add(PantryOverviewFilterChanged(
-            filter: showGroceries
+            filter: isGroceryScreen
                 ? const PantryFilter.groceriesOnly()
                 : const PantryFilter.pantryOnly())),
-      child: GroceryOverviewView(showGroceries: showGroceries),
+      child: GroceryOverviewView(showGroceries: isGroceryScreen),
     );
   }
 }
@@ -144,11 +143,14 @@ class GroceryOverviewView extends StatelessWidget {
               : Theme.of(context).secondaryHeaderColor),
         ),
         onPressed: () {
+          bool isGroceryScreen =
+              context.read<PantryOverviewBloc>().state.isGroceryScreen;
           Navigator.of(context).push(MaterialPageRoute(
               fullscreenDialog: true,
               builder: (_) => RepositoryProvider.value(
                   value: context.read<PantryRepository>(),
-                  child: const EditPantryItemPage())));
+                  child:
+                      EditPantryItemPage(isGroceryScreen: isGroceryScreen))));
         },
         child: Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,

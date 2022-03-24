@@ -4,6 +4,7 @@ enum PantryOverviewStatus { initial, loading, success, failure }
 
 class PantryOverviewState extends Equatable {
   final PantryOverviewStatus status;
+  final bool isGroceryScreen;
   final List<PantryItem> items;
   final PantryFilter filter;
   final PantryItem? lastDeletedItem;
@@ -11,6 +12,7 @@ class PantryOverviewState extends Equatable {
 
   const PantryOverviewState({
     this.status = PantryOverviewStatus.initial,
+    required this.isGroceryScreen,
     this.items = const [],
     this.filter = PantryFilter.allItems,
     this.lastDeletedItem,
@@ -21,12 +23,14 @@ class PantryOverviewState extends Equatable {
 
   PantryOverviewState copyWith(
       {PantryOverviewStatus? status,
+      bool? isGroceryScreen,
       List<PantryItem>? items,
       PantryFilter? filter,
       PantryItem? lastDeletedItem,
       String? errorMessage}) {
     return PantryOverviewState(
       status: status ?? this.status,
+      isGroceryScreen: isGroceryScreen ?? this.isGroceryScreen,
       items: items ?? this.items,
       filter: filter ?? this.filter,
       lastDeletedItem: lastDeletedItem ?? this.lastDeletedItem,
@@ -36,5 +40,5 @@ class PantryOverviewState extends Equatable {
 
   @override
   List<Object?> get props =>
-      [status, items, filter, lastDeletedItem, errorMessage];
+      [status, isGroceryScreen, items, filter, lastDeletedItem, errorMessage];
 }
