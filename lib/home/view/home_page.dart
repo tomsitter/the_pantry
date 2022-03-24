@@ -40,36 +40,43 @@ class HomeView extends StatelessWidget {
     final selectedTab = context.select((HomeCubit cubit) => cubit.state.tab);
 
     return DefaultTabController(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: selectedTab == HomeTab.grocery
-              ? Theme.of(context).primaryColor
-              : Theme.of(context).secondaryHeaderColor,
-          title: Text(
-            selectedTab == HomeTab.grocery ? 'My Grocery List' : 'My Pantry',
-          ),
-          bottom: TabBar(
-            tabs: const [
-              Tab(icon: Icon(Icons.shopping_cart)),
-              Tab(icon: Icon(Icons.home)),
-            ],
-            onTap: (int index) {
-              context.read<HomeCubit>().setTab(index);
-            },
-          ),
-        ),
-        drawer: AppDrawer(
-            color: selectedTab == HomeTab.grocery
-                ? Theme.of(context).primaryColorLight
-                : Theme.of(context).secondaryHeaderColor),
-        body: const TabBarView(
-          children: [
-            GroceryScreen(),
-            GroceryScreen(),
-          ],
-        ),
-      ),
       length: 2,
+      child: Builder(builder: (context) {
+        final TabController tabController = DefaultTabController.of(context)!;
+        tabController.addListener(() {
+          if (!tabController.indexIsChanging) {
+            final index = tabController.index;
+            context.read<HomeCubit>().setTab(index);
+          }
+        });
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: selectedTab == HomeTab.grocery
+                ? Theme.of(context).primaryColor
+                : Theme.of(context).secondaryHeaderColor,
+            title: Text(
+              selectedTab == HomeTab.grocery ? 'My Grocery List' : 'My Pantry',
+            ),
+            bottom: const TabBar(
+              tabs: [
+                Tab(icon: Icon(Icons.shopping_cart)),
+                Tab(icon: Icon(Icons.home)),
+              ],
+            ),
+          ),
+          drawer: AppDrawer(
+              color: selectedTab == HomeTab.grocery
+                  ? Theme.of(context).primaryColorLight
+                  : Theme.of(context).secondaryHeaderColor),
+          body: const TabBarView(
+            // showGroceries flips between the "My Groceries" and "My Pantry" screens
+            children: [
+              GroceryScreen(showGroceries: true),
+              GroceryScreen(showGroceries: false),
+            ],
+          ),
+        );
+      }),
     );
   }
 }
