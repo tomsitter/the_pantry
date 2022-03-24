@@ -217,11 +217,17 @@ class AuthenticationRepository {
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
+      sendEmailVerification();
     } on firebase_auth.FirebaseAuthException catch (e) {
       throw SignUpWithEmailAndPasswordFailure.fromCode(e.code);
     } catch (_) {
       throw const SignUpWithEmailAndPasswordFailure();
     }
+  }
+
+  Future<void> sendEmailVerification() async {
+    final user = _firebaseAuth.currentUser;
+    user?.sendEmailVerification();
   }
 
   /// Signs the user out. Will emit a [User.empty] from the [user] stream
@@ -241,6 +247,6 @@ class AuthenticationRepository {
 
 extension on firebase_auth.User {
   User get toUser {
-    return User(id: uid, email: email!);
+    return User(id: uid, email: email!, isEmailVerified: emailVerified);
   }
 }
