@@ -15,6 +15,9 @@ class PantryRepository {
   Future<void> fetchPantryItems(String docId) =>
       _pantryApi.fetchPantryItems(docId);
 
+  Future<void> streamUserPantryItems(String docId) =>
+      _pantryApi.streamUserPantryItems(docId);
+
   /// Adds a new [PantryItem] or overwrites an existing one in a [user]s pantry
   Future<void> savePantryItem(String docId, PantryItem item) =>
       _pantryApi.saveItem(docId, item);

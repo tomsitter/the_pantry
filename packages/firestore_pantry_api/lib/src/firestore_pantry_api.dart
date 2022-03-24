@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pantry_api/pantry_api.dart';
 import 'package:rxdart/rxdart.dart';
 import 'firestore_service.dart';
+import 'package:collection/collection.dart';
 
 class FirestorePantryApi extends PantryApi {
   final FirestoreService _firestoreService;
@@ -12,25 +13,19 @@ class FirestorePantryApi extends PantryApi {
   }
 
   void _init(String docId) async {
-    print("In init");
-    final data = await _firestoreService.fetchPantryItems(docId);
-    if (data != null) {
-      List<PantryItem> pantryList = data['pantry']
-          .entries
-          .map<PantryItem>((item) => PantryItem.fromJson(item))
-          .toList();
-      _pantryItemStreamController.add(pantryList);
-    } else {
-      _firestoreService.createNewPantry(docId);
-      _pantryItemStreamController.add(const []);
-    }
+    streamUserPantryItems(docId);
   }
 
   final _pantryItemStreamController =
       BehaviorSubject<List<PantryItem>>.seeded(const []);
 
+  /// Provides a [Stream] of all pantry items.
+  @override
+  Stream<List<PantryItem>> getPantryItems() =>
+      _pantryItemStreamController.asBroadcastStream();
+
+  // TODO: consider deprecating
   Future<void> fetchPantryItems(String docId) async {
-    print("in fetch");
     final data = await _firestoreService.fetchPantryItems(docId);
     if (data != null) {
       List<PantryItem> pantryList = data['pantry']
@@ -44,10 +39,32 @@ class FirestorePantryApi extends PantryApi {
     }
   }
 
-  /// Provides a [Stream] of all pantry items.
-  @override
-  Stream<List<PantryItem>> getPantryItems() =>
-      _pantryItemStreamController.asBroadcastStream();
+  Future<void> createNewPantry(String docId) async {
+    _firestoreService.createNewPantry(docId);
+    _pantryItemStreamController.add(const []);
+  }
+
+  /// Listens to snapshots from the user's pantry. If the snapshot is different
+  /// than the current list of [PantryItem]s, then add to the stream.
+  Future<void> streamUserPantryItems(String docId) async {
+    final stream = _firestoreService.listenOnUserDocument(docId);
+    stream.listen((DocumentSnapshot snapshot) {
+      final Map<String, dynamic>? data =
+          snapshot.data() as Map<String, dynamic>?;
+      if (data != null) {
+        List<PantryItem> pantryList = data['pantry']
+            .entries
+            .map<PantryItem>((item) => PantryItem.fromJson(item))
+            .toList();
+
+        // Only add to stream if the snapshot is different than our current pantry item list
+        if (!ListEquality()
+            .equals(pantryList, [..._pantryItemStreamController.value])) {
+          _pantryItemStreamController.add(pantryList);
+        }
+      }
+    });
+  }
 
   /// Add a new [PantryItem] to a [user]'s pantry, or updates an existing
   /// one if item with same [id] exists.

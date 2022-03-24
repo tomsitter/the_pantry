@@ -33,6 +33,12 @@ abstract class PantryApi {
   /// Creates and returns a new Pantry if user does not yet have one.
   Future<void> fetchPantryItems(String docId);
 
+  /// Creates a new empty pantry for a [user]
+  Future<void> createNewPantry(String docId);
+
+  /// Opens a stream to listen to updates of a [user]s current [PantryItems]
+  Future<void> streamUserPantryItems(String docId);
+
   /// Add a new [PantryItem] or overwrite an existing [PantryItem]
   /// in a [user]s pantry.
   Future<void> saveItem(String docId, PantryItem item);

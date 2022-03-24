@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreService {
@@ -5,6 +7,9 @@ class FirestoreService {
 
   FirestoreService({FirebaseFirestore? firestore})
       : _firestore = firestore ?? FirebaseFirestore.instance;
+
+  StreamController<Map<String, dynamic>?> pantryController =
+      StreamController<Map<String, dynamic>?>();
 
   Future<Map<String, dynamic>?> fetchPantryItems(String userId) async {
     return await _firestore
@@ -16,6 +21,17 @@ class FirestoreService {
       print('An error occurred in fetch');
       return <String, dynamic>{};
     });
+  }
+
+  Stream<DocumentSnapshot> listenOnUserDocument(String userId) async* {
+    final docReference = await _firestore.collection('user_data').doc(userId);
+    await for (final snapshot in docReference.snapshots()) {
+      yield snapshot;
+    }
+    // .listen((snapshot) {
+    //   final data = snapshot.data();
+    //   if (data != null) pantryController.add(data);
+    // });
   }
 
   Future<Map<String, dynamic>?> createNewPantry(String userId) async {
