@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pantry_repository/pantry_repository.dart';
 import 'package:the_pantry/pantry_overview/pantry_overview.dart';
 import 'package:pantry_api/pantry_api.dart';
 import 'package:the_pantry/edit_pantry_item/edit_pantry_item.dart';
@@ -21,7 +22,7 @@ class DismissibleGroceryList extends StatelessWidget {
             return Column(
               children: [
                 DismissibleWidget(
-                  key: UniqueKey(),
+                  key: Key('dismissibleGroceryList_dismissibleWidget_$index'),
                   item: item,
                   leftSwipeIcon: Icons.delete_forever,
                   leftSwipeText: 'Delete',
@@ -38,7 +39,12 @@ class DismissibleGroceryList extends StatelessWidget {
                     },
                     onLongPressCallback: () {
                       Navigator.of(context).push(
-                        EditPantryItemPage.route(initialItem: item),
+                        MaterialPageRoute(
+                            fullscreenDialog: true,
+                            builder: (_) => RepositoryProvider.value(
+                                  value: context.read<PantryRepository>(),
+                                  child: EditPantryItemPage(initialItem: item),
+                                )),
                       );
                     },
                   ),

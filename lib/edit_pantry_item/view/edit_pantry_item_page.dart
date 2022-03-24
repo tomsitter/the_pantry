@@ -7,27 +7,38 @@ import 'package:pantry_repository/pantry_repository.dart';
 import 'package:the_pantry/edit_pantry_item/bloc/edit_pantry_item_bloc.dart';
 
 class EditPantryItemPage extends StatelessWidget {
-  const EditPantryItemPage({Key? key}) : super(key: key);
+  final PantryItem? initialItem;
 
-  static Route<void> route({PantryItem? initialItem}) {
-    return MaterialPageRoute(
-        fullscreenDialog: true,
-        builder: (context) => BlocProvider(
-            create: (context) => EditPantryItemBloc(
-                pantryRepository: context.read<PantryRepository>(),
-                authRepository: context.read<AuthenticationRepository>(),
-                initialItem: initialItem),
-            child: const EditPantryItemPage()));
-  }
+  const EditPantryItemPage({this.initialItem, Key? key}) : super(key: key);
+
+  // static Route<void> route(
+  //     {PantryItem? initialItem}) {
+  //   return MaterialPageRoute(
+  //     fullscreenDialog: true,
+  //     builder: (context) => BlocProvider(
+  //       create: (context) => EditPantryItemBloc(
+  //           pantryRepository: context.read<PantryRepository>(),
+  //           authRepository: context.read<AuthenticationRepository>(),
+  //           initialItem: initialItem),
+  //       child: const EditPantryItemPage(),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<EditPantryItemBloc, EditPantryItemState>(
-      listenWhen: (previous, current) =>
-          previous.status != current.status &&
-          current.status == EditPantryItemStatus.success,
-      listener: (context, state) => Navigator.of(context).pop(),
-      child: const EditPantryItemView(),
+    return BlocProvider(
+      create: (context) => EditPantryItemBloc(
+          pantryRepository: context.read<PantryRepository>(),
+          authRepository: context.read<AuthenticationRepository>(),
+          initialItem: initialItem),
+      child: BlocListener<EditPantryItemBloc, EditPantryItemState>(
+        listenWhen: (previous, current) =>
+            previous.status != current.status &&
+            current.status == EditPantryItemStatus.success,
+        listener: (context, state) => Navigator.of(context).pop(),
+        child: const EditPantryItemView(),
+      ),
     );
   }
 }
@@ -118,13 +129,13 @@ class _CategoryField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<EditPantryItemBloc>().state;
-    final hintText = state.initialItem?.category ?? FoodCategory.uncategorized;
+    // final hintText = state.initialItem?.category ?? FoodCategory.uncategorized;
 
     return Row(
       children: [
         const Text("Category:"),
         Expanded(
-          child: DropdownButtonFormField(
+          child: DropdownButton(
               key: const Key('editPantryItemView_category_dropdownTextField'),
               value: state.category,
               items: FoodCategory.categories
@@ -191,7 +202,7 @@ class _InGroceryField extends StatelessWidget {
     return CheckboxListTile(
       title: const Text("Show in grocery list"),
       value: state.inGroceryList,
-      key: const Key('editPantryItemView_inGroceries_dropdownTextField'),
+      key: const Key('editPantryItemView_inGroceries_checkboxListTile'),
       onChanged: (bool? value) {
         if (value != null) {
           context

@@ -1,5 +1,9 @@
+import 'package:authentication_repository/authentication_repository.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firestore_pantry_api/firestore_pantry_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pantry_repository/pantry_repository.dart';
 import 'package:the_pantry/home/home.dart';
 import 'package:the_pantry/pantry_overview/pantry_overview.dart';
 
@@ -12,9 +16,18 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<HomeCubit>(
-      create: (_) => HomeCubit(),
-      child: const HomeView(),
+    final authRepository = context.read<AuthenticationRepository>();
+    return RepositoryProvider(
+      create: (BuildContext context) {
+        final pantryApi = FirestorePantryApi(
+            instance: FirebaseFirestore.instance,
+            docId: authRepository.currentUser.id);
+        return PantryRepository(pantryApi: pantryApi);
+      },
+      child: BlocProvider<HomeCubit>(
+        create: (_) => HomeCubit(),
+        child: const HomeView(),
+      ),
     );
   }
 }

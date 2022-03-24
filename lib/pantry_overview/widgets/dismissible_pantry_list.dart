@@ -47,7 +47,8 @@ class DismissiblePantryList extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final item = items[index];
                       return DismissibleWidget(
-                        key: UniqueKey(),
+                        key: Key(
+                            'dismissiblePantryList_dismissibleWidget_$index'),
                         item: item,
                         leftSwipeIcon: Icons.shopping_cart,
                         leftSwipeText: 'To Groceries',
@@ -128,8 +129,14 @@ class _PantryTile extends StatelessWidget {
             },
           ),
         ),
-        onLongPress: () => Navigator.of(context)
-            .push(EditPantryItemPage.route(initialItem: item)),
+        onLongPress: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => RepositoryProvider.value(
+              value: context.read<PantryRepository>(),
+              child: EditPantryItemPage(initialItem: item),
+            ),
+          ),
+        ),
       ),
     );
   }

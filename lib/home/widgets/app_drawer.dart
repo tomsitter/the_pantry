@@ -20,7 +20,7 @@ class AppDrawer extends StatelessWidget {
             accountName: const Text(""),
             accountEmail: Text(
               context.select((AppBloc bloc) => bloc.state.user.email),
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
             decoration: BoxDecoration(
               color: color,

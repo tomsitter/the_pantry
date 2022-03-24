@@ -144,9 +144,11 @@ class GroceryOverviewView extends StatelessWidget {
               : Theme.of(context).secondaryHeaderColor),
         ),
         onPressed: () {
-          Navigator.of(context).push(
-            EditPantryItemPage.route(),
-          );
+          Navigator.of(context).push(MaterialPageRoute(
+              fullscreenDialog: true,
+              builder: (_) => RepositoryProvider.value(
+                  value: context.read<PantryRepository>(),
+                  child: const EditPantryItemPage())));
         },
         child: Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
