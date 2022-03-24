@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pantry_api/pantry_api.dart';
 import 'package:rxdart/rxdart.dart';
 import 'firestore_service.dart';
-import 'package:collection/collection.dart';
 
 class FirestorePantryApi extends PantryApi {
   final FirestoreService _firestoreService;

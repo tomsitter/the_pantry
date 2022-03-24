@@ -10,6 +10,7 @@ class User extends Equatable {
   const User({
     required this.id,
     required this.email,
+    required this.isEmailVerified,
   });
 
   /// The current user's id.
@@ -18,8 +19,10 @@ class User extends Equatable {
   /// The current user's email address.
   final String email;
 
+  final bool isEmailVerified;
+
   /// Empty user which represents an unauthenticated user.
-  static const empty = User(id: '', email: '');
+  static const empty = User(id: '', email: '', isEmailVerified: false);
 
   /// Convenience getter to determine whether the current user is empty.
   bool get isEmpty => this == User.empty;
