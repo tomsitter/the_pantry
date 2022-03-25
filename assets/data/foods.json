@@ -1,5 +1,198 @@
 [
-  {"name": "milk" ,"category": "refrigerated"},
-  {"name": "cheese" ,"category": "refrigerated"}
+  {
+    "name": "whole milk",
+    "category": "dairy"
+  },
+  {
+    "name": "skim milk",
+    "category": "dairy"
+  },
+  {
+    "name": "1% milk",
+    "category": "dairy"
+  },
+  {
+    "name": "2% milk",
+    "category": "dairy"
+  },
+  {
+    "name": "laundry detergent",
+    "category": "pantry"
+  },
+  {
+    "name": "eggs",
+    "category": "refrigerated"
+  },
+  {
+    "name": "peanut butter",
+    "category": "pantry"
+  },
+  {
+    "name": "jam (strawberry)",
+    "category": "pantry"
+  },
+  {
+    "name": "jam (raspberry)",
+    "category": "pantry"
+  },
+  {
+    "name": "jam (blueberry)",
+    "category": "pantry"
+  },
+  {
+    "name": "white bread",
+    "category": "baking"
+  },
+  {
+    "name": "whole wheat bread",
+    "category": "baking"
+  },
+  {
+    "name": "bagels",
+    "category": "baking"
+  },
+  {
+    "name": "hamburger buns",
+    "category": "baking"
+  },
+  {
+    "name": "hotdog buns",
+    "category": "baking"
+  },
+  {
+    "name": "spaghetti",
+    "category": "pantry"
+  },
+  {
+    "name": "linguine",
+    "category": "pantry"
+  },
+  {
+    "name": "rotini",
+    "category": "pantry"
+  },
+  {
+    "name": "Kraft Dinner",
+    "category": "pantry"
+  },
+  {
+    "name": "macaroni",
+    "category": "pantry"
+  },
+  {
+    "name": "mushroom soup",
+    "category": "pantry"
+  },
+  {
+    "name": "brown eggs",
+    "category": "refrigerated"
+  },
+  {
+    "name": "potatoes",
+    "category": "produce"
+  },
+  {
+    "name": "bananas",
+    "category": "produce"
+  },
+  {
+    "name": "bacon",
+    "category": "refrigerated"
+  },
+  {
+    "name": "butter",
+    "category": "refrigerated"
+  },
+  {
+    "name": "margarine",
+    "category": "refrigerated"
+  },
+  {
+    "name": "ice cream (vanilla)",
+    "category": "frozen"
+  },
+  {
+    "name": "ice cream (chocolate)",
+    "category": "frozen"
+  },
+  {
+    "name": "frozen pizza (pepperoni)",
+    "category": "frozen"
+  },
+  {
+    "name": "frozen pizza (funghi)",
+    "category": "frozen"
+  },
+  {
+    "name": "frozen pizza (veterarian)",
+    "category": "frozen"
+  },
+  {
+    "name": "oreos",
+    "category": "pantry"
+  },
+  {
+    "name": "frozen french fries",
+    "category": "frozen"
+  },
+  {
+    "name": "mixed nuts",
+    "category": "pantry"
+  },
+  {
+    "name": "roasted cashews",
+    "category": "pantry"
+  },
+  {
+    "name": "almonds",
+    "category": "pantry"
+  },
+  {
+    "name": "raw cashews",
+    "category": "pantry"
+  },
+  {
+    "name": "tofu",
+    "category": "refrigerated"
+  },
+  {
+    "name": "tomato sauce",
+    "category": "pantry"
+  },
+  {
+    "name": "canned tomatoes",
+    "category": "pantry"
+  },
+  {
+    "name": "diced tomatoes",
+    "category": "pantry"
+  },
+  {
+    "name": "tomato paste",
+    "category": "pantry"
+  },
+  {
+    "name": "parmesan cheese",
+    "category": "dairy"
+  },
+  {
+    "name": "cheddar cheese",
+    "category": "dairy"
+  },
+  {
+    "name": "mozzarella",
+    "category": "dairy"
+  },
+  {
+    "name": "gouda",
+    "category": "dairy"
+  },
+  {
+    "name": "cheese slices",
+    "category": "dairy"
+  },
+  {
+    "name": "cheese sticks",
+    "category": "dairy"
+  }
 ]
-

@@ -80,7 +80,9 @@ class PantryItem extends Equatable {
           ? json.value['dateAdded'].toDate()
           : DateTime.now(),
       category: FoodCategory.fromString(json.value['category']),
-      amount: FoodAmount.fromString(json.value['amount']),
+      amount: json.value['amount'] != null
+          ? FoodAmount.fromString(json.value['amount'])
+          : FoodAmount.full,
     );
   }
 

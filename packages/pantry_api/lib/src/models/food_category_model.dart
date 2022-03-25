@@ -10,6 +10,8 @@ class FoodCategoryException implements Exception {
 
 enum FoodType {
   everything,
+  baking,
+  dairy,
   drinks,
   frozen,
   pantry,

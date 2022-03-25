@@ -1,0 +1,20 @@
+name: food_dictionary_repository
+description: A dictionary of searchable food items
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ">=2.16.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  pantry_repository:
+    path: ../pantry_repository
+  uuid: ^3.0.4
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mocktail: ^0.2.0

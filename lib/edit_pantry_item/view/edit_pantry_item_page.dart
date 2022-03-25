@@ -2,8 +2,10 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:food_dictionary_repository/food_dictionary_repository.dart';
 import 'package:pantry_repository/pantry_repository.dart';
 import 'package:the_pantry/edit_pantry_item/bloc/edit_pantry_item_bloc.dart';
+import 'package:the_pantry/search/search.dart';
 
 class EditPantryItemPage extends StatelessWidget {
   final PantryItem? initialItem;
@@ -15,12 +17,20 @@ class EditPantryItemPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => EditPantryItemBloc(
-          pantryRepository: context.read<PantryRepository>(),
-          authRepository: context.read<AuthenticationRepository>(),
-          initialItem: initialItem,
-          isGroceryScreen: isGroceryScreen),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => EditPantryItemBloc(
+              pantryRepository: context.read<PantryRepository>(),
+              authRepository: context.read<AuthenticationRepository>(),
+              initialItem: initialItem,
+              isGroceryScreen: isGroceryScreen),
+        ),
+        BlocProvider<SearchBloc>(
+          create: (context) =>
+              SearchBloc(foodRepository: context.read<FoodRepository>()),
+        ),
+      ],
       child: BlocListener<EditPantryItemBloc, EditPantryItemState>(
         listenWhen: (previous, current) =>
             previous.status != current.status &&
@@ -38,8 +48,6 @@ class EditPantryItemView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.read<EditPantryItemBloc>().state;
-    final status = state.status;
-    final isFormValid = state.isFormValid;
     final isNewItem = state.isNewItem;
     final isGroceryScreen = state.isGroceryScreen;
 
@@ -74,7 +82,8 @@ class EditPantryItemView extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  const _NameField(),
+                  // const _NameField(),
+                  const _AutoCompleteNameField(),
                   // only show amount remaining from grocery screen, not pantry
                   isGroceryScreen ? Container() : const _AmountField(),
                   const _CategoryField(),
@@ -86,26 +95,63 @@ class EditPantryItemView extends StatelessWidget {
     );
   }
 }
+//
+// class _NameField extends StatelessWidget {
+//   const _NameField({Key? key}) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final state = context.watch<EditPantryItemBloc>().state;
+//
+//     return Row(
+//       children: [
+//         Expanded(
+//           child: TextFormField(
+//             key: const Key('editPantryItemView_name_textFormField'),
+//             initialValue: state.name.value,
+//             decoration: InputDecoration(
+//                 enabled: !state.status.isLoadingOrSuccess,
+//                 labelText: "name",
+//                 errorText: state.name.invalid ? 'Name too short' : null),
+//             onChanged: (value) {
+//               context.read<EditPantryItemBloc>().add(EditPantryItemName(value));
+//             },
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }
 
-class _NameField extends StatelessWidget {
-  const _NameField({Key? key}) : super(key: key);
+class _AutoCompleteNameField extends StatelessWidget {
+  const _AutoCompleteNameField({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final state = context.watch<EditPantryItemBloc>().state;
+    final searchState = context.watch<SearchBloc>().state;
 
     return Row(
       children: [
         Expanded(
-          child: TextFormField(
+          child: Autocomplete<PantryItem>(
+            displayStringForOption: (PantryItem item) => item.name,
+            optionsBuilder: (TextEditingValue textEditingValue) {
+              String searchText = textEditingValue.text;
+              context
+                  .read<EditPantryItemBloc>()
+                  .add(EditPantryItemName(searchText));
+              context.read<SearchBloc>().add(SearchTextChanged(searchText));
+              return searchState.matchedItems;
+            },
             key: const Key('editPantryItemView_name_textFormField'),
-            initialValue: state.name.value,
-            decoration: InputDecoration(
-                enabled: !state.status.isLoadingOrSuccess,
-                labelText: "name",
-                errorText: state.name.invalid ? 'Name too short' : null),
-            onChanged: (value) {
-              context.read<EditPantryItemBloc>().add(EditPantryItemName(value));
+            initialValue: TextEditingValue(text: state.name.value),
+            // decoration: InputDecoration(
+            //     enabled: !state.status.isLoadingOrSuccess,
+            //     labelText: "name",
+            //     errorText: state.name.invalid ? 'Name too short' : null),
+            onSelected: (PantryItem item) {
+              print("Selected ${item.name}");
             },
           ),
         ),

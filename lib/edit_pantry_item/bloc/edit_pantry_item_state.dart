@@ -36,7 +36,7 @@ class EditPantryItemState extends Equatable {
 
   EditPantryItemState copyWith({
     EditPantryItemStatus? status,
-    // FormzStatus? formStatus,
+    List<PantryItem>? searchMatches,
     bool? isGroceryScreen,
     PantryItem? initialItem,
     ItemName? name,
