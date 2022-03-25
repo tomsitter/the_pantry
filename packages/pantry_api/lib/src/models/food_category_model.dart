@@ -9,6 +9,8 @@ class FoodCategoryException implements Exception {
 }
 
 enum FoodType {
+  everything,
+  drinks,
   frozen,
   pantry,
   produce,
@@ -32,6 +34,8 @@ class FoodCategory extends Equatable {
 
   static const uncategorized = const FoodCategory(FoodType.uncategorized);
 
+  static const everything = const FoodCategory(FoodType.everything);
+
   // Returns a lowercase String of the FoodType that can be converted back
   static String foodTypeToString(FoodType foodType) => describeEnum(foodType);
 
@@ -46,9 +50,9 @@ class FoodCategory extends Equatable {
 
   String get displayName => this.toString().capitalize();
 
-  static List<FoodType> get categories => List.of(FoodType.values)
-    ..sort((a, b) =>
-        describeEnum(a).toLowerCase().compareTo(describeEnum(b).toLowerCase()));
+  static List<FoodType> get categories => List.of(FoodType.values);
+  // ..sort((a, b) =>
+  //     describeEnum(a).toLowerCase().compareTo(describeEnum(b).toLowerCase()));
 
   @override
   String toString() => describeEnum(category);

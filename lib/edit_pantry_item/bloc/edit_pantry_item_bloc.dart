@@ -39,7 +39,7 @@ class EditPantryItemBloc
     Emitter<EditPantryItemState> emit,
   ) {
     final name = ItemName.dirty(event.name);
-    emit(state.copyWith(name: name, formStatus: Formz.validate([name])));
+    emit(state.copyWith(name: name));
   }
 
   void _onCategoryChanged(

@@ -37,14 +37,12 @@ class EditPantryItemView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final status =
-        context.select((EditPantryItemBloc bloc) => bloc.state.status);
-    final isFormValid =
-        context.select((EditPantryItemBloc bloc) => bloc.state.isFormValid);
-    final isNewItem =
-        context.select((EditPantryItemBloc bloc) => bloc.state.isNewItem);
-    final bool isGroceryScreen =
-        context.select((EditPantryItemBloc bloc) => bloc.state.isGroceryScreen);
+    final state = context.read<EditPantryItemBloc>().state;
+    final status = state.status;
+    final isFormValid = state.isFormValid;
+    final isNewItem = state.isNewItem;
+    final isGroceryScreen = state.isGroceryScreen;
+
     final theme = Theme.of(context);
     final floatingActionButtonTheme = theme.floatingActionButtonTheme;
     final fabBackgroundColor = floatingActionButtonTheme.backgroundColor ??
@@ -52,18 +50,23 @@ class EditPantryItemView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(isNewItem ? "Add an item" : "Edit item")),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: status.isLoadingOrSuccess
-            ? fabBackgroundColor.withOpacity(0.5)
-            : fabBackgroundColor,
-        onPressed: status.isLoadingOrSuccess || !isFormValid
-            ? null
-            : () => context
-                .read<EditPantryItemBloc>()
-                .add(const EditPantryItemSubmitted()),
-        child: status.isLoadingOrSuccess
-            ? const CupertinoActivityIndicator()
-            : const Icon(Icons.check_rounded),
+      floatingActionButton:
+          BlocBuilder<EditPantryItemBloc, EditPantryItemState>(
+        builder: (context, state) {
+          return FloatingActionButton(
+            backgroundColor: state.canSubmit
+                ? fabBackgroundColor
+                : fabBackgroundColor.withOpacity(0.5),
+            onPressed: state.canSubmit
+                ? () => context
+                    .read<EditPantryItemBloc>()
+                    .add(const EditPantryItemSubmitted())
+                : null,
+            child: state.status.isLoadingOrSuccess
+                ? const CupertinoActivityIndicator()
+                : const Icon(Icons.check_rounded),
+          );
+        },
       ),
       body: CupertinoScrollbar(
         child: SingleChildScrollView(

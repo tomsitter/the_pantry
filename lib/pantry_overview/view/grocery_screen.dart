@@ -25,19 +25,19 @@ class GroceryScreen extends StatelessWidget {
             filter: isGroceryScreen
                 ? const PantryFilter.groceriesOnly()
                 : const PantryFilter.pantryOnly())),
-      child: GroceryOverviewView(showGroceries: isGroceryScreen),
+      child: GroceryOverviewView(),
     );
   }
 }
 
 class GroceryOverviewView extends StatelessWidget {
-  final bool showGroceries;
-
-  const GroceryOverviewView({required this.showGroceries, Key? key})
-      : super(key: key);
+  const GroceryOverviewView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final bool isGroceryScreen =
+        context.select((PantryOverviewBloc bloc) => bloc.state.isGroceryScreen);
+
     return Scaffold(
       body: MultiBlocListener(
         listeners: [
@@ -93,25 +93,13 @@ class GroceryOverviewView extends StatelessWidget {
               }
             }
 
-            int numItems =
-                showGroceries ? state.filteredItems.length : state.items.length;
+            // int numItems =
+            //     showGroceries ? state.filteredItems.length : state.items.length;
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 32.0, vertical: 8.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        '$numItems Items',
-                      ),
-                      const SizedBox(width: 32.0),
-                      const PantrySearchField(),
-                    ],
-                  ),
-                ),
+                isGroceryScreen ? const PantrySearchField() : Container(),
                 Expanded(
                   child: Container(
                     decoration: const BoxDecoration(
@@ -123,7 +111,7 @@ class GroceryOverviewView extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.only(
                           left: 8.0, top: 8.0, right: 8.0, bottom: 88.0),
-                      child: showGroceries
+                      child: isGroceryScreen
                           ? DismissibleGroceryList(
                               displayItems: state.filteredItems.toList())
                           : DismissiblePantryList(
@@ -138,19 +126,34 @@ class GroceryOverviewView extends StatelessWidget {
       ),
       floatingActionButton: ElevatedButton(
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(showGroceries
+          backgroundColor: MaterialStateProperty.all<Color>(isGroceryScreen
               ? Theme.of(context).primaryColor
               : Theme.of(context).secondaryHeaderColor),
         ),
         onPressed: () {
-          bool isGroceryScreen =
-              context.read<PantryOverviewBloc>().state.isGroceryScreen;
-          Navigator.of(context).push(MaterialPageRoute(
+          final state = context.read<PantryOverviewBloc>().state;
+          final bool isGroceryScreen = state.isGroceryScreen;
+          final int numFilteredItems = state.filteredItems.length;
+          final String newItemName;
+          if (numFilteredItems == 0) {
+            String searchText = state.filter.searchText;
+            newItemName = searchText;
+          } else {
+            newItemName = '';
+          }
+          Navigator.of(context).push(
+            MaterialPageRoute(
               fullscreenDialog: true,
               builder: (_) => RepositoryProvider.value(
-                  value: context.read<PantryRepository>(),
-                  child:
-                      EditPantryItemPage(isGroceryScreen: isGroceryScreen))));
+                value: context.read<PantryRepository>(),
+                child: EditPantryItemPage(
+                  isGroceryScreen: isGroceryScreen,
+                  initialItem: PantryItem(
+                      name: newItemName, inGroceryList: isGroceryScreen),
+                ),
+              ),
+            ),
+          );
         },
         child: Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
@@ -171,22 +174,37 @@ class PantrySearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: TextField(
-        autofocus: false,
-        onChanged: (searchText) {
-          context.read<PantryOverviewBloc>().add(PantryOverviewFilterChanged(
-              // TODO make this rebuild on change
-              filter: PantryFilter.groceriesOnly(searchText)));
-        },
-        // _runFilter(pantryList.items, value),
-        // style: const TextStyle(
-        //   color: Colors.black,
-        // ),
-        decoration: const InputDecoration(
-          labelText: 'Search',
-          suffixIcon: Icon(Icons.search),
-        ),
+    bool isGroceryScreen =
+        context.select((PantryOverviewBloc bloc) => bloc.state.isGroceryScreen);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 8.0),
+      child: Row(
+        children: [
+          // Text(
+          //   '$numItems Items',
+          // ),
+          Expanded(
+            child: TextField(
+              autofocus: false,
+              onChanged: (searchText) {
+                context.read<PantryOverviewBloc>().add(
+                    PantryOverviewFilterChanged(
+                        filter: isGroceryScreen
+                            ? PantryFilter.groceriesOnly(searchText)
+                            : PantryFilter.pantryOnly(searchText)));
+              },
+              // _runFilter(pantryList.items, value),
+              // style: const TextStyle(
+              //   color: Colors.black,
+              // ),
+              decoration: const InputDecoration(
+                labelText: 'Search',
+                suffixIcon: Icon(Icons.search),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -73,3 +73,5 @@ class PantryOverviewFilterChanged extends PantryOverviewEvent {
   @override
   List<Object> get props => [filter, searchText];
 }
+
+class PantryOverviewAddItem extends PantryOverviewEvent {}

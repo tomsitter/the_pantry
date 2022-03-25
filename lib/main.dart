@@ -19,6 +19,6 @@ Future main() async {
         ),
       );
     },
-    // blocObserver: AppBlocObserver(),
+    blocObserver: AppBlocObserver(),
   );
 }

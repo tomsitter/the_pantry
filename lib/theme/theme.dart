@@ -52,6 +52,7 @@ class CustomTheme {
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           backgroundColor: CustomColors.blue,
+          disabledElevation: 0.0,
         ));
   }
 

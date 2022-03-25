@@ -19,70 +19,91 @@ class DismissiblePantryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<FoodCategory> foodTypes =
+    List<FoodCategory> foodCategories =
         FoodCategory.categories.map((value) => FoodCategory(value)).toList();
 
     return BlocBuilder<PantryOverviewBloc, PantryOverviewState>(
       builder: (context, state) {
         final pantryList = state.items;
         return ListView.builder(
-          itemCount: foodTypes.length,
+          itemCount: foodCategories.length,
           itemBuilder: (context, index) {
-            final foodType = foodTypes[index];
-            final items =
-                pantryList.where((item) => item.category == foodType).toList();
+            final category = foodCategories[index];
+            final List<PantryItem> items;
+            if (category == FoodCategory.everything) {
+              items = pantryList;
+            } else {
+              items = pantryList
+                  .where((item) => item.category == category)
+                  .toList();
+            }
             return IgnorePointer(
               ignoring: items.isEmpty,
               child: ExpansionTile(
                 collapsedTextColor: items.isEmpty ? Colors.grey : Colors.black,
                 textColor: Theme.of(context).secondaryHeaderColor,
-                title: Text(foodType.displayName),
+                title: Text(category.displayName),
                 subtitle: Text(displayItemCount(items.length)),
-                children: [
-                  ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      final item = items[index];
-                      return DismissibleWidget(
-                        key: Key(
-                            'dismissiblePantryList_dismissibleWidget_$index'),
-                        item: item,
-                        leftSwipeIcon: Icons.shopping_cart,
-                        leftSwipeText: 'To Groceries',
-                        leftSwipeColor: Theme.of(context).primaryColor,
-                        rightSwipeIcon: Icons.delete_forever,
-                        rightSwipeText: 'Delete',
-                        rightSwipeColor: Colors.red,
-                        child: _PantryTile(
-                          item: item,
-                        ),
-                        confirmDismiss: (direction) async {
-                          if (direction == DismissDirection.startToEnd) {
-                            context
-                                .read<PantryOverviewBloc>()
-                                .add(PantryOverviewItemDeleted(item));
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('${item.name} deleted'),
-                              ),
-                            );
-                          } else if (direction == DismissDirection.endToStart) {
-                            context.read<PantryOverviewBloc>().add(
-                                PantryOverviewMoveBetweenLists(
-                                    item: item, inGroceryList: true));
-                            return false;
-                          }
-                          return null;
-                        },
-                      );
-                    },
-                  ),
-                  // const Divider(),
-                ],
+                children: items.isEmpty
+                    ? []
+                    : [
+                        _ListOfTiles(items: items),
+                        // const Divider(),
+                      ],
               ),
             );
+          },
+        );
+      },
+    );
+  }
+}
+
+class _ListOfTiles extends StatelessWidget {
+  const _ListOfTiles({
+    Key? key,
+    required this.items,
+  }) : super(key: key);
+
+  final List<PantryItem> items;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        final item = items[index];
+        return DismissibleWidget(
+          key: Key('dismissiblePantryList_dismissibleWidget_$index'),
+          item: item,
+          leftSwipeIcon: Icons.shopping_cart,
+          leftSwipeText: 'To Groceries',
+          leftSwipeColor: Theme.of(context).primaryColor,
+          rightSwipeIcon: Icons.delete_forever,
+          rightSwipeText: 'Delete',
+          rightSwipeColor: Colors.red,
+          child: _PantryTile(
+            item: item,
+          ),
+          confirmDismiss: (direction) async {
+            if (direction == DismissDirection.startToEnd) {
+              context
+                  .read<PantryOverviewBloc>()
+                  .add(PantryOverviewItemDeleted(item));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('${item.name} deleted'),
+                ),
+              );
+            } else if (direction == DismissDirection.endToStart) {
+              context.read<PantryOverviewBloc>().add(
+                  PantryOverviewMoveBetweenLists(
+                      item: item, inGroceryList: true));
+              return false;
+            }
+            return null;
           },
         );
       },

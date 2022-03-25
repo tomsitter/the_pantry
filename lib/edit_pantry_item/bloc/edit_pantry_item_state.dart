@@ -11,7 +11,7 @@ extension EditPantryItemStatusX on EditPantryItemStatus {
 
 class EditPantryItemState extends Equatable {
   final EditPantryItemStatus status;
-  final FormzStatus formStatus;
+  final FormzStatus _formStatus;
   final bool isGroceryScreen;
   final PantryItem? initialItem;
   final ItemName name;
@@ -20,22 +20,23 @@ class EditPantryItemState extends Equatable {
   final bool? inGroceryList;
 
   bool get isNewItem => initialItem == null;
-  bool get isFormValid => formStatus.isValidated;
+  bool get isFormValid => _formStatus.isValidated;
+  bool get canSubmit => isFormValid && !status.isLoadingOrSuccess;
 
-  const EditPantryItemState({
+  EditPantryItemState({
     this.status = EditPantryItemStatus.initial,
-    this.formStatus = FormzStatus.pure,
+    formStatus,
     required this.isGroceryScreen,
     this.initialItem,
     this.name = const ItemName.pure(),
     this.category = FoodCategory.uncategorized,
     this.amount = FoodAmount.full,
     this.inGroceryList,
-  });
+  }) : _formStatus = formStatus ?? Formz.validate([name]);
 
   EditPantryItemState copyWith({
     EditPantryItemStatus? status,
-    FormzStatus? formStatus,
+    // FormzStatus? formStatus,
     bool? isGroceryScreen,
     PantryItem? initialItem,
     ItemName? name,
@@ -45,7 +46,7 @@ class EditPantryItemState extends Equatable {
   }) {
     return EditPantryItemState(
       status: status ?? this.status,
-      formStatus: formStatus ?? this.formStatus,
+      formStatus: Formz.validate([name ?? this.name]),
       isGroceryScreen: isGroceryScreen ?? this.isGroceryScreen,
       initialItem: initialItem ?? this.initialItem,
       name: name ?? this.name,
@@ -56,13 +57,6 @@ class EditPantryItemState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-        status,
-        formStatus,
-        isGroceryScreen,
-        name,
-        category,
-        amount,
-        inGroceryList
-      ];
+  List<Object?> get props =>
+      [status, isGroceryScreen, name, category, amount, inGroceryList];
 }
