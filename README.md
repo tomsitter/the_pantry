@@ -14,9 +14,9 @@ See what's in your pantry, how long it's been there, and how much is left. Swipe
 - <strike>Moved pantry items back into the grocery list</strike> **Done!**
 - <strike>Add a search bar to grocery items and pantry items screens</strike> **Done!**
 - <strike>Add categories to grocery and pantry items (e.g. produce, nonperishable, frozen, etc.)</strike> **Done!**
-  - Make categories changeable for each item
-- Group items by category type and make collapsible for easier filtering
-- Add support for offline mode (will still require an account)
+  - <strike>Make categories changeable for each item</strike>
+- <strike>Group items by category type and make collapsible for easier filtering</strike>
+- <strike>Add support for offline mode (will still require an account)</strike>
 - <strike>Upload screenshots to this readme document</strike> **Done!**
 
 
