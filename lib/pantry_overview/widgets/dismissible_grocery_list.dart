@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pantry_repository/pantry_repository.dart';
 import 'package:the_pantry/pantry_overview/pantry_overview.dart';
 import 'package:the_pantry/edit_pantry_item/edit_pantry_item.dart';
+import 'package:the_pantry/search/search.dart';
 
 class DismissibleGroceryList extends StatelessWidget {
   final List<PantryItem> displayItems;
@@ -45,9 +46,12 @@ class DismissibleGroceryList extends StatelessWidget {
                             fullscreenDialog: true,
                             builder: (_) => RepositoryProvider.value(
                                   value: context.read<PantryRepository>(),
-                                  child: EditPantryItemPage(
-                                      initialItem: item,
-                                      isGroceryScreen: isGroceryScreen),
+                                  child: BlocProvider.value(
+                                    value: context.read<SearchCubit>(),
+                                    child: EditPantryItemPage(
+                                        initialItem: item,
+                                        isGroceryScreen: isGroceryScreen),
+                                  ),
                                 )),
                       );
                     },

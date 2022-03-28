@@ -71,8 +71,8 @@ class HomeView extends StatelessWidget {
           body: const TabBarView(
             // showGroceries flips between the "My Groceries" and "My Pantry" screens
             children: [
-              GroceryScreen(isGroceryScreen: true),
-              GroceryScreen(isGroceryScreen: false),
+              PantryOverviewScreen(isGroceryScreen: true),
+              PantryOverviewScreen(isGroceryScreen: false),
             ],
           ),
         );

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_dictionary_repository/food_dictionary_repository.dart';
 import 'package:the_pantry/pantry_overview/pantry_overview.dart';
@@ -8,27 +7,42 @@ import 'package:pantry_repository/pantry_repository.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:the_pantry/search/search.dart';
 
-class GroceryScreen extends StatelessWidget {
+class PantryOverviewScreen extends StatelessWidget {
   static const String id = 'grocery_screen';
   final bool isGroceryScreen;
 
-  const GroceryScreen({Key? key, required this.isGroceryScreen})
+  const PantryOverviewScreen({Key? key, required this.isGroceryScreen})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => PantryOverviewBloc(
-        pantryRepository: context.read<PantryRepository>(),
-        authRepository: context.read<AuthenticationRepository>(),
-        isGroceryScreen: isGroceryScreen,
-      )
-        ..add(const PantryOverviewSubscriptionRequested())
-        ..add(PantryOverviewFilterChanged(
-            filter: isGroceryScreen
-                ? const PantryFilter.groceriesOnly()
-                : const PantryFilter.pantryOnly())),
-      child: GroceryOverviewView(),
+    final _pantryRepository = context.read<PantryRepository>();
+    final _foodRepository = context.read<FoodRepository>();
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => PantryOverviewBloc(
+            pantryRepository: _pantryRepository,
+            authRepository: context.read<AuthenticationRepository>(),
+            isGroceryScreen: isGroceryScreen,
+          )
+            ..add(const PantryOverviewSubscriptionRequested())
+            ..add(
+              PantryOverviewFilterChanged(
+                filter: isGroceryScreen
+                    ? const PantryFilter.groceriesOnly()
+                    : const PantryFilter.pantryOnly(),
+              ),
+            ),
+        ),
+        BlocProvider<SearchCubit>(
+          create: (_) => SearchCubit(
+              foodRepository: _foodRepository,
+              pantryRepository: _pantryRepository),
+        ),
+      ],
+      child: const GroceryOverviewView(),
     );
   }
 }
@@ -102,7 +116,7 @@ class GroceryOverviewView extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                isGroceryScreen ? const PantrySearchField() : Container(),
+                isGroceryScreen ? const _AutoCompleteNameField() : Container(),
                 Expanded(
                   child: Container(
                     decoration: const BoxDecoration(
@@ -149,10 +163,13 @@ class GroceryOverviewView extends StatelessWidget {
               fullscreenDialog: true,
               builder: (_) => RepositoryProvider.value(
                 value: context.read<PantryRepository>(),
-                child: EditPantryItemPage(
-                  isGroceryScreen: isGroceryScreen,
-                  initialItem: PantryItem(
-                      name: newItemName, inGroceryList: isGroceryScreen),
+                child: BlocProvider.value(
+                  value: context.read<SearchCubit>(),
+                  child: EditPantryItemPage(
+                    isGroceryScreen: isGroceryScreen,
+                    initialItem: PantryItem(
+                        name: newItemName, inGroceryList: isGroceryScreen),
+                  ),
                 ),
               ),
             ),
@@ -177,9 +194,6 @@ class PantrySearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isGroceryScreen =
-        context.select((PantryOverviewBloc bloc) => bloc.state.isGroceryScreen);
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 8.0),
       child: Row(
@@ -191,16 +205,8 @@ class PantrySearchField extends StatelessWidget {
             child: TextField(
               autofocus: false,
               onChanged: (searchText) {
-                context.read<PantryOverviewBloc>().add(
-                    PantryOverviewFilterChanged(
-                        filter: isGroceryScreen
-                            ? PantryFilter.groceriesOnly(searchText)
-                            : PantryFilter.pantryOnly(searchText)));
+                context.read<SearchCubit>().changeSearchText(searchText);
               },
-              // _runFilter(pantryList.items, value),
-              // style: const TextStyle(
-              //   color: Colors.black,
-              // ),
               decoration: const InputDecoration(
                 labelText: 'Search',
                 suffixIcon: Icon(Icons.search),
@@ -209,6 +215,66 @@ class PantrySearchField extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _AutoCompleteNameField extends StatelessWidget {
+  const _AutoCompleteNameField({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    context.read<SearchCubit>().changeTarget(SearchTarget.userHistory);
+
+    return BlocBuilder<SearchCubit, SearchState>(
+      builder: (context, state) {
+        return Row(
+          children: [
+            Expanded(
+              child: Autocomplete<PantryItem>(
+                displayStringForOption: (PantryItem item) => item.name,
+                optionsBuilder: (TextEditingValue textEditingValue) {
+                  String searchText = textEditingValue.text;
+                  context.read<SearchCubit>().changeSearchText(searchText);
+
+                  return state.matchedItems;
+                },
+                fieldViewBuilder: (context, textEditingController, focusNode,
+                    onFieldSubmitted) {
+                  return TextFormField(
+                    controller: textEditingController,
+                    focusNode: focusNode,
+                    onFieldSubmitted: (String value) {
+                      onFieldSubmitted();
+                    },
+                    decoration: const InputDecoration(
+                      labelText: "name",
+                    ),
+                  );
+                },
+                key: const Key('pantryOverview_search_textFormField'),
+                onSelected: (PantryItem item) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      fullscreenDialog: true,
+                      builder: (_) => RepositoryProvider.value(
+                        value: context.read<PantryRepository>(),
+                        child: BlocProvider.value(
+                          value: context.read<SearchCubit>(),
+                          child: EditPantryItemPage(
+                            isGroceryScreen: item.inGroceryList,
+                            initialItem: item,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_dictionary_repository/food_dictionary_repository.dart';
 import 'package:the_pantry/app/app.dart';
 import 'package:the_pantry/theme/theme.dart';
+import 'package:the_pantry/search/search.dart';
 
 class App extends StatelessWidget {
   const App({
@@ -27,12 +28,16 @@ class App extends StatelessWidget {
         ),
         RepositoryProvider.value(
           value: _foodRepository,
-        )
-      ],
-      child: BlocProvider(
-        create: (_) => AppBloc(
-          authRepository: _authenticationRepository,
         ),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<AppBloc>(
+            create: (_) => AppBloc(
+              authRepository: _authenticationRepository,
+            ),
+          ),
+        ],
         child: const AppView(),
       ),
     );
