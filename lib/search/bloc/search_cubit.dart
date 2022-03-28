@@ -22,10 +22,10 @@ class SearchCubit extends Cubit<SearchState> {
     monitorUserPantryItems();
   }
 
-  void monitorUserPantryItems() {
+  void monitorUserPantryItems() async {
     _pantryStreamSubscription =
         _pantryRepository.getPantryItems().listen((items) {
-      state.copyWith(userItems: items);
+      emit(state.copyWith(userItems: items));
     });
   }
 

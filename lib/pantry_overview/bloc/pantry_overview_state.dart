@@ -19,7 +19,8 @@ class PantryOverviewState extends Equatable {
     this.errorMessage,
   });
 
-  Iterable<PantryItem> get filteredItems => filter.applyAll(items);
+  Iterable<PantryItem> get filteredItems =>
+      filter.applyAll(items).toList()..sort((a, b) => a.name.compareTo(b.name));
 
   PantryOverviewState copyWith(
       {PantryOverviewStatus? status,

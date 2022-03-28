@@ -187,38 +187,6 @@ class GroceryOverviewView extends StatelessWidget {
   }
 }
 
-class PantrySearchField extends StatelessWidget {
-  const PantrySearchField({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 8.0),
-      child: Row(
-        children: [
-          // Text(
-          //   '$numItems Items',
-          // ),
-          Expanded(
-            child: TextField(
-              autofocus: false,
-              onChanged: (searchText) {
-                context.read<SearchCubit>().changeSearchText(searchText);
-              },
-              decoration: const InputDecoration(
-                labelText: 'Search',
-                suffixIcon: Icon(Icons.search),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _AutoCompleteNameField extends StatelessWidget {
   const _AutoCompleteNameField({Key? key}) : super(key: key);
 
@@ -226,55 +194,50 @@ class _AutoCompleteNameField extends StatelessWidget {
   Widget build(BuildContext context) {
     context.read<SearchCubit>().changeTarget(SearchTarget.userHistory);
 
-    return BlocBuilder<SearchCubit, SearchState>(
-      builder: (context, state) {
-        return Row(
-          children: [
-            Expanded(
-              child: Autocomplete<PantryItem>(
-                displayStringForOption: (PantryItem item) => item.name,
-                optionsBuilder: (TextEditingValue textEditingValue) {
-                  String searchText = textEditingValue.text;
-                  context.read<SearchCubit>().changeSearchText(searchText);
-
-                  return state.matchedItems;
+    return Row(
+      children: [
+        Expanded(
+          child: Autocomplete<PantryItem>(
+            displayStringForOption: (PantryItem item) => item.name,
+            optionsBuilder: (TextEditingValue textEditingValue) {
+              String searchText = textEditingValue.text;
+              context.read<SearchCubit>().changeSearchText(searchText);
+              return context.read<SearchCubit>().state.matchedItems;
+            },
+            fieldViewBuilder:
+                (context, textEditingController, focusNode, onFieldSubmitted) {
+              return TextFormField(
+                controller: textEditingController,
+                focusNode: focusNode,
+                onFieldSubmitted: (String value) {
+                  onFieldSubmitted();
                 },
-                fieldViewBuilder: (context, textEditingController, focusNode,
-                    onFieldSubmitted) {
-                  return TextFormField(
-                    controller: textEditingController,
-                    focusNode: focusNode,
-                    onFieldSubmitted: (String value) {
-                      onFieldSubmitted();
-                    },
-                    decoration: const InputDecoration(
-                      labelText: "name",
-                    ),
-                  );
-                },
-                key: const Key('pantryOverview_search_textFormField'),
-                onSelected: (PantryItem item) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      fullscreenDialog: true,
-                      builder: (_) => RepositoryProvider.value(
-                        value: context.read<PantryRepository>(),
-                        child: BlocProvider.value(
-                          value: context.read<SearchCubit>(),
-                          child: EditPantryItemPage(
-                            isGroceryScreen: item.inGroceryList,
-                            initialItem: item,
-                          ),
-                        ),
+                decoration: const InputDecoration(
+                  labelText: "name",
+                ),
+              );
+            },
+            key: const Key('pantryOverview_search_textFormField'),
+            onSelected: (PantryItem item) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  fullscreenDialog: true,
+                  builder: (_) => RepositoryProvider.value(
+                    value: context.read<PantryRepository>(),
+                    child: BlocProvider.value(
+                      value: context.read<SearchCubit>(),
+                      child: EditPantryItemPage(
+                        isGroceryScreen: item.inGroceryList,
+                        initialItem: item,
                       ),
                     ),
-                  );
-                },
-              ),
-            ),
-          ],
-        );
-      },
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }
