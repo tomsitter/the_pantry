@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'firebase_options.dart';
 
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:food_dictionary_repository/food_dictionary_repository.dart';
@@ -13,7 +15,10 @@ Future main() async {
   return BlocOverrides.runZoned(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
-      await Firebase.initializeApp();
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+      // FirebaseAnalytics analytics = FirebaseAnalytics.instance;
       final authRepository = AuthenticationRepository();
       await authRepository.user.first;
       final data = await rootBundle.loadString('assets/data/foods.json');

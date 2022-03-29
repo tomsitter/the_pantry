@@ -4,6 +4,7 @@ import 'colors.dart';
 class CustomTheme {
   static ThemeData get light {
     return ThemeData(
+      fontFamily: 'Nunito',
         // textTheme: GoogleFonts.openSansTextTheme(),
         primaryColorLight: CustomColors.blue,
         primaryColor: CustomColors.blue,
