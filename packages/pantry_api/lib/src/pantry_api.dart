@@ -26,7 +26,7 @@ abstract class PantryApi {
   const PantryApi();
 
   /// Provides a [Stream] of all pantry items for a given [user].
-  Stream<List<PantryItem>> getPantryItems();
+  Stream<List<PantryItem>> get pantryItems;
 
   /// Fetches all of a [user]s current [PantryItems]
   ///

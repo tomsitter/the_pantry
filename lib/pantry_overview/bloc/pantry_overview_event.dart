@@ -8,7 +8,18 @@ abstract class PantryOverviewEvent extends Equatable {
 }
 
 class PantryOverviewSubscriptionRequested extends PantryOverviewEvent {
-  const PantryOverviewSubscriptionRequested();
+  final User user;
+
+  const PantryOverviewSubscriptionRequested(this.user);
+}
+
+class PantryOverviewPantryUpdated extends PantryOverviewEvent {
+  final List<PantryItem> items;
+
+  const PantryOverviewPantryUpdated(this.items);
+
+  @override
+  List<Object> get props => [items];
 }
 
 class PantryOverviewGroceryToggled extends PantryOverviewEvent {

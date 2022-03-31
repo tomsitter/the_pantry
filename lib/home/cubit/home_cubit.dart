@@ -10,4 +10,7 @@ class HomeCubit extends Cubit<HomeState> {
     HomeTab tab = index == 0 ? HomeTab.grocery : HomeTab.pantry;
     emit(HomeState(tab: tab));
   }
+
+  bool get isGroceryScreen => state.tab == HomeTab.grocery;
+
 }

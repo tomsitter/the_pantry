@@ -5,31 +5,19 @@ import 'package:food_dictionary_repository/food_dictionary_repository.dart';
 import 'package:the_pantry/pantry_overview/pantry_overview.dart';
 import 'package:the_pantry/edit_pantry_item/edit_pantry_item.dart';
 import 'package:pantry_repository/pantry_repository.dart';
+import 'package:the_pantry/home/home.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:the_pantry/search/search.dart';
 
-class GroceryScreen extends StatelessWidget {
+class PantryOverviewScreen extends StatelessWidget {
   static const String id = 'grocery_screen';
-  final bool isGroceryScreen;
 
-  const GroceryScreen({Key? key, required this.isGroceryScreen})
+  const PantryOverviewScreen({Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => PantryOverviewBloc(
-        pantryRepository: context.read<PantryRepository>(),
-        authRepository: context.read<AuthenticationRepository>(),
-        isGroceryScreen: isGroceryScreen,
-      )
-        ..add(const PantryOverviewSubscriptionRequested())
-        ..add(PantryOverviewFilterChanged(
-            filter: isGroceryScreen
-                ? const PantryFilter.groceriesOnly()
-                : const PantryFilter.pantryOnly())),
-      child: GroceryOverviewView(),
-    );
+    return const GroceryOverviewView();
   }
 }
 
@@ -39,7 +27,7 @@ class GroceryOverviewView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isGroceryScreen =
-        context.select((PantryOverviewBloc bloc) => bloc.state.isGroceryScreen);
+        context.select((HomeCubit cubit) => cubit.isGroceryScreen);
 
     return Scaffold(
       body: MultiBlocListener(
@@ -135,7 +123,7 @@ class GroceryOverviewView extends StatelessWidget {
         ),
         onPressed: () {
           final state = context.read<PantryOverviewBloc>().state;
-          final bool isGroceryScreen = state.isGroceryScreen;
+          // final bool isGroceryScreen = context.select((HomeCubit cubit) => cubit.isGroceryScreen);
           final int numFilteredItems = state.filteredItems.length;
           final String newItemName;
           if (numFilteredItems == 0) {
@@ -178,7 +166,7 @@ class PantrySearchField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isGroceryScreen =
-        context.select((PantryOverviewBloc bloc) => bloc.state.isGroceryScreen);
+        context.select((HomeCubit cubit) => cubit.isGroceryScreen);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 8.0),

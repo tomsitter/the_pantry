@@ -20,10 +20,10 @@ class FirestorePantryApi extends PantryApi {
 
   /// Provides a [Stream] of all pantry items.
   @override
-  Stream<List<PantryItem>> getPantryItems() =>
+  Stream<List<PantryItem>> get pantryItems =>
       _pantryItemStreamController.asBroadcastStream();
 
-  // TODO: consider deprecating
+  @override
   Future<void> fetchPantryItems(String docId) async {
     final data = await _firestoreService.fetchPantryItems(docId);
     if (data != null) {
@@ -38,6 +38,7 @@ class FirestorePantryApi extends PantryApi {
     }
   }
 
+  @override
   Future<void> createNewPantry(String docId) async {
     _firestoreService.createNewPantry(docId);
     _pantryItemStreamController.add(const []);
@@ -45,12 +46,16 @@ class FirestorePantryApi extends PantryApi {
 
   /// Listens to snapshots from the user's pantry. If the snapshot is different
   /// than the current list of [PantryItem]s, then add to the stream.
+  @override
   Future<void> streamUserPantryItems(String docId) async {
+    print("SETTING UP PANTRY STREAM LISTENER for $docId!!!");
+
     final stream = _firestoreService.listenOnUserDocument(docId);
     stream.listen((DocumentSnapshot snapshot) {
       final Map<String, dynamic>? data =
           snapshot.data() as Map<String, dynamic>?;
       if (data != null) {
+        print("Got data for $docId");
         List<PantryItem> pantryList = data['pantry']
             .entries
             .map<PantryItem>((item) => PantryItem.fromJson(item))
@@ -59,7 +64,13 @@ class FirestorePantryApi extends PantryApi {
         // Only add to stream if the snapshot is different than our current pantry item list
         if (!ListEquality()
             .equals(pantryList, [..._pantryItemStreamController.value])) {
+          print("Adding to stream controller");
           _pantryItemStreamController.add(pantryList);
+        } else {
+          /// If this is an empty pantry, send it anyways to get out of a perpetual loading screen
+          if (pantryList.isEmpty) {
+            _pantryItemStreamController.add(pantryList);
+          }
         }
       }
     });
@@ -159,4 +170,5 @@ class FirestorePantryApi extends PantryApi {
       return _firestoreService.updateItem(item.id, item.toJson(), docId);
     }
   }
+
 }

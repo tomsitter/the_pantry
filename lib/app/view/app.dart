@@ -3,6 +3,7 @@ import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_dictionary_repository/food_dictionary_repository.dart';
+import 'package:pantry_repository/pantry_repository.dart';
 import 'package:the_pantry/app/app.dart';
 import 'package:the_pantry/theme/theme.dart';
 
@@ -11,12 +12,15 @@ class App extends StatelessWidget {
     Key? key,
     required AuthenticationRepository authenticationRepository,
     required FoodRepository foodRepository,
+    required PantryRepository pantryRepository,
   })  : _authenticationRepository = authenticationRepository,
         _foodRepository = foodRepository,
+        _pantryRepository = pantryRepository,
         super(key: key);
 
   final AuthenticationRepository _authenticationRepository;
   final FoodRepository _foodRepository;
+  final PantryRepository _pantryRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +31,9 @@ class App extends StatelessWidget {
         ),
         RepositoryProvider.value(
           value: _foodRepository,
+        ),
+        RepositoryProvider.value(
+          value: _pantryRepository,
         )
       ],
       child: BlocProvider(
