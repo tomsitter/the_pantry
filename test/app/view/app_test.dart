@@ -34,6 +34,7 @@ void main() {
           (_) => const Stream.empty(),
       );
       when(() => authenticationRepository.currentUser).thenReturn(user);
+
       when(() => pantryRepository.pantryItems).thenAnswer(
           (_) => const Stream.empty(),
       );
