@@ -24,7 +24,7 @@ class SearchCubit extends Cubit<SearchState> {
 
   void monitorUserPantryItems() async {
     _pantryStreamSubscription =
-        _pantryRepository.getPantryItems().listen((items) {
+        _pantryRepository.pantryItems.listen((items) {
       emit(state.copyWith(userItems: items));
     });
   }
