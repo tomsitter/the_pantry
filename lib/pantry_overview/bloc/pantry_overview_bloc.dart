@@ -13,15 +13,17 @@ class PantryOverviewBloc
     extends Bloc<PantryOverviewEvent, PantryOverviewState> {
   final PantryRepository _pantryRepository;
   final AuthenticationRepository _authRepository;
+  late final StreamSubscription<User> _userSubscription;
+  late final StreamSubscription<List<PantryItem>> _pantrySubscription;
+
+  // late final StreamSubscription<List<PantryItem>> _pantrySubscription;
 
   PantryOverviewBloc(
       {required PantryRepository pantryRepository,
-      required AuthenticationRepository authRepository,
-      required bool isGroceryScreen})
+      required AuthenticationRepository authRepository})
       : _pantryRepository = pantryRepository,
         _authRepository = authRepository,
-        super(PantryOverviewState(isGroceryScreen: isGroceryScreen)) {
-    _pantryRepository.fetchPantryItems(_authRepository.currentUser.id);
+        super(PantryOverviewState()) {
     on<PantryOverviewSubscriptionRequested>(_onSubscriptionRequested);
     on<PantryOverviewMoveBetweenLists>(_onMoveBetweenLists);
     on<PantryOverviewFilterChanged>(_onFilterChanged);
@@ -29,24 +31,33 @@ class PantryOverviewBloc
     on<PantryOverviewItemDeleted>(_onItemDeleted);
     on<PantryOverviewGroceryToggled>(_onGroceryToggled);
     on<PantryOverviewAmountChanged>(_onAmountChanged);
+    on<PantryOverviewPantryUpdated>(_onPantryUpdated);
+
+    _pantrySubscription = _pantryRepository.pantryItems.listen(
+          (items) =>
+          add(PantryOverviewPantryUpdated(items))
+    );
+
+    _userSubscription =
+        _authRepository.user.listen((user) => add(PantryOverviewSubscriptionRequested(user)));
+
+
   }
 
   Future<void> _onSubscriptionRequested(
     PantryOverviewSubscriptionRequested event,
     Emitter<PantryOverviewState> emit,
   ) async {
+    print("Subscription requested for ${event.user.id}");
     emit(state.copyWith(status: PantryOverviewStatus.loading));
+    _pantryRepository.streamUserPantryItems(event.user.id);
+  }
 
-    await emit.forEach<List<PantryItem>>(
-      _pantryRepository.getPantryItems(),
-      onData: (items) => state.copyWith(
-        status: PantryOverviewStatus.success,
-        items: items,
-      ),
-      onError: (_, __) => state.copyWith(
-        status: PantryOverviewStatus.failure,
-      ),
-    );
+  Future<void> _onPantryUpdated(
+      PantryOverviewPantryUpdated event,
+      Emitter<PantryOverviewState> emit,
+      ) async {
+    emit(state.copyWith(status: PantryOverviewStatus.success, items: event.items));
   }
 
   Future<void> _onMoveBetweenLists(
@@ -121,5 +132,12 @@ class PantryOverviewBloc
       final newItem = event.item.copyWith(amount: newAmount);
       await _pantryRepository.savePantryItem(user.id, newItem);
     }
+  }
+
+  @override
+  Future<void> close() {
+    _userSubscription.cancel();
+    _pantrySubscription.cancel();
+    return super.close();
   }
 }

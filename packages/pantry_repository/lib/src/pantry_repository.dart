@@ -7,7 +7,7 @@ class PantryRepository {
   const PantryRepository({required PantryApi pantryApi})
       : _pantryApi = pantryApi;
 
-  Stream<List<PantryItem>> getPantryItems() => _pantryApi.getPantryItems();
+  Stream<List<PantryItem>> get pantryItems => _pantryApi.pantryItems;
 
   /// Fetches all of a [user]s current [PantryItems]
   ///

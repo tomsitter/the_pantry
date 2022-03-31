@@ -1,6 +1,4 @@
 import 'package:authentication_repository/authentication_repository.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firestore_pantry_api/firestore_pantry_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pantry_repository/pantry_repository.dart';
@@ -17,18 +15,22 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authRepository = context.read<AuthenticationRepository>();
-    return RepositoryProvider(
-      create: (BuildContext context) {
-        final pantryApi = FirestorePantryApi(
-            instance: FirebaseFirestore.instance,
-            docId: authRepository.currentUser.id);
-        return PantryRepository(pantryApi: pantryApi);
-      },
-      child: BlocProvider<HomeCubit>(
-        create: (_) => HomeCubit(),
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => HomeCubit(),
+        ),
+        BlocProvider(
+          create: (_) => PantryOverviewBloc(
+              pantryRepository: context.read<PantryRepository>(),
+              authRepository: authRepository)
+            ..add(PantryOverviewSubscriptionRequested(authRepository.currentUser))
+            ..add(const PantryOverviewFilterChanged(filter: PantryFilter.groceriesOnly()))
+        )
+      ],
         child: const HomeView(),
-      ),
-    );
+      );
   }
 }
 
@@ -69,10 +71,9 @@ class HomeView extends StatelessWidget {
                   ? Theme.of(context).primaryColorLight
                   : Theme.of(context).secondaryHeaderColor),
           body: const TabBarView(
-            // showGroceries flips between the "My Groceries" and "My Pantry" screens
             children: [
-              PantryOverviewScreen(isGroceryScreen: true),
-              PantryOverviewScreen(isGroceryScreen: false),
+              PantryOverviewScreen(),
+              PantryOverviewScreen(),
             ],
           ),
         );

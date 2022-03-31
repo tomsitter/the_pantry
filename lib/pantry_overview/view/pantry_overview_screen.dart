@@ -4,46 +4,19 @@ import 'package:food_dictionary_repository/food_dictionary_repository.dart';
 import 'package:the_pantry/pantry_overview/pantry_overview.dart';
 import 'package:the_pantry/edit_pantry_item/edit_pantry_item.dart';
 import 'package:pantry_repository/pantry_repository.dart';
+import 'package:the_pantry/home/home.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:the_pantry/search/search.dart';
 
 class PantryOverviewScreen extends StatelessWidget {
   static const String id = 'grocery_screen';
-  final bool isGroceryScreen;
 
-  const PantryOverviewScreen({Key? key, required this.isGroceryScreen})
+  const PantryOverviewScreen({Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final _pantryRepository = context.read<PantryRepository>();
-    final _foodRepository = context.read<FoodRepository>();
-
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => PantryOverviewBloc(
-            pantryRepository: _pantryRepository,
-            authRepository: context.read<AuthenticationRepository>(),
-            isGroceryScreen: isGroceryScreen,
-          )
-            ..add(const PantryOverviewSubscriptionRequested())
-            ..add(
-              PantryOverviewFilterChanged(
-                filter: isGroceryScreen
-                    ? const PantryFilter.groceriesOnly()
-                    : const PantryFilter.pantryOnly(),
-              ),
-            ),
-        ),
-        BlocProvider<SearchCubit>(
-          create: (_) => SearchCubit(
-              foodRepository: _foodRepository,
-              pantryRepository: _pantryRepository),
-        ),
-      ],
-      child: const GroceryOverviewView(),
-    );
+    return const GroceryOverviewView();
   }
 }
 
@@ -53,7 +26,7 @@ class GroceryOverviewView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isGroceryScreen =
-        context.select((PantryOverviewBloc bloc) => bloc.state.isGroceryScreen);
+        context.select((HomeCubit cubit) => cubit.isGroceryScreen);
 
     return Scaffold(
       body: MultiBlocListener(
@@ -149,7 +122,7 @@ class GroceryOverviewView extends StatelessWidget {
         ),
         onPressed: () {
           final state = context.read<PantryOverviewBloc>().state;
-          final bool isGroceryScreen = state.isGroceryScreen;
+          // final bool isGroceryScreen = context.select((HomeCubit cubit) => cubit.isGroceryScreen);
           final int numFilteredItems = state.filteredItems.length;
           final String newItemName;
           if (numFilteredItems == 0) {
@@ -193,6 +166,8 @@ class _AutoCompleteNameField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.read<SearchCubit>().changeTarget(SearchTarget.userHistory);
+    bool isGroceryScreen =
+        context.select((HomeCubit cubit) => cubit.isGroceryScreen);
 
     return Row(
       children: [

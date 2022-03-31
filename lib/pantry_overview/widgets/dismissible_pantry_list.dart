@@ -4,6 +4,7 @@ import 'package:pantry_repository/pantry_repository.dart';
 import 'package:the_pantry/pantry_overview/pantry_overview.dart';
 import 'package:the_pantry/edit_pantry_item/edit_pantry_item.dart';
 import 'package:the_pantry/search/search.dart';
+import 'package:the_pantry/home/home.dart';
 
 /// A scrollable list of Expansion tiles
 ///
@@ -119,8 +120,8 @@ class _PantryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isGroceryScreen =
-        context.select((PantryOverviewBloc bloc) => bloc.state.isGroceryScreen);
+    bool isGroceryScreen =
+    context.select((HomeCubit cubit) => cubit.isGroceryScreen);
 
     return GestureDetector(
       child: ListTile(

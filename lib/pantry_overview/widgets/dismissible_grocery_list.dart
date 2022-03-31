@@ -4,6 +4,7 @@ import 'package:pantry_repository/pantry_repository.dart';
 import 'package:the_pantry/pantry_overview/pantry_overview.dart';
 import 'package:the_pantry/edit_pantry_item/edit_pantry_item.dart';
 import 'package:the_pantry/search/search.dart';
+import 'package:the_pantry/home/home.dart';
 
 class DismissibleGroceryList extends StatelessWidget {
   final List<PantryItem> displayItems;
@@ -13,8 +14,6 @@ class DismissibleGroceryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isGroceryScreen =
-        context.select((PantryOverviewBloc bloc) => bloc.state.isGroceryScreen);
 
     return BlocBuilder<PantryOverviewBloc, PantryOverviewState>(
       builder: (context, state) {
@@ -43,16 +42,18 @@ class DismissibleGroceryList extends StatelessWidget {
                     onLongPressCallback: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                            fullscreenDialog: true,
-                            builder: (_) => RepositoryProvider.value(
-                                  value: context.read<PantryRepository>(),
-                                  child: BlocProvider.value(
-                                    value: context.read<SearchCubit>(),
-                                    child: EditPantryItemPage(
-                                        initialItem: item,
-                                        isGroceryScreen: isGroceryScreen),
-                                  ),
-                                )),
+                          fullscreenDialog: true,
+                          builder: (_) => RepositoryProvider.value(
+                            value: context.read<PantryRepository>(),
+                            child: BlocProvider.value(
+                              value: context.read<SearchCubit>(),
+                              child: EditPantryItemPage(
+                                initialItem: item,
+                                isGroceryScreen: context.select((HomeCubit cubit) => cubit.isGroceryScreen),
+                              ),
+                            ),
+                          ),
+                        ),
                       );
                     },
                   ),
