@@ -1,7 +1,13 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:the_pantry/signup/signup.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+const String _TermsUrl = 'https://www.tomsitter.com/thepantrytou';
+const String _PrivacyUrl =
+    'https://www.freeprivacypolicy.com/live/a87e6201-0c54-4e8c-9822-709798dacaeb';
 
 class SignUpForm extends StatelessWidget {
   const SignUpForm({Key? key}) : super(key: key);
@@ -28,6 +34,8 @@ class SignUpForm extends StatelessWidget {
             _PasswordInput(),
             SizedBox(height: 8),
             _ConfirmPasswordInput(),
+            SizedBox(height: 8),
+            _TermsOfUseCheckbox(),
             SizedBox(height: 8),
             _SignUpButton(),
           ])),
@@ -101,6 +109,63 @@ class _ConfirmPasswordInput extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+class _TermsOfUseCheckbox extends StatelessWidget {
+  const _TermsOfUseCheckbox({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SignUpCubit, SignupState>(
+      buildWhen: (previous, current) =>
+          previous.agreeToTOU != current.agreeToTOU,
+      builder: (context, state) {
+        return Row(
+          children: [
+            Checkbox(
+              key: const Key('signupForm_termsOfUse_checkBox'),
+              value: context.read<SignUpCubit>().touChecked,
+              onChanged: (value) =>
+                  context.read<SignUpCubit>().agreeToTOUChanged(value ?? false),
+            ),
+            Flexible(
+              child: RichText(
+                text: TextSpan(
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                  children: [
+                    TextSpan(text: "I have read and accept the "),
+                    TextSpan(
+                        text: "terms and conditions",
+                        style: const TextStyle(
+                          decoration: TextDecoration.underline,
+                          color: Colors.blue,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => _launchURL(_TermsUrl)),
+                    TextSpan(text: " and "),
+                    TextSpan(
+                        text: "privacy policy",
+                        style: const TextStyle(
+                          decoration: TextDecoration.underline,
+                          color: Colors.blue,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => _launchURL(_PrivacyUrl)),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _launchURL(String url) async {
+    if (!await launch(url)) throw 'Could not launch $url';
   }
 }
 

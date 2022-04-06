@@ -2,6 +2,13 @@
     package="com.tomsitter.the_pantry">
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <queries>
+        <!-- If your app opens https URLs -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
    <application
         android:label="The Pantry"
         android:icon="@mipmap/ic_launcher">

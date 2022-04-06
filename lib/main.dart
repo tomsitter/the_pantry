@@ -24,7 +24,9 @@ Future main() async {
       );
       if (USE_FIRESTORE_EMULATOR) {
         FirebaseFirestore.instance.settings = const Settings(
-            host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
+            host: 'localhost:8080',
+            sslEnabled: false,
+            persistenceEnabled: false);
       }
 
       // FirebaseAnalytics analytics = FirebaseAnalytics.instance;
@@ -32,7 +34,8 @@ Future main() async {
       await authRepository.user.first;
       final data = await rootBundle.loadString('assets/data/foods.json');
       final foodRepository = FoodRepository.fromJson(json.decode(data));
-      final pantryApi = FirestorePantryApi(instance: FirebaseFirestore.instance,
+      final pantryApi = FirestorePantryApi(
+          instance: FirebaseFirestore.instance,
           docId: authRepository.currentUser.id);
       final pantryRepository = PantryRepository(pantryApi: pantryApi);
 

@@ -5,6 +5,7 @@ class SignupState extends Equatable {
   final Email email;
   final Password password;
   final ConfirmedPassword confirmedPassword;
+  final TOUCheckbox agreeToTOU;
   final String? errorMessage;
 
   const SignupState({
@@ -12,6 +13,7 @@ class SignupState extends Equatable {
     this.email = const Email.pure(),
     this.password = const Password.pure(),
     this.confirmedPassword = const ConfirmedPassword.pure(),
+    this.agreeToTOU = const TOUCheckbox.pure(),
     this.errorMessage,
   });
 
@@ -20,6 +22,7 @@ class SignupState extends Equatable {
     Email? email,
     Password? password,
     ConfirmedPassword? confirmedPassword,
+    TOUCheckbox? agreeToTOU,
     String? errorMessage,
   }) {
     return SignupState(
@@ -27,9 +30,11 @@ class SignupState extends Equatable {
         email: email ?? this.email,
         password: password ?? this.password,
         confirmedPassword: confirmedPassword ?? this.confirmedPassword,
+        agreeToTOU: agreeToTOU ?? this.agreeToTOU,
         errorMessage: errorMessage ?? this.errorMessage);
   }
 
   @override
-  List<Object?> get props => [status, email, password, confirmedPassword];
+  List<Object?> get props =>
+      [status, email, password, confirmedPassword, agreeToTOU];
 }

@@ -11,13 +11,15 @@ class SignUpCubit extends Cubit<SignupState> {
 
   SignUpCubit(this._authRepository) : super(const SignupState());
 
+  bool get touChecked => state.agreeToTOU.value;
+
   void emailChanged(String value) {
     final email = Email.dirty(value);
     emit(
       state.copyWith(
         email: email,
-        status:
-            Formz.validate([email, state.password, state.confirmedPassword]),
+        status: Formz.validate(
+            [email, state.password, state.confirmedPassword, state.agreeToTOU]),
       ),
     );
   }
@@ -27,8 +29,8 @@ class SignUpCubit extends Cubit<SignupState> {
     emit(
       state.copyWith(
         password: password,
-        status:
-            Formz.validate([state.email, password, state.confirmedPassword]),
+        status: Formz.validate(
+            [state.email, password, state.confirmedPassword, state.agreeToTOU]),
       ),
     );
   }
@@ -41,8 +43,19 @@ class SignUpCubit extends Cubit<SignupState> {
     emit(
       state.copyWith(
         confirmedPassword: confirmedPassword,
-        status:
-            Formz.validate([state.email, state.password, confirmedPassword]),
+        status: Formz.validate(
+            [state.email, state.password, confirmedPassword, state.agreeToTOU]),
+      ),
+    );
+  }
+
+  void agreeToTOUChanged(bool value) {
+    final agreeToTOU = TOUCheckbox.dirty(value);
+    emit(
+      state.copyWith(
+        agreeToTOU: agreeToTOU,
+        status: Formz.validate(
+            [state.email, state.password, state.confirmedPassword, agreeToTOU]),
       ),
     );
   }
