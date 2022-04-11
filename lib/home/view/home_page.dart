@@ -22,15 +22,15 @@ class HomeScreen extends StatelessWidget {
           create: (_) => HomeCubit(),
         ),
         BlocProvider(
-          create: (_) => PantryOverviewBloc(
-              pantryRepository: context.read<PantryRepository>(),
-              authRepository: authRepository)
-            ..add(PantryOverviewSubscriptionRequested(authRepository.currentUser))
-            ..add(const PantryOverviewFilterChanged(filter: PantryFilter.groceriesOnly()))
-        )
+            create: (_) => PantryOverviewBloc(
+                pantryRepository: context.read<PantryRepository>(),
+                authRepository: authRepository)
+              // ..add(PantryOverviewSubscriptionRequested(authRepository.currentUser))
+              ..add(const PantryOverviewFilterChanged(
+                  filter: PantryFilter.groceriesOnly())))
       ],
-        child: const HomeView(),
-      );
+      child: const HomeView(),
+    );
   }
 }
 
