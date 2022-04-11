@@ -11,7 +11,7 @@ class LoginCubit extends Cubit<LoginState> {
   LoginCubit(this._authRepository) : super(const LoginState());
 
   void emailChanged(String value) {
-    final email = Email.dirty(value);
+    final email = Email.dirty(value.trim());
     emit(state.copyWith(
         email: email, status: Formz.validate([email, state.password])));
   }

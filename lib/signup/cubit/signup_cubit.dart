@@ -14,7 +14,7 @@ class SignUpCubit extends Cubit<SignupState> {
   bool get touChecked => state.agreeToTOU.value;
 
   void emailChanged(String value) {
-    final email = Email.dirty(value);
+    final email = Email.dirty(value.trim());
     emit(
       state.copyWith(
         email: email,

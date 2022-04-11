@@ -79,7 +79,10 @@ class _PasswordInput extends StatelessWidget {
           obscureText: true,
           decoration: InputDecoration(
             labelText: 'password',
-            errorText: state.password.invalid ? 'invalid password' : null,
+            errorText: state.password.invalid
+                ? 'password must be at least 8 characters, including a capital and a number.'
+                : null,
+            errorMaxLines: 3,
           ),
         );
       },
