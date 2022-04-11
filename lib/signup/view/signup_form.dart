@@ -4,10 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:the_pantry/signup/signup.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:the_pantry/constants.dart' as constants;
 
-const String _TermsUrl = 'https://www.tomsitter.com/thepantrytou';
-const String _PrivacyUrl =
-    'https://www.freeprivacypolicy.com/live/a87e6201-0c54-4e8c-9822-709798dacaeb';
+// const String _TermsUrl = 'https://www.tomsitter.com/thepantrytou';
+// const String _PrivacyUrl =
+//     'https://www.freeprivacypolicy.com/live/a87e6201-0c54-4e8c-9822-709798dacaeb';
 
 class SignUpForm extends StatelessWidget {
   const SignUpForm({Key? key}) : super(key: key);
@@ -147,7 +148,7 @@ class _TermsOfUseCheckbox extends StatelessWidget {
                           color: Colors.blue,
                         ),
                         recognizer: TapGestureRecognizer()
-                          ..onTap = () => _launchURL(_TermsUrl)),
+                          ..onTap = () => _launchURL(constants.TERMS_URL)),
                     TextSpan(text: " and "),
                     TextSpan(
                         text: "privacy policy",
@@ -156,7 +157,7 @@ class _TermsOfUseCheckbox extends StatelessWidget {
                           color: Colors.blue,
                         ),
                         recognizer: TapGestureRecognizer()
-                          ..onTap = () => _launchURL(_PrivacyUrl)),
+                          ..onTap = () => _launchURL(constants.PRIVACY_URL)),
                   ],
                 ),
               ),
