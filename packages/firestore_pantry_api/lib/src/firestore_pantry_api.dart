@@ -8,7 +8,8 @@ class FirestorePantryApi extends PantryApi {
 
   FirestorePantryApi({required FirebaseFirestore instance, String? docId})
       : _firestoreService = FirestoreService(firestore: instance) {
-    if (docId != null) _init(docId);
+    print("In firestore init code");
+    if (docId != null && docId.isNotEmpty) _init(docId);
   }
 
   void _init(String docId) async {
@@ -170,5 +171,4 @@ class FirestorePantryApi extends PantryApi {
       return _firestoreService.updateItem(item.id, item.toJson(), docId);
     }
   }
-
 }
