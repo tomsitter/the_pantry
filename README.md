@@ -4,7 +4,9 @@ An app for tracking grocery lists and pantry management.
 
 See what's in your pantry, how long it's been there, and how much is left. Swipe items onto your grocery list when you want to buy more. Swipe items back into your pantry once you've restocked.
 
-<img src="https://user-images.githubusercontent.com/2029528/143378356-4b4a7498-9a50-4481-a0a4-ee6255130799.png" width="425" /> <img src="https://user-images.githubusercontent.com/2029528/143378345-6cd7b7f1-d49a-4e7b-92f3-c50070c6c763.gif" width="400" />
+*Note: the following screenshots may not reflect the current state of app development.*
+ 
+<img src="https://user-images.githubusercontent.com/2029528/162077885-38f4b984-12a9-4d9c-b458-a60134d9eb16.jpg" width="375" /> <img src="https://user-images.githubusercontent.com/2029528/143378345-6cd7b7f1-d49a-4e7b-92f3-c50070c6c763.gif" width="400" />
 
 # To Do
 
@@ -18,6 +20,12 @@ See what's in your pantry, how long it's been there, and how much is left. Swipe
 - <strike>Group items by category type and make collapsible for easier filtering</strike>
 - <strike>Add support for offline mode (will still require an account)</strike>
 - <strike>Upload screenshots to this readme document</strike> **Done!**
+
+- Add button to email a grocery list to a friend
+- Add multi-select to add many items to grocery list
+- Add button to add all "empty" items to grocery list
+- Add button to add all "checked" items to pantry list
+- Real-time sharing of grocery lists between users
 
 
 <div>Icons made by <a href="https://www.flaticon.com/authors/flat-icons" title="Flat Icons">Flat Icons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
