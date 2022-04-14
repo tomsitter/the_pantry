@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pantry_repository/pantry_repository.dart';
 import 'package:the_pantry/pantry_overview/pantry_overview.dart';
 
@@ -33,15 +35,34 @@ class PantryOverviewBloc
     on<PantryOverviewAmountChanged>(_onAmountChanged);
     on<PantryOverviewPantryUpdated>(_onPantryUpdated);
 
-    _pantrySubscription = _pantryRepository.pantryItems.listen(
-          (items) =>
-          add(PantryOverviewPantryUpdated(items))
-    );
+    _pantrySubscription = _pantryRepository.pantryItems
+        .listen((items) => add(PantryOverviewPantryUpdated(items)));
 
-    _userSubscription =
-        _authRepository.user.listen((user) => add(PantryOverviewSubscriptionRequested(user)));
+    _userSubscription = _authRepository.user
+        .listen((user) => add(PantryOverviewSubscriptionRequested(user)));
+  }
 
+  String get pantryHTMLItems {
+    // Get items sorted by category
+    final List<PantryItem> items = state.filteredItems.toList();
+    if (items.isEmpty) {
+      return const HtmlEscape().convert("No grocery items");
+    }
 
+    String htmlBody = '';
+    final List<FoodCategory> categories =
+        items.map((item) => item.category).toSet().toList()..sort();
+    for (final category in categories) {
+      htmlBody += "\n${category.displayName}\n";
+      htmlBody += "--------------\n";
+      final categoryItems =
+          items.where((item) => item.category == category).toList()..sort();
+      for (final item in categoryItems) {
+        htmlBody += "$item\n";
+      }
+    }
+
+    return const HtmlEscape().convert(htmlBody);
   }
 
   Future<void> _onSubscriptionRequested(
@@ -54,10 +75,11 @@ class PantryOverviewBloc
   }
 
   Future<void> _onPantryUpdated(
-      PantryOverviewPantryUpdated event,
-      Emitter<PantryOverviewState> emit,
-      ) async {
-    emit(state.copyWith(status: PantryOverviewStatus.success, items: event.items));
+    PantryOverviewPantryUpdated event,
+    Emitter<PantryOverviewState> emit,
+  ) async {
+    emit(state.copyWith(
+        status: PantryOverviewStatus.success, items: event.items));
   }
 
   Future<void> _onMoveBetweenLists(
