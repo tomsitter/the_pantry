@@ -38,7 +38,7 @@ List<PantryItem> ofFoodType(FoodCategory category, List<PantryItem> items) {
 ///
 /// Use the [daysAgo] method for a human-readable string for how long ago
 /// the item was added to the pantry list
-class PantryItem extends Equatable {
+class PantryItem extends Equatable implements Comparable<PantryItem> {
   final String id;
 
   /// The name of the item.
@@ -58,6 +58,11 @@ class PantryItem extends Equatable {
 
   /// Used when item is in a grocery list
   final bool isChecked;
+
+  @override
+  String toString() {
+    return name;
+  }
 
   PantryItem({
     id,
@@ -124,4 +129,12 @@ class PantryItem extends Equatable {
   @override
   List<Object?> get props =>
       [id, name, isChecked, inGroceryList, amount, category];
+
+  /// Pantry Items are sorted by category then by name
+  @override
+  int compareTo(PantryItem other) {
+    int comparison = this.category.compareTo(other.category);
+    // If both food items are in the same category, then sort by name
+    return comparison == 0 ? this.name.compareTo(other.name) : comparison;
+  }
 }

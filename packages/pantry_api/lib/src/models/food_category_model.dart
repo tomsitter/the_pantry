@@ -25,7 +25,7 @@ extension FoodTypeX on FoodType {
   String get displayName => describeEnum(this).capitalize();
 }
 
-class FoodCategory extends Equatable {
+class FoodCategory extends Equatable implements Comparable<FoodCategory> {
   final FoodType category;
 
   static final Map<String, FoodType> categoryMap = {
@@ -61,4 +61,9 @@ class FoodCategory extends Equatable {
 
   @override
   List<Object> get props => [category];
+
+  @override
+  int compareTo(FoodCategory other) {
+    return displayName.compareTo(other.displayName);
+  }
 }
