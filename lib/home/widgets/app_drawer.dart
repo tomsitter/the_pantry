@@ -37,11 +37,11 @@ class AppDrawer extends StatelessWidget {
                 _launchURL(
                     "mailto:?subject=My%20Grocery%20List&body=$emailBody");
               }),
-          Divider(),
+          const Divider(),
           ListTile(
               title: const Text('Logout'),
               onTap: () => context.read<AppBloc>().add(AppLogoutRequested())),
-          Divider(),
+          const Divider(),
           ListTile(
               title: const Text("Privacy Policy"),
               onTap: () => _launchURL(constants.PRIVACY_URL)),
