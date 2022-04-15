@@ -58,7 +58,7 @@ class PantryOverviewBloc
       final categoryItems =
           items.where((item) => item.category == category).toList()..sort();
       for (final item in categoryItems) {
-        htmlBody += "$item\n";
+        htmlBody += "${item.name}\n";
       }
     }
 

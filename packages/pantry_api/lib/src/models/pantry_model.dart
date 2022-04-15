@@ -59,11 +59,6 @@ class PantryItem extends Equatable implements Comparable<PantryItem> {
   /// Used when item is in a grocery list
   final bool isChecked;
 
-  @override
-  String toString() {
-    return name;
-  }
-
   PantryItem({
     id,
     required this.name,
@@ -75,7 +70,23 @@ class PantryItem extends Equatable implements Comparable<PantryItem> {
   })  : dateAdded = dateAdded ?? DateTime.now(),
         id = id ?? uuid.v1();
 
-  factory PantryItem.fromJson(dynamic json) {
+  factory PantryItem.fromJson(Map<String, dynamic> json) {
+    return PantryItem(
+      id: json['id'],
+      name: json['name'],
+      isChecked: json['isChecked'] ?? false,
+      inGroceryList: json['inGroceryList'] ?? false,
+      dateAdded: json['dateAdded'] != null
+          ? DateTime.parse(json['dateAdded'])
+          : DateTime.now(),
+      category: FoodCategory.fromString(json['category']),
+      amount: json['amount'] != null
+          ? FoodAmount.fromString(json['amount'])
+          : FoodAmount.full,
+    );
+  }
+
+  factory PantryItem.fromFirestore(MapEntry<String, dynamic> json) {
     return PantryItem(
       id: json.key,
       name: json.value['name'],
@@ -128,7 +139,7 @@ class PantryItem extends Equatable implements Comparable<PantryItem> {
 
   @override
   List<Object?> get props =>
-      [id, name, isChecked, inGroceryList, amount, category];
+      [id, name, isChecked, inGroceryList, amount, category, dateAdded];
 
   /// Pantry Items are sorted by category then by name
   @override

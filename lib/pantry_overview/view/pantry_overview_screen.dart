@@ -12,8 +12,7 @@ import 'package:the_pantry/search/search.dart';
 class PantryOverviewScreen extends StatelessWidget {
   static const String id = 'grocery_screen';
 
-  const PantryOverviewScreen({Key? key})
-      : super(key: key);
+  const PantryOverviewScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -104,9 +103,11 @@ class GroceryOverviewView extends StatelessWidget {
                           left: 8.0, top: 8.0, right: 8.0, bottom: 88.0),
                       child: isGroceryScreen
                           ? DismissibleGroceryList(
-                              displayItems: state.filteredItems.toList())
+                              displayItems: state.filteredItems.toList()
+                                ..sort())
                           : DismissiblePantryList(
-                              displayItems: state.filteredItems.toList()),
+                              displayItems: state.filteredItems.toList()
+                                ..sort()),
                     ),
                   ),
                 ),

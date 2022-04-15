@@ -8,7 +8,6 @@ class FirestorePantryApi extends PantryApi {
 
   FirestorePantryApi({required FirebaseFirestore instance, String? docId})
       : _firestoreService = FirestoreService(firestore: instance) {
-    print("In firestore init code");
     if (docId != null && docId.isNotEmpty) _init(docId);
   }
 
@@ -30,8 +29,9 @@ class FirestorePantryApi extends PantryApi {
     if (data != null) {
       List<PantryItem> pantryList = data['pantry']
           .entries
-          .map<PantryItem>((item) => PantryItem.fromJson(item))
+          .map<PantryItem>((item) => PantryItem.fromFirestore(item))
           .toList();
+      print(pantryList);
       _pantryItemStreamController.add(pantryList);
     } else {
       _firestoreService.createNewPantry(docId);
@@ -49,17 +49,14 @@ class FirestorePantryApi extends PantryApi {
   /// than the current list of [PantryItem]s, then add to the stream.
   @override
   Future<void> streamUserPantryItems(String docId) async {
-    print("SETTING UP PANTRY STREAM LISTENER for $docId!!!");
-
     final stream = _firestoreService.listenOnUserDocument(docId);
     stream.listen((DocumentSnapshot snapshot) {
       final Map<String, dynamic>? data =
           snapshot.data() as Map<String, dynamic>?;
       if (data != null) {
-        print("Got data for $docId");
         List<PantryItem> pantryList = data['pantry']
             .entries
-            .map<PantryItem>((item) => PantryItem.fromJson(item))
+            .map<PantryItem>((item) => PantryItem.fromFirestore(item))
             .toList();
 
         // Only add to stream if the snapshot is different than our current pantry item list

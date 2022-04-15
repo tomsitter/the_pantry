@@ -10,10 +10,8 @@ class FoodRepository {
 
   factory FoodRepository.fromJson(data) {
     return FoodRepository(
-        foodItems: data
-            .map<PantryItem>(
-                (item) => PantryItem.fromJson(MapEntry(uuid.v1(), item)))
-            .toList());
+        foodItems:
+            data.map<PantryItem>((item) => PantryItem.fromJson(item)).toList());
   }
 
   List<PantryItem>? findItemByName(String name) {
