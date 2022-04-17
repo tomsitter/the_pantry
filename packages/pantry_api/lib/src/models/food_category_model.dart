@@ -34,9 +34,9 @@ class FoodCategory extends Equatable implements Comparable<FoodCategory> {
 
   const FoodCategory(this.category);
 
-  static const uncategorized = const FoodCategory(FoodType.uncategorized);
+  static const uncategorized = FoodCategory(FoodType.uncategorized);
 
-  static const everything = const FoodCategory(FoodType.everything);
+  static const everything = FoodCategory(FoodType.everything);
 
   // Returns a lowercase String of the FoodType that can be converted back
   static String foodTypeToString(FoodType foodType) => describeEnum(foodType);

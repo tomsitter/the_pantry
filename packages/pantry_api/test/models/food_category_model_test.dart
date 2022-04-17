@@ -37,8 +37,21 @@ void main() {
         );
       });
 
+      test('From string works', () {
+        expect(
+          FoodCategory.fromString('frozen'),
+          equals(
+            const FoodCategory(FoodType.frozen),
+          )
+        );
+      });
 
-
+      test('From string with invalid type throws Food', () {
+        expect(
+              () => FoodCategory.fromString('invalid type'),
+          throwsA(const TypeMatcher<FoodCategoryException>()),
+        );
+      });
     });
 
   });
