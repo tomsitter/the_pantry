@@ -50,7 +50,7 @@ class FoodCategory extends Equatable implements Comparable<FoodCategory> {
     }
   }
 
-  String get displayName => this.toString().capitalize();
+  String get displayName => toString().capitalize();
 
   static List<FoodType> get categories => List.of(FoodType.values);
   // ..sort((a, b) =>

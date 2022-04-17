@@ -54,5 +54,34 @@ void main() {
       });
     });
 
+    group('Methods', () {
+      test('displayName', () {
+        expect(
+          createSubject().displayName,
+          equals('Pantry')
+        );
+      });
+
+      test('Sorts alphabetically by display name', () {
+        expect(
+            [
+            FoodCategory(FoodType.frozen),
+            FoodCategory(FoodType.pantry),
+            FoodCategory(FoodType.baking),
+            ]..sort(),
+          equals(
+              const [
+                FoodCategory(FoodType.baking),
+                FoodCategory(FoodType.frozen),
+                FoodCategory(FoodType.pantry),
+              ]
+          )
+        );
+      });
+    });
+
   });
+
+
+
 }
