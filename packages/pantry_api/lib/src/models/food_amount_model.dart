@@ -23,7 +23,7 @@ class FoodAmount extends Equatable {
 
   static const full = FoodAmount(Amount.full);
 
-  String get displayName => this.toString().capitalize();
+  String get displayName => toString().capitalize();
 
   static List<Amount> get amounts => List.of(Amount.values);
 
