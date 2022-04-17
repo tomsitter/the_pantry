@@ -122,7 +122,7 @@ void main() {
     group('fromJson', () {
       test('works correctly', () {
         expect(
-          PantryItem.fromJson(<String, dynamic>{
+          PantryItem.fromJson(const <String, dynamic>{
             'id': '1',
             'name': 'name',
             'isChecked': true,
@@ -150,6 +150,24 @@ void main() {
               'dateAdded': dateAdded,
             }
           }),
+        );
+      });
+    });
+
+    group('Methods', () {
+      late PantryItem first, second, third, fourth;
+
+      setUp(() {
+        first = PantryItem(name: 'aaa', category: const FoodCategory(FoodType.dairy));
+        second = PantryItem(name: 'bbb', category: const FoodCategory(FoodType.dairy));
+        third = PantryItem(name: 'ccc', category: const FoodCategory(FoodType.dairy));
+        fourth = PantryItem(name: 'aaa', category: const FoodCategory(FoodType.pantry));
+      });
+
+      test('Sorts by category then name alphabetically', () {
+        expect(
+            [fourth,second,third,first]..sort(),
+            equals([first,second,third,fourth]),
         );
       });
     });
