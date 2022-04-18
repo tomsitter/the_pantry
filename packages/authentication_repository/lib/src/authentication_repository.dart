@@ -152,6 +152,8 @@ class AuthenticationRepository {
         _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
         _googleSignIn = googleSignIn ?? GoogleSignIn.standard();
 
+  /// [user] is a stream of user state changes from [_firebaseAuth]
+  /// Caches the [currentUser] for retrieval
   Stream<User> get user {
     return _firebaseAuth.authStateChanges().map((firebaseUser) {
       final user = firebaseUser == null ? User.empty : firebaseUser.toUser;
@@ -175,13 +177,13 @@ class AuthenticationRepository {
     } on firebase_auth.FirebaseAuthException catch (e) {
       throw LoginWithEmailAndPasswordFailure.fromCode(e.code);
     } catch (_) {
-      throw LoginWithEmailAndPasswordFailure();
+      throw const LoginWithEmailAndPasswordFailure();
     }
   }
 
   /// Starts the Sign In with Google Flow, mobile only.
   ///
-  /// Throws a [SigninWithGoogleFailure] if an exception occurs.
+  /// Throws a [SignInWithGoogleFailure] if an exception occurs.
   Future<void> signInWithGoogle() async {
     try {
       late final firebase_auth.AuthCredential credential;
@@ -193,8 +195,6 @@ class AuthenticationRepository {
       } else {
         final googleUser = await _googleSignIn.signIn();
         final googleAuth = await googleUser!.authentication;
-        print(googleAuth);
-        print(googleUser);
 
         credential = firebase_auth.GoogleAuthProvider.credential(
           accessToken: googleAuth.accessToken,
@@ -206,7 +206,6 @@ class AuthenticationRepository {
     } on firebase_auth.FirebaseAuthException catch (e) {
       throw LoginWithGoogleFailure.fromCode(e.code);
     } catch (e) {
-      print(e);
       throw const LoginWithGoogleFailure();
     }
   }
@@ -241,7 +240,6 @@ class AuthenticationRepository {
         _googleSignIn.signOut(),
       ]);
     } catch (e) {
-      print(e);
       throw LogoutFailure();
     }
   }
