@@ -62,7 +62,7 @@ class FirestorePantryApi extends PantryApi {
         // Only add to stream if the snapshot is different than our current pantry item list
         if (!ListEquality()
             .equals(pantryList, [..._pantryItemStreamController.value])) {
-          print("Adding to stream controller");
+          print('Adding to stream controller');
           _pantryItemStreamController.add(pantryList);
         } else {
           /// If this is an empty pantry, send it anyways to get out of a perpetual loading screen

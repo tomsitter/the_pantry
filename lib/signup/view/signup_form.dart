@@ -136,28 +136,28 @@ class _TermsOfUseCheckbox extends StatelessWidget {
             Flexible(
               child: RichText(
                 text: TextSpan(
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.black,
                   ),
                   children: [
-                    TextSpan(text: "I have read and accept the "),
+                    const TextSpan(text: 'I have read and accept the '),
                     TextSpan(
-                        text: "terms and conditions",
+                        text: 'terms and conditions',
                         style: const TextStyle(
                           decoration: TextDecoration.underline,
                           color: Colors.blue,
                         ),
                         recognizer: TapGestureRecognizer()
-                          ..onTap = () => _launchURL(constants.TERMS_URL)),
-                    TextSpan(text: " and "),
+                          ..onTap = () => _launchURL(constants.termsURL)),
+                    const TextSpan(text: ' and '),
                     TextSpan(
-                        text: "privacy policy",
+                        text: 'privacy policy',
                         style: const TextStyle(
                           decoration: TextDecoration.underline,
                           color: Colors.blue,
                         ),
                         recognizer: TapGestureRecognizer()
-                          ..onTap = () => _launchURL(constants.PRIVACY_URL)),
+                          ..onTap = () => _launchURL(constants.privacyURL)),
                   ],
                 ),
               ),

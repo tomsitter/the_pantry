@@ -57,7 +57,7 @@ class EditPantryItemView extends StatelessWidget {
         theme.colorScheme.secondary;
 
     return Scaffold(
-      appBar: AppBar(title: Text(isNewItem ? "Add an item" : "Edit item")),
+      appBar: AppBar(title: Text(isNewItem ? 'Add an item' : 'Edit item')),
       floatingActionButton:
           BlocBuilder<EditPantryItemBloc, EditPantryItemState>(
         builder: (context, state) {
@@ -95,33 +95,6 @@ class EditPantryItemView extends StatelessWidget {
     );
   }
 }
-//
-// class _NameField extends StatelessWidget {
-//   const _NameField({Key? key}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final state = context.watch<EditPantryItemBloc>().state;
-//
-//     return Row(
-//       children: [
-//         Expanded(
-//           child: TextFormField(
-//             key: const Key('editPantryItemView_name_textFormField'),
-//             initialValue: state.name.value,
-//             decoration: InputDecoration(
-//                 enabled: !state.status.isLoadingOrSuccess,
-//                 labelText: "name",
-//                 errorText: state.name.invalid ? 'Name too short' : null),
-//             onChanged: (value) {
-//               context.read<EditPantryItemBloc>().add(EditPantryItemName(value));
-//             },
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }
 
 class _AutoCompleteNameField extends StatelessWidget {
   const _AutoCompleteNameField({Key? key}) : super(key: key);
@@ -151,7 +124,7 @@ class _AutoCompleteNameField extends StatelessWidget {
             //     labelText: "name",
             //     errorText: state.name.invalid ? 'Name too short' : null),
             onSelected: (PantryItem item) {
-              print("Selected ${item.name}");
+              // print("Selected ${item.name}");
             },
           ),
         ),
@@ -170,7 +143,7 @@ class _CategoryField extends StatelessWidget {
 
     return Row(
       children: [
-        const Text("Category:"),
+        const Text('Category:'),
         Expanded(
           child: DropdownButton(
               key: const Key('editPantryItemView_category_dropdownTextField'),
@@ -204,7 +177,7 @@ class _AmountField extends StatelessWidget {
 
     return Row(
       children: [
-        const Text("Amount remaining:"),
+        const Text('Amount remaining:'),
         Expanded(
           child: DropdownButtonFormField(
               value: state.amount,
@@ -237,7 +210,7 @@ class _InGroceryField extends StatelessWidget {
     // final hintText = state.initialItem?.category ?? FoodCategory.uncategorized;
 
     return CheckboxListTile(
-      title: const Text("Show in grocery list"),
+      title: const Text('Show in grocery list'),
       value: state.inGroceryList,
       key: const Key('editPantryItemView_inGroceries_checkboxListTile'),
       onChanged: (bool? value) {

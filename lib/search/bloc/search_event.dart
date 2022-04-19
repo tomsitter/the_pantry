@@ -18,7 +18,7 @@ class SearchFilterChanged extends SearchEvent {
   final String searchText;
 
   const SearchFilterChanged({required this.filter, searchText})
-      : searchText = searchText ?? "";
+      : searchText = searchText ?? '';
 
   @override
   List<Object> get props => [filter, searchText];

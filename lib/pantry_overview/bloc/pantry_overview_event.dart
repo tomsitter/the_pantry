@@ -79,7 +79,7 @@ class PantryOverviewFilterChanged extends PantryOverviewEvent {
   final String searchText;
 
   const PantryOverviewFilterChanged({required this.filter, searchText})
-      : searchText = searchText ?? "";
+      : searchText = searchText ?? '';
 
   @override
   List<Object> get props => [filter, searchText];

@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_dictionary_repository/food_dictionary_repository.dart';
 import 'package:the_pantry/pantry_overview/pantry_overview.dart';
 import 'package:the_pantry/edit_pantry_item/edit_pantry_item.dart';
 import 'package:pantry_repository/pantry_repository.dart';
 import 'package:the_pantry/home/home.dart';
-import 'package:authentication_repository/authentication_repository.dart';
-import 'package:the_pantry/search/search.dart';
 
 class PantryOverviewScreen extends StatelessWidget {
   static const String id = 'grocery_screen';
@@ -59,9 +55,9 @@ class GroceryOverviewView extends StatelessWidget {
                   ..hideCurrentSnackBar()
                   ..showSnackBar(
                     SnackBar(
-                      content: Text("Deleted ${deletedItem.name}, tap to undo"),
+                      content: Text('Deleted ${deletedItem.name}, tap to undo'),
                       action: SnackBarAction(
-                          label: "Undo",
+                          label: 'Undo',
                           onPressed: () {
                             messenger.hideCurrentSnackBar();
                             context.read<PantryOverviewBloc>().add(

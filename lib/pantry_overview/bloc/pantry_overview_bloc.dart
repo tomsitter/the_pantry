@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pantry_repository/pantry_repository.dart';
 import 'package:the_pantry/pantry_overview/pantry_overview.dart';
 
@@ -25,7 +24,7 @@ class PantryOverviewBloc
       required AuthenticationRepository authRepository})
       : _pantryRepository = pantryRepository,
         _authRepository = authRepository,
-        super(PantryOverviewState()) {
+        super(const PantryOverviewState()) {
     on<PantryOverviewSubscriptionRequested>(_onSubscriptionRequested);
     on<PantryOverviewMoveBetweenLists>(_onMoveBetweenLists);
     on<PantryOverviewFilterChanged>(_onFilterChanged);
@@ -46,19 +45,19 @@ class PantryOverviewBloc
     // Get items sorted by category
     final List<PantryItem> items = state.filteredItems.toList();
     if (items.isEmpty) {
-      return const HtmlEscape().convert("No grocery items");
+      return const HtmlEscape().convert('No grocery items');
     }
 
     String htmlBody = '';
     final List<FoodCategory> categories =
         items.map((item) => item.category).toSet().toList()..sort();
     for (final category in categories) {
-      htmlBody += "\n${category.displayName}\n";
-      htmlBody += "--------------\n";
+      htmlBody += '\n${category.displayName}\n';
+      htmlBody += '--------------\n';
       final categoryItems =
           items.where((item) => item.category == category).toList()..sort();
       for (final item in categoryItems) {
-        htmlBody += "${item.name}\n";
+        htmlBody += '${item.name}\n';
       }
     }
 
@@ -69,7 +68,6 @@ class PantryOverviewBloc
     PantryOverviewSubscriptionRequested event,
     Emitter<PantryOverviewState> emit,
   ) async {
-    print("Subscription requested for ${event.user.id}");
     emit(state.copyWith(status: PantryOverviewStatus.loading));
     _pantryRepository.streamUserPantryItems(event.user.id);
   }

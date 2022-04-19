@@ -1,26 +1,16 @@
-import 'dart:io';
-
 import 'package:pantry_api/pantry_api.dart';
 import 'package:test/test.dart';
 
 void main() {
   group('Food amount model', () {
-
     // constructor
-    FoodAmount createSubject({
-      Amount amount = Amount.full
-    }) {
-      return FoodAmount(
-        amount
-      );
+    FoodAmount createSubject({Amount amount = Amount.full}) {
+      return FoodAmount(amount);
     }
 
     group('Constructor', () {
       test('Works correctly', () {
-        expect(
-          createSubject,
-          returnsNormally
-        );
+        expect(createSubject, returnsNormally);
       });
 
       test('Supports equality', () {
@@ -31,12 +21,7 @@ void main() {
       });
 
       test('Props are correct', () {
-        expect(
-          createSubject().props,
-          equals([
-            Amount.full
-          ])
-        );
+        expect(createSubject().props, equals([Amount.full]));
       });
 
       test('fromString works correct', () {
@@ -52,17 +37,12 @@ void main() {
           throwsA(const TypeMatcher<FoodAmountException>()),
         );
       });
-
     });
 
     group('Methods', () {
       test('Display name is correct', () {
-        expect(
-          createSubject().displayName,
-          equals('Full')
-        );
+        expect(createSubject().displayName, equals('Full'));
       });
     });
-
   });
 }

@@ -24,15 +24,15 @@ class PantryFilter extends Equatable {
   bool get isGroceryFilter => filter == PantryFilterType.groceriesOnly;
 
   const PantryFilter._({required this.filter, searchText})
-      : searchText = searchText ?? "";
+      : searchText = searchText ?? '';
 
-  const PantryFilter.all([String searchText = ""])
+  const PantryFilter.all([String searchText = ''])
       : this._(filter: PantryFilterType.all, searchText: searchText);
 
-  const PantryFilter.groceriesOnly([String searchText = ""])
+  const PantryFilter.groceriesOnly([String searchText = ''])
       : this._(filter: PantryFilterType.groceriesOnly, searchText: searchText);
 
-  const PantryFilter.pantryOnly([String searchText = ""])
+  const PantryFilter.pantryOnly([String searchText = ''])
       : this._(filter: PantryFilterType.pantryOnly, searchText: searchText);
 
   bool apply(PantryItem item) {

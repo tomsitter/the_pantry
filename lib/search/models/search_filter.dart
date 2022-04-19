@@ -19,12 +19,12 @@ class SearchFilter extends Equatable {
   });
 
   const SearchFilter._({required this.filter, searchText})
-      : searchText = searchText ?? "";
+      : searchText = searchText ?? '';
 
-  const SearchFilter.all([String searchText = ""])
+  const SearchFilter.all([String searchText = ''])
       : this._(filter: SearchFilterType.all, searchText: searchText);
 
-  const SearchFilter.none([String searchText = ""])
+  const SearchFilter.none([String searchText = ''])
       : this._(filter: SearchFilterType.none, searchText: searchText);
 
   bool apply(PantryItem item) {

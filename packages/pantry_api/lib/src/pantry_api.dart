@@ -3,7 +3,7 @@ import 'package:pantry_api/pantry_api.dart';
 class PantryException implements Exception {
   final String message;
 
-  const PantryException([this.message = "An unspecified error occurred"]);
+  const PantryException([this.message = 'An unspecified error occurred']);
 
   factory PantryException.duplicateItem() {
     return const PantryException('This item already exists in your pantry.');

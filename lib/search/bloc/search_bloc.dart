@@ -10,12 +10,9 @@ part 'search_event.dart';
 part 'search_state.dart';
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
-  final FoodRepository _foodRepository;
-
   SearchBloc(
       {required FoodRepository foodRepository, List<PantryItem>? userItems})
-      : _foodRepository = foodRepository,
-        super(SearchState(
+      : super(SearchState(
             items: foodRepository.foodItems, userItems: userItems ?? [])) {
     on<SearchFilterChanged>(_onFilterChanged);
     on<SearchTextChanged>(_onSearchTextChanged);

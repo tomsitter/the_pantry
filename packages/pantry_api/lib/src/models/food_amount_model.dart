@@ -5,7 +5,7 @@ import '../util.dart';
 class FoodAmountException implements Exception {
   final String message;
 
-  FoodAmountException([this.message = "Unknown amount"]);
+  FoodAmountException([this.message = 'Unknown amount']);
 }
 
 /// Amount of remaining product, or expired
@@ -29,7 +29,7 @@ class FoodAmount extends Equatable {
 
   factory FoodAmount.fromString(String amount) {
     if (!amountMap.keys.contains(amount)) {
-      throw FoodAmountException("Unknown food amount: $amount");
+      throw FoodAmountException('Unknown food amount: $amount');
     } else {
       final foodAmount = amountMap[amount]!;
       return FoodAmount(foodAmount);

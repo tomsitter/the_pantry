@@ -13,7 +13,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:food_dictionary_repository/food_dictionary_repository.dart';
 import 'package:the_pantry/app/app.dart';
 
-bool USE_FIRESTORE_EMULATOR = false;
+const bool useFirestoreEmulator = false;
 
 Future main() async {
   return BlocOverrides.runZoned(
@@ -22,7 +22,7 @@ Future main() async {
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
       );
-      if (USE_FIRESTORE_EMULATOR) {
+      if (useFirestoreEmulator) {
         FirebaseFirestore.instance.settings = const Settings(
             host: 'localhost:8080',
             sslEnabled: false,

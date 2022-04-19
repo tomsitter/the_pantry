@@ -1,6 +1,6 @@
 import 'package:formz/formz.dart';
 
-enum NameValidationError { too_short }
+enum NameValidationError { tooShort }
 
 class ItemName extends FormzInput<String, NameValidationError> {
   const ItemName.pure() : super.pure('');
@@ -11,6 +11,6 @@ class ItemName extends FormzInput<String, NameValidationError> {
   NameValidationError? validator(String? value) {
     return ((value?.length ?? 0) >= _minLength)
         ? null
-        : NameValidationError.too_short;
+        : NameValidationError.tooShort;
   }
 }

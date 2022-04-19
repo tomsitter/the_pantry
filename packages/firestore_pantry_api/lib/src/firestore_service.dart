@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:core';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -29,21 +28,20 @@ class FirestoreService {
       final docReference = _firestore.collection('user_data').doc(userId);
 
       /// Create a new empty Pantry if the user does not already have one
-      docReference.get()
-      .then((docSnapshot) {
+      docReference.get().then((docSnapshot) {
         if (!docSnapshot.exists) {
           docReference
-              .set({"pantry": {}})
+              .set({'pantry': {}})
               .then((_) => <String, dynamic>{})
               .catchError((error) {
-                print("Failed to create a new pantry for user");
+                print('Failed to create a new pantry for user');
               });
-          print("Created new pantry for $userId");
+          print('Created new pantry for $userId');
         }
       });
 
       await for (final snapshot in docReference.snapshots()) {
-        print("Yielding snapshot");
+        print('Yielding snapshot');
         yield snapshot;
       }
     }
@@ -53,10 +51,10 @@ class FirestoreService {
     return await _firestore
         .collection('user_data')
         .doc(userId)
-        .set({"pantry": {}})
+        .set({'pantry': {}})
         .then((_) => fetchPantryItems(userId))
         .catchError((error) {
-          print("Failed to create a new pantry for user");
+          print('Failed to create a new pantry for user');
           return <String, dynamic>{};
         });
   }

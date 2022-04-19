@@ -43,7 +43,7 @@ class FakeAuthProvider extends Fake implements AuthProvider {}
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   MethodChannelFirebase.channel.setMockMethodCallHandler((call) async {
-    if (call.method == "Firebase#initializeCore") {
+    if (call.method == 'Firebase#initializeCore') {
       return [
         {
           'name': defaultFirebaseAppName,
@@ -58,7 +58,7 @@ void main() {
       ];
     }
 
-    if (call.method == "Firebase#initializeApp") {
+    if (call.method == 'Firebase#initializeApp') {
       final arguments = call.arguments as Map<String, dynamic>;
       return <String, dynamic>{
         'name': arguments['appName'],

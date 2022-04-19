@@ -20,7 +20,7 @@ class AppDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            accountName: const Text(""),
+            accountName: const Text(''),
             accountEmail: Text(
               context.select((AppBloc bloc) => bloc.state.user.email),
               style: const TextStyle(color: Colors.white),
@@ -35,7 +35,7 @@ class AppDrawer extends StatelessWidget {
                 String emailBody =
                     context.read<PantryOverviewBloc>().pantryHTMLItems;
                 _launchURL(
-                    "mailto:?subject=My%20Grocery%20List&body=$emailBody");
+                    'mailto:?subject=My%20Grocery%20List&body=$emailBody');
               }),
           const Divider(),
           ListTile(
@@ -43,11 +43,11 @@ class AppDrawer extends StatelessWidget {
               onTap: () => context.read<AppBloc>().add(AppLogoutRequested())),
           const Divider(),
           ListTile(
-              title: const Text("Privacy Policy"),
-              onTap: () => _launchURL(constants.PRIVACY_URL)),
+              title: const Text('Privacy Policy'),
+              onTap: () => _launchURL(constants.privacyURL)),
           ListTile(
-              title: const Text("Terms of Use"),
-              onTap: () => _launchURL(constants.TERMS_URL)),
+              title: const Text('Terms of Use'),
+              onTap: () => _launchURL(constants.termsURL)),
         ],
       ),
     );

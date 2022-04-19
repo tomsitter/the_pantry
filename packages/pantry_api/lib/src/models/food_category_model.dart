@@ -5,7 +5,7 @@ import '../util.dart';
 class FoodCategoryException implements Exception {
   final String message;
 
-  FoodCategoryException([this.message = "Unknown food category"]);
+  FoodCategoryException([this.message = 'Unknown food category']);
 }
 
 enum FoodType {
@@ -43,7 +43,7 @@ class FoodCategory extends Equatable implements Comparable<FoodCategory> {
 
   factory FoodCategory.fromString(String category) {
     if (!categoryMap.keys.contains(category)) {
-      throw FoodCategoryException("Unknown food category: $category");
+      throw FoodCategoryException('Unknown food category: $category');
     } else {
       final foodCategory = categoryMap[category]!;
       return FoodCategory(foodCategory);
