@@ -136,8 +136,11 @@ class GroceryOverviewView extends StatelessWidget {
                 value: context.read<PantryRepository>(),
                 child: EditPantryItemPage(
                   isGroceryScreen: isGroceryScreen,
+                  isNewItem: true,
                   initialItem: PantryItem(
-                      name: newItemName, inGroceryList: isGroceryScreen),
+                    name: newItemName,
+                    inGroceryList: isGroceryScreen,
+                  ),
                 ),
               ),
             ),

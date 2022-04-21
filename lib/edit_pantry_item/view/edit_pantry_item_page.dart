@@ -10,9 +10,13 @@ import 'package:the_pantry/search/search.dart';
 class EditPantryItemPage extends StatelessWidget {
   final PantryItem? initialItem;
   final bool isGroceryScreen;
+  final bool? isNewItem;
 
   const EditPantryItemPage(
-      {this.initialItem, required this.isGroceryScreen, Key? key})
+      {this.initialItem,
+      this.isNewItem,
+      required this.isGroceryScreen,
+      Key? key})
       : super(key: key);
 
   @override
@@ -36,19 +40,20 @@ class EditPantryItemPage extends StatelessWidget {
             previous.status != current.status &&
             current.status == EditPantryItemStatus.success,
         listener: (context, state) => Navigator.of(context).pop(),
-        child: const EditPantryItemView(),
+        child: EditPantryItemView(isNewItem: isNewItem),
       ),
     );
   }
 }
 
 class EditPantryItemView extends StatelessWidget {
-  const EditPantryItemView({Key? key}) : super(key: key);
+  final bool? isNewItem;
+
+  const EditPantryItemView({this.isNewItem, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final state = context.read<EditPantryItemBloc>().state;
-    final isNewItem = state.isNewItem;
     final isGroceryScreen = state.isGroceryScreen;
 
     final theme = Theme.of(context);
@@ -57,7 +62,8 @@ class EditPantryItemView extends StatelessWidget {
         theme.colorScheme.secondary;
 
     return Scaffold(
-      appBar: AppBar(title: Text(isNewItem ? 'Add an item' : 'Edit item')),
+      appBar:
+          AppBar(title: Text(isNewItem ?? false ? 'Add an item' : 'Edit item')),
       floatingActionButton:
           BlocBuilder<EditPantryItemBloc, EditPantryItemState>(
         builder: (context, state) {
@@ -104,31 +110,23 @@ class _AutoCompleteNameField extends StatelessWidget {
     final state = context.watch<EditPantryItemBloc>().state;
     final searchState = context.watch<SearchBloc>().state;
 
-    return Row(
-      children: [
-        Expanded(
-          child: Autocomplete<PantryItem>(
-            displayStringForOption: (PantryItem item) => item.name,
-            optionsBuilder: (TextEditingValue textEditingValue) {
-              String searchText = textEditingValue.text;
-              context
-                  .read<EditPantryItemBloc>()
-                  .add(EditPantryItemName(searchText));
-              context.read<SearchBloc>().add(SearchTextChanged(searchText));
-              return searchState.matchedItems;
-            },
-            key: const Key('editPantryItemView_name_textFormField'),
-            initialValue: TextEditingValue(text: state.name.value),
-            // decoration: InputDecoration(
-            //     enabled: !state.status.isLoadingOrSuccess,
-            //     labelText: "name",
-            //     errorText: state.name.invalid ? 'Name too short' : null),
-            onSelected: (PantryItem item) {
-              // print("Selected ${item.name}");
-            },
-          ),
-        ),
-      ],
+    return ListTile(
+      title: Autocomplete<PantryItem>(
+        displayStringForOption: (PantryItem item) => item.name,
+        optionsBuilder: (TextEditingValue textEditingValue) {
+          String searchText = textEditingValue.text;
+          context
+              .read<EditPantryItemBloc>()
+              .add(EditPantryItemName(searchText));
+          context.read<SearchBloc>().add(SearchTextChanged(searchText));
+          return searchState.matchedItems;
+        },
+        key: const Key('editPantryItemView_name_textFormField'),
+        initialValue: TextEditingValue(text: state.name.value),
+        onSelected: (PantryItem item) {
+          // print("Selected ${item.name}");
+        },
+      ),
     );
   }
 }
@@ -141,28 +139,25 @@ class _CategoryField extends StatelessWidget {
     final state = context.watch<EditPantryItemBloc>().state;
     // final hintText = state.initialItem?.category ?? FoodCategory.uncategorized;
 
-    return Row(
-      children: [
-        const Text('Category:'),
-        Expanded(
-          child: DropdownButton(
-              key: const Key('editPantryItemView_category_dropdownTextField'),
-              value: state.category,
-              items: FoodCategory.categories
-                  .map<DropdownMenuItem<FoodCategory>>((FoodType value) {
-                FoodCategory category = FoodCategory(value);
-                return DropdownMenuItem<FoodCategory>(
-                  value: category,
-                  child: Text(category.displayName),
-                );
-              }).toList(),
-              onChanged: (FoodCategory? value) {
-                context
-                    .read<EditPantryItemBloc>()
-                    .add(EditPantryItemCategory(value!));
-              }),
-        ),
-      ],
+    return ListTile(
+      dense: true,
+      title: const Text('Category: '),
+      subtitle: DropdownButton(
+          key: const Key('editPantryItemView_category_dropdownTextField'),
+          value: state.category,
+          items: FoodCategory.categories
+              .map<DropdownMenuItem<FoodCategory>>((FoodType value) {
+            FoodCategory category = FoodCategory(value);
+            return DropdownMenuItem<FoodCategory>(
+              value: category,
+              child: Text(category.displayName),
+            );
+          }).toList(),
+          onChanged: (FoodCategory? value) {
+            context
+                .read<EditPantryItemBloc>()
+                .add(EditPantryItemCategory(value!));
+          }),
     );
   }
 }
@@ -175,28 +170,25 @@ class _AmountField extends StatelessWidget {
     final state = context.watch<EditPantryItemBloc>().state;
     // final hintText = state.initialItem?.category ?? FoodCategory.uncategorized;
 
-    return Row(
-      children: [
-        const Text('Amount remaining:'),
-        Expanded(
-          child: DropdownButtonFormField(
-              value: state.amount,
-              key: const Key('editPantryItemView_amount_dropdownTextField'),
-              items: FoodAmount.amounts
-                  .map<DropdownMenuItem<FoodAmount>>((Amount value) {
-                FoodAmount amount = FoodAmount(value);
-                return DropdownMenuItem<FoodAmount>(
-                  value: amount,
-                  child: Text(amount.displayName),
-                );
-              }).toList(),
-              onChanged: (FoodAmount? value) {
-                context
-                    .read<EditPantryItemBloc>()
-                    .add(EditPantryItemAmount(value!));
-              }),
-        ),
-      ],
+    return ListTile(
+      dense: true,
+      title: const Text('Amount remaining:'),
+      subtitle: DropdownButtonFormField(
+          value: state.amount,
+          key: const Key('editPantryItemView_amount_dropdownTextField'),
+          items: FoodAmount.amounts
+              .map<DropdownMenuItem<FoodAmount>>((Amount value) {
+            FoodAmount amount = FoodAmount(value);
+            return DropdownMenuItem<FoodAmount>(
+              value: amount,
+              child: Text(amount.displayName),
+            );
+          }).toList(),
+          onChanged: (FoodAmount? value) {
+            context
+                .read<EditPantryItemBloc>()
+                .add(EditPantryItemAmount(value!));
+          }),
     );
   }
 }
