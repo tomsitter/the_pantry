@@ -43,6 +43,10 @@ void main() {
       test('Display name is correct', () {
         expect(createSubject().displayName, equals('Full'));
       });
+
+      test('toString is correct', () {
+        expect(createSubject().toString(), equals('full'));
+      });
     });
   });
 }
