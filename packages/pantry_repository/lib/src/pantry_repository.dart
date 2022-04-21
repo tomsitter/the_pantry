@@ -12,8 +12,8 @@ class PantryRepository {
   /// Fetches all of a [user]s current [PantryItems]
   ///
   /// Creates and returns a new Pantry if user does not yet have one.
-  Future<void> fetchPantryItems(String docId) =>
-      _pantryApi.fetchPantryItems(docId);
+  // Future<void> fetchPantryItems(String docId) =>
+  //     _pantryApi.fetchPantryItems(docId);
 
   Future<void> streamUserPantryItems(String docId) =>
       _pantryApi.streamUserPantryItems(docId);

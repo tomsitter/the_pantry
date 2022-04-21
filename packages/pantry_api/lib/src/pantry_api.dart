@@ -31,7 +31,7 @@ abstract class PantryApi {
   /// Fetches all of a [user]s current [PantryItems]
   ///
   /// Creates and returns a new Pantry if user does not yet have one.
-  Future<void> fetchPantryItems(String docId);
+  // Future<void> fetchPantryItems(String docId);
 
   /// Creates a new empty pantry for a [user]
   Future<void> createNewPantry(String docId);

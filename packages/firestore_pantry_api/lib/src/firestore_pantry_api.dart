@@ -8,11 +8,7 @@ class FirestorePantryApi extends PantryApi {
 
   FirestorePantryApi({required FirebaseFirestore instance, String? docId})
       : _firestoreService = FirestoreService(firestore: instance) {
-    if (docId != null && docId.isNotEmpty) _init(docId);
-  }
-
-  void _init(String docId) async {
-    streamUserPantryItems(docId);
+    if (docId != null && docId.isNotEmpty) streamUserPantryItems(docId);
   }
 
   final _pantryItemStreamController =
@@ -23,21 +19,21 @@ class FirestorePantryApi extends PantryApi {
   Stream<List<PantryItem>> get pantryItems =>
       _pantryItemStreamController.asBroadcastStream();
 
-  @override
-  Future<void> fetchPantryItems(String docId) async {
-    final data = await _firestoreService.fetchPantryItems(docId);
-    if (data != null) {
-      List<PantryItem> pantryList = data['pantry']
-          .entries
-          .map<PantryItem>((item) => PantryItem.fromFirestore(item))
-          .toList();
-      print(pantryList);
-      _pantryItemStreamController.add(pantryList);
-    } else {
-      _firestoreService.createNewPantry(docId);
-      _pantryItemStreamController.add(const []);
-    }
-  }
+  // @override
+  // Future<void> fetchPantryItems(String docId) async {
+  //   final data = await _firestoreService.fetchPantryItems(docId);
+  //   if (data != null) {
+  //     List<PantryItem> pantryList = data['pantry']
+  //         .entries
+  //         .map<PantryItem>((item) => PantryItem.fromFirestore(item))
+  //         .toList();
+  //     print(pantryList);
+  //     _pantryItemStreamController.add(pantryList);
+  //   } else {
+  //     _firestoreService.createNewPantry(docId);
+  //     _pantryItemStreamController.add(const []);
+  //   }
+  // }
 
   @override
   Future<void> createNewPantry(String docId) async {
@@ -60,15 +56,11 @@ class FirestorePantryApi extends PantryApi {
             .toList();
 
         // Only add to stream if the snapshot is different than our current pantry item list
-        if (!ListEquality()
-            .equals(pantryList, [..._pantryItemStreamController.value])) {
-          print('Adding to stream controller');
+        // or the current pantryList is empty
+        if (pantryList.isEmpty ||
+            (!ListEquality()
+                .equals(pantryList, [..._pantryItemStreamController.value]))) {
           _pantryItemStreamController.add(pantryList);
-        } else {
-          /// If this is an empty pantry, send it anyways to get out of a perpetual loading screen
-          if (pantryList.isEmpty) {
-            _pantryItemStreamController.add(pantryList);
-          }
         }
       }
     });
