@@ -101,7 +101,7 @@ class _ListOfTiles extends StatelessWidget {
             } else if (direction == DismissDirection.endToStart) {
               context.read<PantryOverviewBloc>().add(
                   PantryOverviewMoveBetweenLists(
-                      item: item, inGroceryList: true));
+                      item: item, inGroceryList: !item.inGroceryList));
               return false;
             }
             return null;
@@ -120,7 +120,7 @@ class _PantryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isGroceryScreen =
-    context.select((HomeCubit cubit) => cubit.isGroceryScreen);
+        context.select((HomeCubit cubit) => cubit.isGroceryScreen);
 
     return GestureDetector(
       child: ListTile(
