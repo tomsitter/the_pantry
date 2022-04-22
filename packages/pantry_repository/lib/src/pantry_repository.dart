@@ -19,14 +19,14 @@ class PantryRepository {
       _pantryApi.streamUserPantryItems(docId);
 
   /// Adds a new [PantryItem] or overwrites an existing one in a [user]s pantry
-  Future<void> savePantryItem(String docId, PantryItem item) =>
+  Future<void> saveItem(String docId, PantryItem item) =>
       _pantryApi.saveItem(docId, item);
 
   /// Delete a [PantryItem] from a [user]'s pantry
   ///
   /// If an item with the same name as the [PantryItem] does not exist,
   /// throws a [PantryException]
-  Future<void> deletePantryItem(String docId, PantryItem item) =>
+  Future<void> deleteItem(String docId, PantryItem item) =>
       _pantryApi.deleteItem(docId, item);
 
   /// Changes the amount remaining on an item in the user's pantry

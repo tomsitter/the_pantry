@@ -12,7 +12,7 @@ class FakeFoodCategory extends Fake implements FoodCategory {}
 class FakeFoodAmount extends Fake implements FoodAmount {}
 
 void main() {
-  group('Constructor', () {
+  group('PantryApi', () {
     late PantryApi api;
 
     const mockDocId = '123';
@@ -80,7 +80,7 @@ void main() {
         );
 
         expect(
-          createSubject().savePantryItem(mockDocId, newPantryItem),
+          createSubject().saveItem(mockDocId, newPantryItem),
           completes,
         );
 
@@ -91,7 +91,7 @@ void main() {
     group('delete pantry item', () {
       test('makes correct api request', () {
         expect(
-          createSubject().deletePantryItem(mockDocId, pantryItems[0]),
+          createSubject().deleteItem(mockDocId, pantryItems[0]),
           completes,
         );
 

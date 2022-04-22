@@ -89,7 +89,7 @@ class PantryOverviewBloc
       emit(state.copyWith(status: PantryOverviewStatus.failure));
     } else {
       final newItem = event.item.copyWith(inGroceryList: event.inGroceryList);
-      await _pantryRepository.savePantryItem(user.id, newItem);
+      await _pantryRepository.saveItem(user.id, newItem);
     }
   }
 
@@ -110,7 +110,7 @@ class PantryOverviewBloc
     } else {
       final item = state.lastDeletedItem;
       emit(state.copyWith(lastDeletedItem: null));
-      await _pantryRepository.savePantryItem(user.id, item!);
+      await _pantryRepository.saveItem(user.id, item!);
     }
   }
 
@@ -123,7 +123,7 @@ class PantryOverviewBloc
       emit(state.copyWith(status: PantryOverviewStatus.failure));
     } else {
       emit(state.copyWith(lastDeletedItem: event.item));
-      await _pantryRepository.deletePantryItem(user.id, event.item);
+      await _pantryRepository.deleteItem(user.id, event.item);
     }
   }
 
@@ -136,7 +136,7 @@ class PantryOverviewBloc
       emit(state.copyWith(status: PantryOverviewStatus.failure));
     } else {
       final newItem = event.item.copyWith(isChecked: event.isChecked);
-      await _pantryRepository.savePantryItem(user.id, newItem);
+      await _pantryRepository.saveItem(user.id, newItem);
     }
   }
 
@@ -150,7 +150,7 @@ class PantryOverviewBloc
     } else {
       final newAmount = FoodAmount.fromString(event.amount);
       final newItem = event.item.copyWith(amount: newAmount);
-      await _pantryRepository.savePantryItem(user.id, newItem);
+      await _pantryRepository.saveItem(user.id, newItem);
     }
   }
 

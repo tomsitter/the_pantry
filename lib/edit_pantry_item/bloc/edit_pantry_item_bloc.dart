@@ -25,6 +25,7 @@ class EditPantryItemBloc
           initialItem: initialItem,
           name: ItemName.dirty(initialItem?.name ?? ''),
           category: initialItem?.category ?? FoodCategory.uncategorized,
+          amount: initialItem?.amount ?? FoodAmount.full,
           inGroceryList: initialItem?.inGroceryList ?? isGroceryScreen,
         )) {
     on<EditPantryItemName>(_onNameChanged);
@@ -78,8 +79,7 @@ class EditPantryItemBloc
     );
 
     try {
-      await _pantryRepository.savePantryItem(
-          _authRepository.currentUser.id, item);
+      await _pantryRepository.saveItem(_authRepository.currentUser.id, item);
       emit(state.copyWith(status: EditPantryItemStatus.success));
     } catch (e) {
       emit(state.copyWith(status: EditPantryItemStatus.failure));
