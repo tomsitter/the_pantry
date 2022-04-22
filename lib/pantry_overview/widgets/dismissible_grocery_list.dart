@@ -13,6 +13,8 @@ class DismissibleGroceryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isGroceryScreen =
+        context.select((HomeCubit cubit) => cubit.isGroceryScreen);
 
     return BlocBuilder<PantryOverviewBloc, PantryOverviewState>(
       builder: (context, state) {
@@ -41,13 +43,14 @@ class DismissibleGroceryList extends StatelessWidget {
                     onLongPressCallback: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                            fullscreenDialog: true,
-                            builder: (_) => RepositoryProvider.value(
-                                  value: context.read<PantryRepository>(),
-                                  child: EditPantryItemPage(
-                                      initialItem: item,
-                                      isGroceryScreen: context.select((HomeCubit cubit) => cubit.isGroceryScreen)),
-                                )),
+                          fullscreenDialog: true,
+                          builder: (_) => RepositoryProvider.value(
+                            value: context.read<PantryRepository>(),
+                            child: EditPantryItemPage(
+                                initialItem: item,
+                                isGroceryScreen: isGroceryScreen),
+                          ),
+                        ),
                       );
                     },
                   ),

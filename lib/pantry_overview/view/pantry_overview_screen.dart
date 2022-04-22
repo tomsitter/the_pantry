@@ -79,9 +79,6 @@ class GroceryOverviewView extends StatelessWidget {
               }
             }
 
-            // int numItems =
-            //     showGroceries ? state.filteredItems.length : state.items.length;
-
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
