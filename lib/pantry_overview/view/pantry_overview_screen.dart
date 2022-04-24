@@ -1,3 +1,4 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:the_pantry/pantry_overview/pantry_overview.dart';
@@ -81,7 +82,17 @@ class GroceryOverviewView extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                isGroceryScreen ? const SearchField() : Container(),
+                isGroceryScreen ?
+                  BlocProvider(
+                      create: (context) => EditPantryItemBloc(
+                        pantryRepository: context.read<PantryRepository>(),
+                        authRepository: context.read<AuthenticationRepository>(),
+                        isGroceryScreen: isGroceryScreen,
+                        initialItem: PantryItem(name: '',
+                            inGroceryList: isGroceryScreen),
+                      ),
+                      child: const SearchField()
+                  ) : Container(),
                 Expanded(
                   child: Container(
                     decoration: const BoxDecoration(
