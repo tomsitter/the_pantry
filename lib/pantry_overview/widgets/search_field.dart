@@ -27,6 +27,7 @@ class _SearchFieldState extends State<SearchField> {
   Widget build(BuildContext context) {
     PantryFilter filter =
         context.select((PantryOverviewBloc bloc) => bloc.state.filter);
+    final isFormValid = context.select((EditPantryItemBloc bloc) => bloc.state.isFormValid);
     return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 8.0),
           child: Row(
@@ -52,30 +53,7 @@ class _SearchFieldState extends State<SearchField> {
                     labelText: 'Search',
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.add_circle_outlined),
-                      onPressed: () {
-                        context
-                            .read<EditPantryItemBloc>()
-                            .add(const EditPantryItemSubmitted());
-
-                        context.read<PantryOverviewBloc>().add(
-                          PantryOverviewFilterChanged(
-                            filter: filter.isGroceryFilter
-                                ? const PantryFilter.groceriesOnly()
-                                : const PantryFilter.pantryOnly(),
-                          ),
-                        );
-
-                        final messenger = ScaffoldMessenger.of(context);
-                        messenger
-                          ..hideCurrentSnackBar()
-                          ..showSnackBar(
-                            SnackBar(
-                              content: Text('Added ${_textController.text}'),
-                            ),
-                          );
-                        _textController.value = TextEditingValue.empty;
-                        FocusScope.of(context).unfocus();
-                      },
+                      onPressed: isFormValid ? () => _quickAdd(filter) : null,
                     ),
                   ),
                 ),
@@ -84,4 +62,31 @@ class _SearchFieldState extends State<SearchField> {
           ),
         );
       }
+
+  void _quickAdd(PantryFilter filter) {
+    context
+        .read<EditPantryItemBloc>()
+        .add(const EditPantryItemSubmitted());
+
+    context.read<PantryOverviewBloc>().add(
+      PantryOverviewFilterChanged(
+        filter: filter.isGroceryFilter
+            ? const PantryFilter.groceriesOnly()
+            : const PantryFilter.pantryOnly(),
+      ),
+    );
+
+    final messenger = ScaffoldMessenger.of(context);
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text('Added ${_textController.text}'),
+        ),
+      );
+    _textController.value = TextEditingValue.empty;
+    FocusScope.of(context).unfocus();
+  }
+
 }
+
