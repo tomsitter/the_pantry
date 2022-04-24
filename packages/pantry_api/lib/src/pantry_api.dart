@@ -28,11 +28,6 @@ abstract class PantryApi {
   /// Provides a [Stream] of all pantry items for a given [user].
   Stream<List<PantryItem>> get pantryItems;
 
-  /// Fetches all of a [user]s current [PantryItems]
-  ///
-  /// Creates and returns a new Pantry if user does not yet have one.
-  // Future<void> fetchPantryItems(String docId);
-
   /// Creates a new empty pantry for a [user]
   Future<void> createNewPantry(String docId);
 

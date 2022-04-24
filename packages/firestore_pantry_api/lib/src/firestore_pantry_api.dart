@@ -49,14 +49,20 @@ class FirestorePantryApi extends PantryApi {
     }
   }
 
+  /// Creates or overwrites an item with the same id
+  /// in both the users pantry and history collections.
   Future<void> _updateItem(
       String id, Map<String, dynamic> item, String userId) async {
-    /// Overwrites an item with the same name property or creates a new item.
     try {
       _firestore
           .collection('user_data')
           .doc(userId)
-          .update({'pantry.$id': item[id]});
+          .set({'pantry': {id: item[id]},
+                'history': {id: {
+                  'name': item[id]['name'],
+                  'category': item[id]['category'],
+                }},
+          }, SetOptions(merge: true),);
     } catch (e) {
       print(e);
     }
@@ -70,7 +76,6 @@ class FirestorePantryApi extends PantryApi {
           .update({'pantry.$id': FieldValue.delete()});
     } catch (e) {
       print(e);
-      return;
     }
   }
 

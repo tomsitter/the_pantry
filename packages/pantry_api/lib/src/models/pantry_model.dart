@@ -144,8 +144,8 @@ class PantryItem extends Equatable implements Comparable<PantryItem> {
   /// Pantry Items are sorted by category then by name
   @override
   int compareTo(PantryItem other) {
-    int comparison = this.category.compareTo(other.category);
+    int comparison = category.compareTo(other.category);
     // If both food items are in the same category, then sort by name
-    return comparison == 0 ? this.name.compareTo(other.name) : comparison;
+    return comparison == 0 ? name.compareTo(other.name) : comparison;
   }
 }
