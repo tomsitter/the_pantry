@@ -53,7 +53,9 @@ class _SearchFieldState extends State<SearchField> {
                     labelText: 'Search',
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.add_circle_outlined),
-                      onPressed: isFormValid ? () => _quickAdd(filter) : null,
+                      onPressed: isFormValid
+                          ? () { _quickAdd(); _resetFilter(); }
+                          : null,
                     ),
                   ),
                 ),
@@ -63,18 +65,10 @@ class _SearchFieldState extends State<SearchField> {
         );
       }
 
-  void _quickAdd(PantryFilter filter) {
+  void _quickAdd() {
     context
         .read<EditPantryItemBloc>()
         .add(const EditPantryItemSubmitted());
-
-    context.read<PantryOverviewBloc>().add(
-      PantryOverviewFilterChanged(
-        filter: filter.isGroceryFilter
-            ? const PantryFilter.groceriesOnly()
-            : const PantryFilter.pantryOnly(),
-      ),
-    );
 
     final messenger = ScaffoldMessenger.of(context);
     messenger
@@ -86,6 +80,19 @@ class _SearchFieldState extends State<SearchField> {
       );
     _textController.value = TextEditingValue.empty;
     FocusScope.of(context).unfocus();
+  }
+
+  void _resetFilter() {
+    final bloc = context.read<PantryOverviewBloc>();
+    bool isGroceryFilter = bloc.state.filter.isGroceryFilter;
+
+    context.read<PantryOverviewBloc>().add(
+      PantryOverviewFilterChanged(
+        filter: isGroceryFilter
+            ? const PantryFilter.groceriesOnly()
+            : const PantryFilter.pantryOnly(),
+      ),
+    );
   }
 
 }
