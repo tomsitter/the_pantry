@@ -127,14 +127,8 @@ class GroceryOverviewView extends StatelessWidget {
         ),
         onPressed: () {
           final state = context.read<PantryOverviewBloc>().state;
-          final int numFilteredItems = state.filteredItems.length;
           final String newItemName;
-          if (numFilteredItems == 0) {
-            String searchText = state.filter.searchText;
-            newItemName = searchText;
-          } else {
-            newItemName = '';
-          }
+          newItemName = state.filter.searchText;
           Navigator.of(context).push(
             MaterialPageRoute(
               fullscreenDialog: true,
@@ -142,7 +136,7 @@ class GroceryOverviewView extends StatelessWidget {
                 value: context.read<PantryRepository>(),
                 child: EditPantryItemPage(
                   isGroceryScreen: isGroceryScreen,
-                  isNewItem: true,
+                  isNewItem: state.filteredItems.isEmpty,
                   initialItem: PantryItem(
                     name: newItemName,
                     inGroceryList: isGroceryScreen,

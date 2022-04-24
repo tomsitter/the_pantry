@@ -61,41 +61,46 @@ class EditPantryItemView extends StatelessWidget {
     final fabBackgroundColor = floatingActionButtonTheme.backgroundColor ??
         theme.colorScheme.secondary;
 
-    return Scaffold(
-      appBar:
-          AppBar(title: Text(isNewItem ?? false ? 'Add an item' : 'Edit item')),
-      floatingActionButton:
-          BlocBuilder<EditPantryItemBloc, EditPantryItemState>(
-        builder: (context, state) {
-          return FloatingActionButton(
-            backgroundColor: state.canSubmit
-                ? fabBackgroundColor
-                : fabBackgroundColor.withOpacity(0.5),
-            onPressed: state.canSubmit
-                ? () => context
-                    .read<EditPantryItemBloc>()
-                    .add(const EditPantryItemSubmitted())
-                : null,
-            child: state.status.isLoadingOrSuccess
-                ? const CupertinoActivityIndicator()
-                : const Icon(Icons.check_rounded),
-          );
-        },
-      ),
-      body: CupertinoScrollbar(
-        child: SingleChildScrollView(
-          child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  // const _NameField(),
-                  const _AutoCompleteNameField(),
-                  // only show amount remaining from grocery screen, not pantry
-                  isGroceryScreen ? Container() : const _AmountField(),
-                  const _CategoryField(),
-                  const _InGroceryField(),
-                ],
-              )),
+    return GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        appBar:
+            AppBar(title: Text(isNewItem ?? false ? 'Add an item' : 'Edit item')),
+        floatingActionButton:
+            BlocBuilder<EditPantryItemBloc, EditPantryItemState>(
+          builder: (context, state) {
+            return FloatingActionButton(
+              backgroundColor: state.canSubmit
+                  ? fabBackgroundColor
+                  : fabBackgroundColor.withOpacity(0.5),
+              onPressed: state.canSubmit
+                  ? () => context
+                      .read<EditPantryItemBloc>()
+                      .add(const EditPantryItemSubmitted())
+                  : null,
+              child: state.status.isLoadingOrSuccess
+                  ? const CupertinoActivityIndicator()
+                  : const Icon(Icons.check_rounded),
+            );
+          },
+        ),
+        body: CupertinoScrollbar(
+          child: SingleChildScrollView(
+            child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    // const _NameField(),
+                    const _AutoCompleteNameField(),
+                    // only show amount remaining from grocery screen, not pantry
+                    isGroceryScreen ? Container() : const _AmountField(),
+                    const _CategoryField(),
+                    const _InGroceryField(),
+                  ],
+                )),
+          ),
         ),
       ),
     );
@@ -111,6 +116,7 @@ class _AutoCompleteNameField extends StatelessWidget {
     final searchState = context.watch<SearchBloc>().state;
 
     return ListTile(
+      autofocus: true,
       title: Autocomplete<PantryItem>(
         displayStringForOption: (PantryItem item) => item.name,
         optionsBuilder: (TextEditingValue textEditingValue) {
@@ -123,9 +129,22 @@ class _AutoCompleteNameField extends StatelessWidget {
         },
         key: const Key('editPantryItemView_name_textFormField'),
         initialValue: TextEditingValue(text: state.name.value),
-        onSelected: (PantryItem item) {
-          // print("Selected ${item.name}");
+    fieldViewBuilder: (BuildContext context,
+    TextEditingController textEditingController,
+    FocusNode focusNode,
+    VoidCallback onFieldSubmitted) {
+      return TextFormField(
+        controller: textEditingController,
+        decoration: const InputDecoration(
+          hintText: 'Name',
+        ),
+        autofocus: true,
+        focusNode: focusNode,
+        onFieldSubmitted: (String value) {
+          onFieldSubmitted();
         },
+      );
+    },
       ),
     );
   }
