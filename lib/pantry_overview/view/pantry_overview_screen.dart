@@ -78,11 +78,10 @@ class GroceryOverviewView extends StatelessWidget {
                 return const Center(child: Text('No items'));
               }
             }
-
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                isGroceryScreen ? const PantrySearchField() : Container(),
+                isGroceryScreen ? const SearchField() : Container(),
                 Expanded(
                   child: Container(
                     decoration: const BoxDecoration(
@@ -117,7 +116,6 @@ class GroceryOverviewView extends StatelessWidget {
         ),
         onPressed: () {
           final state = context.read<PantryOverviewBloc>().state;
-          // final bool isGroceryScreen = context.select((HomeCubit cubit) => cubit.isGroceryScreen);
           final int numFilteredItems = state.filteredItems.length;
           final String newItemName;
           if (numFilteredItems == 0) {
@@ -150,49 +148,6 @@ class GroceryOverviewView extends StatelessWidget {
             Text('Add item'),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class PantrySearchField extends StatelessWidget {
-  const PantrySearchField({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    bool isGroceryScreen =
-        context.select((HomeCubit cubit) => cubit.isGroceryScreen);
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 8.0),
-      child: Row(
-        children: [
-          // Text(
-          //   '$numItems Items',
-          // ),
-          Expanded(
-            child: TextField(
-              autofocus: false,
-              onChanged: (searchText) {
-                context.read<PantryOverviewBloc>().add(
-                    PantryOverviewFilterChanged(
-                        filter: isGroceryScreen
-                            ? PantryFilter.groceriesOnly(searchText)
-                            : PantryFilter.pantryOnly(searchText)));
-              },
-              // _runFilter(pantryList.items, value),
-              // style: const TextStyle(
-              //   color: Colors.black,
-              // ),
-              decoration: const InputDecoration(
-                labelText: 'Search',
-                suffixIcon: Icon(Icons.search),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
