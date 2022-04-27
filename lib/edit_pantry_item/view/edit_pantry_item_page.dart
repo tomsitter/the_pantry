@@ -66,8 +66,8 @@ class EditPantryItemView extends StatelessWidget {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(
-        appBar:
-            AppBar(title: Text(isNewItem ?? false ? 'Add an item' : 'Edit item')),
+        appBar: AppBar(
+            title: Text(isNewItem ?? false ? 'Add an item' : 'Edit item')),
         floatingActionButton:
             BlocBuilder<EditPantryItemBloc, EditPantryItemState>(
           builder: (context, state) {
@@ -125,26 +125,56 @@ class _AutoCompleteNameField extends StatelessWidget {
               .read<EditPantryItemBloc>()
               .add(EditPantryItemName(searchText));
           context.read<SearchBloc>().add(SearchTextChanged(searchText));
-          return searchState.matchedItems;
+          print(searchText);
+          return searchState.matchedItems.toList();
         },
         key: const Key('editPantryItemView_name_textFormField'),
         initialValue: TextEditingValue(text: state.name.value),
-    fieldViewBuilder: (BuildContext context,
-    TextEditingController textEditingController,
-    FocusNode focusNode,
-    VoidCallback onFieldSubmitted) {
-      return TextFormField(
-        controller: textEditingController,
-        decoration: const InputDecoration(
-          hintText: 'Name',
-        ),
-        autofocus: true,
-        focusNode: focusNode,
-        onFieldSubmitted: (String value) {
-          onFieldSubmitted();
+        optionsViewBuilder: (context, onSelected, options) => Align(
+            alignment: Alignment.topLeft,
+            child: Material(
+              color: Theme.of(context).primaryColorLight,
+              elevation: 4.0,
+              // size works, when placed here below the Material widget
+              child: Container(
+                  // I have the text field wrapped in a container with
+                  // EdgeInsets.all(20) so subtract 40 from the width for the width
+                  // of the text box. You could also just use a padding widget
+                  // with EdgeInsets.only(right: 20)
+                  width: MediaQuery.of(context).size.width - 40,
+                  child: ListView.builder(
+                    padding: EdgeInsets.all(0),
+                    shrinkWrap: true,
+                    itemCount: options.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        tileColor: Colors.white,
+                        dense: true,
+                        title: Text(options.elementAt(index).name),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () => print('selected ${options.elementAt(index).name}')
+                        ),
+                      );
+                    },
+                  ),),
+            ),),
+        fieldViewBuilder: (BuildContext context,
+            TextEditingController textEditingController,
+            FocusNode focusNode,
+            VoidCallback onFieldSubmitted) {
+          return TextFormField(
+            controller: textEditingController,
+            decoration: const InputDecoration(
+              hintText: 'Name',
+            ),
+            autofocus: true,
+            focusNode: focusNode,
+            onFieldSubmitted: (String value) {
+              onFieldSubmitted();
+            },
+          );
         },
-      );
-    },
       ),
     );
   }
